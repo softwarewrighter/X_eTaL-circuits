@@ -70,6 +70,8 @@ no code has been written yet. See [`docs/plan.md`](docs/plan.md).
 
 - [`docs/plan.md`](docs/plan.md) -- the roadmap, principles and open
   questions
+- [`docs/reference.md`](docs/reference.md) -- the paper's method, the
+  authors' code and the TransformerLens hooks for GPT-2 Small
 - [`docs/research.txt`](docs/research.txt) -- the archived design
   conversation behind the project (not normative)
 

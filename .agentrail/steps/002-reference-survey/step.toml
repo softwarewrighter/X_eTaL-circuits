@@ -1,6 +1,6 @@
 number = 2
 slug = "reference-survey"
-status = "pending"
+status = "in-progress"
 description = """
 Write docs/reference.md: the reference material the later steps build on.
 
