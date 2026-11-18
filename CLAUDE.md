@@ -387,6 +387,7 @@ experiments/   declarative experiment specifications
 scripts/       the scripts the justfile recipes call
 runs/          run outputs (gitignored)
 third_party/   reference clones such as the paper's code (gitignored, never committed)
+fixtures/      small committed captures the tests read (just fixture remakes them)
 ```
 
 ## Build / Test

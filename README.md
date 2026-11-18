@@ -61,10 +61,31 @@ internals.
 | a tiny trained transformer | in what order do circuit parts appear during training?          |
 | Baby Dragon Hatchling    | does a model designed to be inspected make circuits easier to find? |
 
+## Capturing a model run
+
+The adapter runs a model through TransformerLens and writes a
+*capture*: a directory with the attention patterns (`attn.xta`, layer
+x head x query x key), the last position's logits (`logits.xta`), and
+`capture.toml`, which holds the model, its revision, library versions,
+the seed, the prompt and its tokens. The arrays are XTLARR01 files
+(f32), optionally also one `capture.safetensors`. The format is in
+[`docs/design.md`](docs/design.md).
+
+```bash
+just setup --model                                   # torch + TransformerLens
+just capture --out runs/induction --length 50        # BOS + 50 random tokens, twice
+just capture --out runs/hello --text "Hello world" --layers 0,5 --safetensors
+```
+
+`fixtures/gpt2-induction` is a small capture (GPT-2 Small, two layers,
+17 positions) that the tests read. `just fixture` makes it again,
+byte for byte.
+
 ## Status
 
-Early: the plan, the research notes and the saga are in place, and
-no code has been written yet. See [`docs/plan.md`](docs/plan.md).
+Early: the adapter writes captures. Reading them in X_eTaL, the
+heatmaps, the scores and the model map come next. See
+[`docs/plan.md`](docs/plan.md).
 
 ## Documentation
 

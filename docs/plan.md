@@ -64,7 +64,7 @@ These come from the research and apply to every saga.
 | ------------------- | -------------------------------------------------------------------- |
 | X_eTaL-circuits     | this workbench: the adapter, the experiment specifications, the studies, the explorer |
 | X_eTaL-libraries    | general-purpose pieces found along the way: heatmaps, directed-graph layout, statistics |
-| X_eTaL-extensions   | native Rust needed by X_eTaL: the XTLARR01 array-file reader (D1), later an adapter client |
+| X_eTaL-extensions   | native Rust needed by X_eTaL: the array-file reader for XTLARR01 and safetensors (D1, D7), later an adapter client |
 | X_eTaL-gpu          | the XTLARR01 format and its Rust reader; GPU runs of large sweeps and forward passes |
 | X_eTaL-ML           | ML libraries reused here (Attention, Norm, NN) and the in-context-learning teaching demos (D5) |
 | X_eTaL              | language changes, if a study needs one (decided with the user there) |
@@ -116,7 +116,7 @@ the scores and a candidate circuit on it.
 | 2  | reference-survey    | `docs/reference.md`: the paper's method and the authors' repo layout and runner interface (pinned commit); TransformerLens hook names for GPT-2 |
 | 3  | xetal-ingest        | decisions D1-D6 in `docs/design.md`: XTLARR01 arrays read through an X_eTaL-extensions extension, TOML metadata, f32 captures, the split with X_eTaL-ML |
 | 4  | adapter-capture     | Python adapter: load GPT-2 Small, write a capture directory (attn.xta, logits.xta, capture.toml); an XTLARR01 writer; a committed fixture |
-| 5  | arrayfile-extension | in ../X_eTaL-extensions: the extension reading XTLARR01 files (whole array, one first-axis slice, shape), sharing X_eTaL-gpu's reader |
+| 5  | arrayfile-extension | in ../X_eTaL-extensions: the extension reading XTLARR01 and safetensors files (D7: whole array, one first-axis slice, shape, tensor names), sharing X_eTaL-gpu's reader |
 | 6  | xetal-load          | X_eTaL reads and validates a capture: axes layer head query key, token labels, metadata; selection helpers |
 | 7  | attention-heatmap   | one layer/head drawn with `[]N_GRID` and token labels; checked against TransformerLens numbers |
 | 8  | induction-score     | induction and previous-token scores swept over L x H in X_eTaL; the ranked heads match known GPT-2 induction heads |

@@ -12,8 +12,8 @@ dependencies = [
 [project.optional-dependencies]
 # The model stack; heavy, installed only where models run (scripts/setup-adapter.sh --model).
 model = [
-    "torch>=2.4",
-    "transformer-lens>=2.0",
+    "torch>=2.6",
+    "transformer-lens==4.4.0",
 ]
 dev = [
     "pytest>=8",

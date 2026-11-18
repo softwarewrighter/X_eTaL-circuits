@@ -1,6 +1,6 @@
 number = 4
 slug = "adapter-capture"
-status = "pending"
+status = "in-progress"
 description = """
 Implement the adapter's capture path (Python, adapter/), test-first.
 Format a..."""

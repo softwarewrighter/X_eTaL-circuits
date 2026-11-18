@@ -51,6 +51,7 @@ tokens         = ["<|endoftext|>", " foo", ...]
 arrays         = ["attn", "logits"]
 attn_axes      = ["layer", "head", "query", "key"]
 attn_shape     = ["12", "12", "101", "101"]
+attn_layers    = ["0", "1", ..., "11"]       # the model layer of each attn row
 logits_axes    = ["vocab"]
 logits_shape   = ["50257"]
 logits_position = ["100"]
@@ -68,6 +69,7 @@ Both readers check this.
 | D3 | The array file format is XTLARR01, from X_eTaL-gpu, not safetensors. The adapter writes it with a small numpy writer. The extension reuses X_eTaL-gpu's reader (`xetal_gpu_xir::binary`), moved into a crate both repositories share rather than copied. | User's choice. One binary format across the X_eTaL repositories, and GPU sessions bind the same files (`gp:b_indFile`). It is simple enough to write and check in a few lines. Python tools convert from safetensors when needed. |
 | D4 | Captures are f32. Checks use f32-sized tolerances: attention rows sum to 1 within 1e-4, and agreement with TransformerLens within 1e-5 relative. | f32 is the GPU's native width (the M1 Max has no f64). TransformerLens runs GPT-2 in f32. X_eTaL-gpu found tighter tolerances unmeetable on f32 hardware. |
 | D5 | In-context learning work is split with X_eTaL-ML. X_eTaL-ML keeps the teaching demos: a hand-built ICL circuit on its Attention library, a toy trained in X_eTaL, and browser pages. X_eTaL-circuits does the experiments on real models (GPT-2, Qwen) and the causal tooling, reusing X_eTaL-ML's `Attention`, `Norm` and `NN` libraries rather than redefining them. | User's choice. Avoids two copies of the same study and keeps each repository's character. |
+| D7 | The extension reads **both** XTLARR01 and safetensors files, telling them apart by their first bytes (`XTLARR01`, or safetensors' 8-byte header length followed by `{`). For safetensors: list the tensor names, read a tensor by name (whole, or one first-axis slice), and its shape. f32, f64, f16 and bf16 are read as Float. The adapter still writes XTLARR01 captures (D3), and can also write the same arrays as one `capture.safetensors`. This replaces the "not safetensors" part of D3. | User's choice. Captures stay in the format GPU sessions bind, while X_eTaL can open tensors from the wider ML world (model weights, the paper authors' outputs, other tools) without a conversion step. |
 | D6 | GPT-2 is loaded with TransformerLens 4.4 (`TransformerBridge.boot_transformers`), without compatibility mode unless a comparison with old `HookedTransformer` results needs it. The revision is pinned. | The default matches Hugging Face's numbers, and so the paper authors' code. The probe in `docs/reference.md` found CPU, MPS and compatibility mode in agreement on the attention-pattern scores. |
 
 ## Open

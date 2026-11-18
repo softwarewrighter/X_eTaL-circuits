@@ -14,3 +14,11 @@ adapter-test:
 # Every repository check: adapter lint + tests, markdown
 check:
     scripts/check.sh
+
+# Capture a model run: just capture --out runs/NAME [--text T | --length N] [--layers 0,5] [--safetensors]
+capture *ARGS:
+    scripts/capture.sh {{ARGS}}
+
+# Regenerate the committed fixture capture (fixtures/gpt2-induction)
+fixture:
+    scripts/fixture.sh
