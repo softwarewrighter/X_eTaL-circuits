@@ -1,0 +1,11 @@
+{
+  "task_type": "research",
+  "state": {
+    "number": 2,
+    "step": "reference-survey"
+  },
+  "action": "git clone; read code and paper LaTeX; PyPI JSON; scratch uv venv with transformer-lens 4.4.0; probe script; matplotlib preview; agentrail add/edit",
+  "result": "success",
+  "reward": 1,
+  "timestamp": "2026-11-18T09:57:27"
+}
