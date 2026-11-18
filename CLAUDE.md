@@ -371,8 +371,8 @@ Docs to read before working:
 - `docs/plan.md` -- the roadmap (sagas), the principles, where things
   live, and the open questions
 - `docs/reference.md` -- the paper's method, the authors' code and the
-  TransformerLens hooks (once written)
-- `docs/design.md` -- rules and the decisions register (once written)
+  TransformerLens hooks
+- `docs/design.md` -- rules, the capture format and the decisions register
 - `docs/research.txt` -- the archived design conversation; NOT
   normative
 

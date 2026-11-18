@@ -3,8 +3,7 @@ slug = "adapter-capture"
 status = "pending"
 description = """
 Implement the adapter's capture path (Python, adapter/), test-first.
-
-- `capt..."""
+Format a..."""
 role = "production"
 context_files = []
 created_at = "2026-11-17T19:10:36"

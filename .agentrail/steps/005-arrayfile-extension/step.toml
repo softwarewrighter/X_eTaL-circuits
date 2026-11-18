@@ -1,0 +1,10 @@
+number = 5
+slug = "arrayfile-extension"
+status = "pending"
+description = """
+Build the XTLARR01 array-file extension in ../X_eTaL-extensions (D1, D3
+in do..."""
+role = "production"
+context_files = []
+created_at = "2026-11-18T10:07:35"
+commits = []

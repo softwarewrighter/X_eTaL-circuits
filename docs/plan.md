@@ -64,11 +64,30 @@ These come from the research and apply to every saga.
 | ------------------- | -------------------------------------------------------------------- |
 | X_eTaL-circuits     | this workbench: the adapter, the experiment specifications, the studies, the explorer |
 | X_eTaL-libraries    | general-purpose pieces found along the way: heatmaps, directed-graph layout, statistics |
-| X_eTaL-extensions   | native Rust needed by X_eTaL: reading safetensors, an adapter client  |
+| X_eTaL-extensions   | native Rust needed by X_eTaL: the XTLARR01 array-file reader (D1), later an adapter client |
+| X_eTaL-gpu          | the XTLARR01 format and its Rust reader; GPU runs of large sweeps and forward passes |
+| X_eTaL-ML           | ML libraries reused here (Attention, Norm, NN) and the in-context-learning teaching demos (D5) |
 | X_eTaL              | language changes, if a study needs one (decided with the user there) |
 
 Code starts here. A piece moves to a library or an extension only
-once a second user of it exists.
+once a second user of it exists. The exception is the array-file
+reader, which already has two users (D3).
+
+In-context learning is split with X_eTaL-ML (D5). Its proposed
+"in-context learning" saga keeps the teaching demos: a hand-built ICL
+circuit on its Attention library, a toy trained in X_eTaL, and browser
+pages. Sagas 4-7 here keep the experiments on real models and the
+causal tooling, and point to those demos rather than repeating them.
+
+Asks to other repositories (each filed there, in that repository's
+own way, when the step that needs it runs):
+
+- X_eTaL-extensions: the XTLARR01 array-file extension (Saga 1,
+  step arrayfile-extension).
+- X_eTaL-gpu: share `xetal_gpu_xir::binary` through a common crate
+  rather than a copy (same step).
+- X_eTaL-ML: a pointer from its in-context-learning saga to this
+  repository's real-model studies, and back.
 
 ## Hardware
 
@@ -95,12 +114,13 @@ the scores and a candidate circuit on it.
 | -- | ------------------- | ----------------------------------------------------------------------- |
 | 1  | scaffold            | repo layout, justfile, `.gitignore`, uv Python project for the adapter, checks script, CLAUDE.md project section |
 | 2  | reference-survey    | `docs/reference.md`: the paper's method and the authors' repo layout and runner interface (pinned commit); TransformerLens hook names for GPT-2 |
-| 3  | xetal-ingest        | decision (made with the user) on how X_eTaL reads tensors: safetensors through an extension, or a text/array format; `docs/design.md` started |
-| 4  | adapter-capture     | Python adapter: load GPT-2 Small, run a prompt, write attention patterns and logits as safetensors plus a metadata JSON; tests |
-| 5  | xetal-load          | X_eTaL reads a capture: axes L x H x T x T, token labels, checks that each attention row sums to 1 |
-| 6  | attention-heatmap   | X_eTaL heatmap of one layer/head with token labels; a layer/head selector; checked against TransformerLens numbers |
-| 7  | induction-score     | induction and previous-token scores swept over L x H in X_eTaL; the ranked heads match known GPT-2 induction heads |
-| 8  | model-map           | one picture of the model: a row per layer, a cell per head and per MLP, scores as color, a circuit overlay whose edge style shows the kind of evidence |
+| 3  | xetal-ingest        | decisions D1-D6 in `docs/design.md`: XTLARR01 arrays read through an X_eTaL-extensions extension, TOML metadata, f32 captures, the split with X_eTaL-ML |
+| 4  | adapter-capture     | Python adapter: load GPT-2 Small, write a capture directory (attn.xta, logits.xta, capture.toml); an XTLARR01 writer; a committed fixture |
+| 5  | arrayfile-extension | in ../X_eTaL-extensions: the extension reading XTLARR01 files (whole array, one first-axis slice, shape), sharing X_eTaL-gpu's reader |
+| 6  | xetal-load          | X_eTaL reads and validates a capture: axes layer head query key, token labels, metadata; selection helpers |
+| 7  | attention-heatmap   | one layer/head drawn with `[]N_GRID` and token labels; checked against TransformerLens numbers |
+| 8  | induction-score     | induction and previous-token scores swept over L x H in X_eTaL; the ranked heads match known GPT-2 induction heads |
+| 9  | model-map           | one picture of the model: a row per layer, a cell per head and per MLP, scores as color, a circuit overlay whose edge style shows the kind of evidence |
 
 ## Saga 2 -- causal-experiments (Milestone 2)
 
@@ -181,7 +201,9 @@ key-value) task, starting from the authors' `toy/`, and save
 checkpoints. At each checkpoint measure accuracy, attention patterns,
 ablation effects and causal edges. Animate the circuit graph over
 training in X_eTaL. Compare the order in which components appear
-with the paper's OLMo-2 checkpoint findings.
+with the paper's OLMo-2 checkpoint findings. The training runs in
+PyTorch and is measured with this repository's causal tooling. A toy
+trained in X_eTaL itself belongs to X_eTaL-ML (D5).
 
 ## Saga 8 -- bdh
 
@@ -198,9 +220,10 @@ interventions needed, circuit size, faithfulness and stability.
 
 ## Open questions (decide with the user, record in docs/design.md)
 
-- How X_eTaL ingests tensors (Saga 1 step 3).
-- Where the explorer runs: X_eTaL's CLI/TUI, its live web demo, or
-  both.
+- Where the explorer runs: the command line first (`xetal-x`, native
+  extensions); browser pages would carry their data with the page, as
+  X_eTaL-ML's do.
+- Who owns the shared XTLARR01 crate (X_eTaL-extensions or X_eTaL-gpu).
 - Whether the adapter stays Python (TransformerLens) or a Rust
   runtime (candle, burn) is added once results match.
 - Which hosts run which sagas, and how results return to the

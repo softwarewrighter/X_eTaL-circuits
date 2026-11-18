@@ -1,10 +1,9 @@
 number = 6
-slug = "attention-heatmap"
+slug = "xetal-load"
 status = "pending"
 description = """
-Attention heatmap in X_eTaL, test-first.
-
-- Render one layer/head's T x T att..."""
+X_eTaL reads a capture (xetal/), test-first, through the array-file
+extension..."""
 role = "production"
 context_files = []
 created_at = "2026-11-17T19:10:36"

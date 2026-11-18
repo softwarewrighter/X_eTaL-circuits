@@ -1,6 +1,6 @@
 number = 3
 slug = "xetal-ingest"
-status = "pending"
+status = "in-progress"
 description = """
 Decide, WITH THE USER, how X_eTaL ingests model tensors, and start
 docs/desig..."""

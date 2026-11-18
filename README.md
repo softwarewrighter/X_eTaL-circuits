@@ -72,6 +72,8 @@ no code has been written yet. See [`docs/plan.md`](docs/plan.md).
   questions
 - [`docs/reference.md`](docs/reference.md) -- the paper's method, the
   authors' code and the TransformerLens hooks for GPT-2 Small
+- [`docs/design.md`](docs/design.md) -- the capture format, the rules
+  and the decisions behind them
 - [`docs/research.txt`](docs/research.txt) -- the archived design
   conversation behind the project (not normative)
 
