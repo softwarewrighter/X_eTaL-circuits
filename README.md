@@ -80,9 +80,15 @@ Development is test-driven and tracked with agentrail sagas; see
 and rules.
 
 ```bash
+just setup                # adapter/.venv (uv), the adapter and its dev tools
+just setup --model        # also torch and TransformerLens
+just check                # adapter lint and tests, markdown checks
 agentrail status          # current saga state
 agentrail next            # the current step and its context
 ```
+
+The model adapter is a Python package in `adapter/`, always run from
+its own uv environment (`adapter/.venv`), never the system Python.
 
 ## The X_eTaL repositories
 

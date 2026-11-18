@@ -1,0 +1,47 @@
+[project]
+name = "circuits-adapter"
+version = "0.1.0"
+description = "Model adapter for X_eTaL-circuits: runs a model and exports its internals"
+requires-python = ">=3.11,<3.14"
+license = "MIT"
+dependencies = [
+    "numpy>=1.26",
+    "safetensors>=0.4",
+]
+
+[project.optional-dependencies]
+# The model stack; heavy, installed only where models run (scripts/setup-adapter.sh --model).
+model = [
+    "torch>=2.4",
+    "transformer-lens>=2.0",
+]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+circuits-adapter = "circuits_adapter.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/circuits_adapter"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "model: needs the model extra and may download weights (deselect with -m 'not model')",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "C90"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 7

@@ -1,0 +1,21 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Run outputs and downloaded material
+runs/
+third_party/
+*.safetensors
+!**/fixtures/**/*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+.cache/
+
+# OS / editor
+.DS_Store

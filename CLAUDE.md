@@ -357,6 +357,98 @@ a safety net for what is not yet committed.
 
 This file gives Claude Code (and other agentrail-aware agents) the rules for this project. The block below the H1 marked as `agentrail:global` is auto-managed by `agentrail instructions apply` — content outside those markers is preserved verbatim.
 
-## Project-specific notes
+## Project Overview
 
-*(add project-specific build commands, architecture, and conventions here)*
+X_eTaL-circuits is a workbench for finding, testing and drawing
+circuits inside language models. X_eTaL
+(<https://github.com/softwarewrighter/X_eTaL>, checked out at
+`../X_eTaL`) does the analysis and drawing. A thin model adapter
+(Python, TransformerLens at first) runs the model and exports its
+internals.
+
+Docs to read before working:
+
+- `docs/plan.md` -- the roadmap (sagas), the principles, where things
+  live, and the open questions
+- `docs/reference.md` -- the paper's method, the authors' code and the
+  TransformerLens hooks (once written)
+- `docs/design.md` -- rules and the decisions register (once written)
+- `docs/research.txt` -- the archived design conversation; NOT
+  normative
+
+## Layout
+
+```
+adapter/       Python (uv) package circuits_adapter: model runs, captures, interventions
+  src/circuits_adapter/
+  tests/       pytest; tests that need a model are marked `model`
+xetal/         X_eTaL programs and libraries for the analysis
+experiments/   declarative experiment specifications
+scripts/       the scripts the justfile recipes call
+runs/          run outputs (gitignored)
+third_party/   reference clones such as the paper's code (gitignored, never committed)
+```
+
+## Build / Test
+
+```bash
+just setup              # adapter/.venv via uv, adapter + dev tools
+just setup --model      # also torch + TransformerLens (large download)
+just adapter-test       # ruff format --check, ruff check, pytest -m "not model"
+just check              # everything: adapter, then ASCII-only markdown
+ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model
+```
+
+## Python
+
+- Never use the system `python3`. The environment is made with
+  `uv venv`, packages go in with `uv pip install`, and Python runs as
+  `adapter/.venv/bin/python` or through `uv run`.
+- The adapter is pinned to Python 3.12 (`adapter/.python-version`)
+  for torch and TransformerLens compatibility.
+- The model stack (`torch`, `transformer-lens`) is the optional
+  `model` extra. Keep the default install and `just check` fast and
+  free of downloads.
+
+## Research rules (non-negotiable)
+
+1. Observation is not causation. An attention pattern or activation
+   score only names a candidate. A component is called part of a
+   circuit only after an intervention shows its effect, measured
+   against matched random controls and on held-out prompts. Output
+   and docs must say which kind of evidence they show.
+2. Every run records the model id and revision, dtype or
+   quantization, device and backend, the library versions, the seed,
+   the sampling settings and the exact prompt. A capture without its
+   metadata is a bug.
+3. Prefer the margin `log P(correct) - log P(incorrect)` (or a logit
+   difference) to accuracy. Never substitute generated-text
+   confidence for token probabilities.
+4. Twin prompts must line up token by token. Check the tokenization,
+   do not assume it.
+5. The subject model never sees an agent's system prompt, tools or
+   history.
+6. Do not rewrite the paper authors' mechanistic code until our
+   results match theirs.
+7. Tests first (Red / Green / Refactor). Determinism is tested: the
+   same seed gives the same output.
+
+## Conventions
+
+- American spellings only, everywhere: docs, comments, identifiers,
+  commit messages (color, behavior, modeled, labeled, -ize).
+- Markdown is ASCII-only (`sw-markdown-checker`, run by `just check`).
+- User-facing docs (README, the docs under `xetal/` and
+  `experiments/`) say WHAT and HOW. Saga and step numbers, dates and
+  roadmap talk live only in `docs/plan.md` and the decisions register
+  in `docs/design.md`.
+- Small modules and functions: ruff's complexity limit is 7. Expand
+  into a new module rather than growing one.
+- Changes to the X_eTaL language belong in `../X_eTaL` and are decided
+  with the user there. Reusable libraries go to X_eTaL-libraries and
+  native code to X_eTaL-extensions, once a second user exists.
+
+## Checks before a commit
+
+`just check` must be green. Then commit the work and the
+`.agentrail/` changes together, then `agentrail complete`.
