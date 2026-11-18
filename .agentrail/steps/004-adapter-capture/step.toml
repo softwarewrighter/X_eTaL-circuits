@@ -1,11 +1,12 @@
 number = 4
 slug = "adapter-capture"
-status = "in-progress"
+status = "completed"
 description = """
 Implement the adapter's capture path (Python, adapter/), test-first.
 Format a..."""
 role = "production"
 context_files = []
 created_at = "2026-11-17T19:10:36"
+completed_at = "2026-11-18T10:19:38"
 task_type = "python"
-commits = []
+commits = ["7b4a6203ff1df9e5100b9cae0f28595657a8da03"]
