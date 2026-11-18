@@ -71,6 +71,8 @@ Both readers check this.
 | D5 | In-context learning work is split with X_eTaL-ML. X_eTaL-ML keeps the teaching demos: a hand-built ICL circuit on its Attention library, a toy trained in X_eTaL, and browser pages. X_eTaL-circuits does the experiments on real models (GPT-2, Qwen) and the causal tooling, reusing X_eTaL-ML's `Attention`, `Norm` and `NN` libraries rather than redefining them. | User's choice. Avoids two copies of the same study and keeps each repository's character. |
 | D7 | The extension reads **both** XTLARR01 and safetensors files, telling them apart by their first bytes (`XTLARR01`, or safetensors' 8-byte header length followed by `{`). For safetensors: list the tensor names, read a tensor by name (whole, or one first-axis slice), and its shape. f32, f64, f16 and bf16 are read as Float. The adapter still writes XTLARR01 captures (D3), and can also write the same arrays as one `capture.safetensors`. This replaces the "not safetensors" part of D3. | User's choice. Captures stay in the format GPU sessions bind, while X_eTaL can open tensors from the wider ML world (model weights, the paper authors' outputs, other tools) without a conversion step. |
 | D6 | GPT-2 is loaded with TransformerLens 4.4 (`TransformerBridge.boot_transformers`), without compatibility mode unless a comparison with old `HookedTransformer` results needs it. The revision is pinned. | The default matches Hugging Face's numbers, and so the paper authors' code. The probe in `docs/reference.md` found CPU, MPS and compatibility mode in agreement on the attention-pattern scores. |
+| D8 | The shared array-file crate (XTLARR01 and safetensors) belongs to X_eTaL-extensions, as `crates/xetal-arrayfile`. X_eTaL-gpu switches its `binary.rs` to it. | User's choice. X_eTaL-gpu already depends on X_eTaL-extensions (a pinned commit), and not the other way round. |
+| D9 | This repository never edits another. What it needs from a sibling is written as an ask in `docs/xetal-<repository>-asks.md` (X_eTaL-extensions, X_eTaL-gpu, X_eTaL-ML, X_eTaL-libraries), which that repository's own plan takes. A step whose work lies elsewhere is reserved for that repository in agentrail and closed when the ask lands. | User's rule. |
 
 ## Open
 
@@ -78,6 +80,7 @@ Both readers check this.
   (WebAssembly). A browser explorer would carry its data with the page,
   as X_eTaL-ML's pages do. The first views run from the command line
   (`xetal-x`).
-- Ownership of the shared XTLARR01 crate (X_eTaL-extensions or
-  X_eTaL-gpu). This is decided with the owners when the extension step
-  runs.
+- Until ask X1 lands, X_eTaL cannot read captures. A text-numbers
+  route would unblock the X_eTaL steps at GPT-2 sizes
+  (`docs/xetal-extensions-asks.md`, X1). It is not adopted, and the
+  choice is the user's.

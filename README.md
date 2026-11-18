@@ -95,6 +95,8 @@ heatmaps, the scores and the model map come next. See
   authors' code and the TransformerLens hooks for GPT-2 Small
 - [`docs/design.md`](docs/design.md) -- the capture format, the rules
   and the decisions behind them
+- `docs/xetal-*-asks.md` -- what this repository needs from its sibling
+  repositories, one ledger each
 - [`docs/research.txt`](docs/research.txt) -- the archived design
   conversation behind the project (not normative)
 

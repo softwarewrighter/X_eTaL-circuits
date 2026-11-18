@@ -445,6 +445,12 @@ ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model
   in `docs/design.md`.
 - Small modules and functions: ruff's complexity limit is 7. Expand
   into a new module rather than growing one.
+- NEVER edit another repository (the user's rule, D9). Reading one
+  is fine. What this repository needs from a sibling is written as an
+  ask in `docs/xetal-<repository>-asks.md` (status, kind, ask, needed
+  by, workaround). A step whose work lies elsewhere is reserved for
+  that repository (`agentrail reserve N --for REPO`) and closed
+  (`agentrail close N --elsewhere REPO@COMMIT`) when the ask lands.
 - Changes to the X_eTaL language belong in `../X_eTaL` and are decided
   with the user there. Reusable libraries go to X_eTaL-libraries and
   native code to X_eTaL-extensions, once a second user exists.

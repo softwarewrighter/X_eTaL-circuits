@@ -79,15 +79,18 @@ circuit on its Attention library, a toy trained in X_eTaL, and browser
 pages. Sagas 4-7 here keep the experiments on real models and the
 causal tooling, and point to those demos rather than repeating them.
 
-Asks to other repositories (each filed there, in that repository's
-own way, when the step that needs it runs):
+This repository never edits another (D9). What it needs from one is
+an ask in that repository's ledger here, which that repository's own
+plan takes:
 
-- X_eTaL-extensions: the XTLARR01 array-file extension (Saga 1,
-  step arrayfile-extension).
-- X_eTaL-gpu: share `xetal_gpu_xir::binary` through a common crate
-  rather than a copy (same step).
-- X_eTaL-ML: a pointer from its in-context-learning saga to this
-  repository's real-model studies, and back.
+- [`xetal-extensions-asks.md`](xetal-extensions-asks.md): X1, the
+  array-file extension (XTLARR01 and safetensors); X2, the shared
+  crate.
+- [`xetal-gpu-asks.md`](xetal-gpu-asks.md): G1, switch to the shared
+  crate; G2, captures as GPU inputs.
+- [`xetal-ml-asks.md`](xetal-ml-asks.md): M1, the in-context-learning
+  split; M2, reuse of its libraries.
+- [`xetal-libraries-asks.md`](xetal-libraries-asks.md): none yet.
 
 ## Hardware
 

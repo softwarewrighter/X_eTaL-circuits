@@ -1,7 +1,9 @@
 number = 5
 slug = "arrayfile-extension"
-status = "pending"
-description = "Build the array-file extension (XTLARR01 and safetensors, D7) in ../X_eTaL-ex..."
+status = "in-progress"
+description = """
+The array-file extension (XTLARR01 and safetensors) and the shared
+crate, don..."""
 role = "production"
 context_files = []
 created_at = "2026-11-18T10:07:35"
