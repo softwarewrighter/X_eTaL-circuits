@@ -1,0 +1,11 @@
+number = 3
+slug = "xetal-ingest"
+status = "pending"
+description = """
+Decide, WITH THE USER, how X_eTaL ingests model tensors, and start
+docs/desig..."""
+role = "production"
+context_files = []
+created_at = "2026-11-17T19:10:36"
+task_type = "design"
+commits = []

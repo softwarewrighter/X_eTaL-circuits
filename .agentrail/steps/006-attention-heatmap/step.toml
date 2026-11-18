@@ -1,0 +1,12 @@
+number = 6
+slug = "attention-heatmap"
+status = "pending"
+description = """
+Attention heatmap in X_eTaL, test-first.
+
+- Render one layer/head's T x T att..."""
+role = "production"
+context_files = []
+created_at = "2026-11-17T19:10:36"
+task_type = "xetal"
+commits = []

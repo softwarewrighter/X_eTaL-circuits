@@ -1,0 +1,12 @@
+number = 7
+slug = "induction-score"
+status = "pending"
+description = """
+Induction and previous-token scores over L x H, in X_eTaL, test-first.
+
+- On ..."""
+role = "production"
+context_files = []
+created_at = "2026-11-17T19:10:36"
+task_type = "xetal"
+commits = []
