@@ -68,10 +68,13 @@ The adapter runs a model through TransformerLens and writes a
 x head x query x key), the last position's logits (`logits.xta`), and
 `capture.toml`, which holds the model, its revision, library versions,
 the seed, the prompt and its tokens. The arrays are XTLARR01 files
-(f32), optionally also one `capture.safetensors`. The format is in
+(f32), optionally also one `capture.safetensors`, and for now each
+array also as text numbers (`attn.txt`, `logits.txt`), which X_eTaL
+reads with `n_umbers []N_GET`. The format is in
 [`docs/design.md`](docs/design.md).
 
 ```bash
+just xetal                                           # X_eTaL at the pinned commit (bin/xetal)
 just setup --model                                   # torch + TransformerLens
 just capture --out runs/induction --length 50        # BOS + 50 random tokens, twice
 just capture --out runs/hello --text "Hello world" --layers 0,5 --safetensors

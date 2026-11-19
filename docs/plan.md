@@ -120,10 +120,11 @@ the scores and a candidate circuit on it.
 | 3  | xetal-ingest        | decisions D1-D6 in `docs/design.md`: XTLARR01 arrays read through an X_eTaL-extensions extension, TOML metadata, f32 captures, the split with X_eTaL-ML |
 | 4  | adapter-capture     | Python adapter: load GPT-2 Small, write a capture directory (attn.xta, logits.xta, capture.toml); an XTLARR01 writer; a committed fixture |
 | 5  | arrayfile-extension | in ../X_eTaL-extensions: the extension reading XTLARR01 and safetensors files (D7: whole array, one first-axis slice, shape, tensor names), sharing X_eTaL-gpu's reader |
-| 6  | xetal-load          | X_eTaL reads and validates a capture: axes layer head query key, token labels, metadata; selection helpers |
-| 7  | attention-heatmap   | one layer/head drawn with `[]N_GRID` and token labels; checked against TransformerLens numbers |
-| 8  | induction-score     | induction and previous-token scores swept over L x H in X_eTaL; the ranked heads match known GPT-2 induction heads |
-| 9  | model-map           | one picture of the model: a row per layer, a cell per head and per MLP, scores as color, a circuit overlay whose edge style shows the kind of evidence |
+| 6  | text-arrays         | for now (D10): the adapter also writes each array as text numbers that X_eTaL reads with `n_umbers []N_GET`, exactly equal to the binary files; X_eTaL pinned (`XETAL_COMMIT`, `just xetal`) |
+| 7  | xetal-load          | X_eTaL reads and validates a capture: axes layer head query key, token labels, metadata; selection helpers |
+| 8  | attention-heatmap   | one layer/head drawn with `[]N_GRID` and token labels; checked against TransformerLens numbers |
+| 9  | induction-score     | induction and previous-token scores swept over L x H in X_eTaL; the ranked heads match known GPT-2 induction heads |
+| 10 | model-map           | one picture of the model: a row per layer, a cell per head and per MLP, scores as color, a circuit overlay whose edge style shows the kind of evidence |
 
 ## Saga 2 -- causal-experiments (Milestone 2)
 

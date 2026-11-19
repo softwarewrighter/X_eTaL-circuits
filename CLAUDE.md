@@ -388,6 +388,7 @@ scripts/       the scripts the justfile recipes call
 runs/          run outputs (gitignored)
 third_party/   reference clones such as the paper's code (gitignored, never committed)
 fixtures/      small committed captures the tests read (just fixture remakes them)
+work/xetal/    X_eTaL cloned at XETAL_COMMIT (gitignored; just xetal builds bin/xetal)
 ```
 
 ## Build / Test
@@ -397,6 +398,9 @@ just setup              # adapter/.venv via uv, adapter + dev tools
 just setup --model      # also torch + TransformerLens (large download)
 just adapter-test       # ruff format --check, ruff check, pytest -m "not model"
 just check              # everything: adapter, then ASCII-only markdown
+just xetal              # X_eTaL at XETAL_COMMIT: work/xetal, bin/xetal
+just capture --out runs/NAME ...   # a capture (needs the model extra)
+just fixture            # remake fixtures/gpt2-induction
 ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model
 ```
 

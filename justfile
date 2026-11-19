@@ -22,3 +22,7 @@ capture *ARGS:
 # Regenerate the committed fixture capture (fixtures/gpt2-induction)
 fixture:
     scripts/fixture.sh
+
+# Get and build xetal at the known-good commit in XETAL_COMMIT (clone in work/xetal, binary bin/xetal)
+xetal:
+    @scripts/xetal.sh

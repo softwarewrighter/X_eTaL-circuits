@@ -1,0 +1,10 @@
+number = 6
+slug = "text-arrays"
+status = "in-progress"
+description = """
+Text-numbers route for now (the user's choice, D10), test-first: the
+adapter ..."""
+role = "production"
+context_files = []
+created_at = "2026-11-18T10:43:56"
+commits = []

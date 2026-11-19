@@ -7,7 +7,7 @@ only by a later decision that says what it replaces.
 ## Rules
 
 1. A capture is a directory: one XTLARR01 file per array, plus
-   `capture.toml` (D2, D3).
+   `capture.toml` (D2, D3), and for now a text copy of each array (D10).
 2. Arrays are stored as f32. X_eTaL reads them as Float (f64).
    Comparisons use tolerances an f32 computation can meet (D4).
 3. Every capture carries the metadata of D3. A capture without it is
@@ -25,6 +25,7 @@ runs/<name>/
   capture.toml      metadata, all values arrays of strings (D2)
   attn.xta          f32, layer head query key
   logits.xta        f32, vocab (the last position) or position vocab
+  attn.txt, logits.txt  the same arrays as text numbers (D10), until ask X1 lands
 ```
 
 XTLARR01, as specified in X_eTaL-gpu's `docs/binary-arrays.md`: the
@@ -49,6 +50,7 @@ prompt         = ["<the exact prompt text, or empty for token prompts>"]
 token_ids      = ["50256", "4023", ...]
 tokens         = ["<|endoftext|>", " foo", ...]
 arrays         = ["attn", "logits"]
+text_arrays    = ["attn", "logits"]       # written as <name>.txt too (D10)
 attn_axes      = ["layer", "head", "query", "key"]
 attn_shape     = ["12", "12", "101", "101"]
 attn_layers    = ["0", "1", ..., "11"]       # the model layer of each attn row
@@ -73,6 +75,7 @@ Both readers check this.
 | D6 | GPT-2 is loaded with TransformerLens 4.4 (`TransformerBridge.boot_transformers`), without compatibility mode unless a comparison with old `HookedTransformer` results needs it. The revision is pinned. | The default matches Hugging Face's numbers, and so the paper authors' code. The probe in `docs/reference.md` found CPU, MPS and compatibility mode in agreement on the attention-pattern scores. |
 | D8 | The shared array-file crate (XTLARR01 and safetensors) belongs to X_eTaL-extensions, as `crates/xetal-arrayfile`. X_eTaL-gpu switches its `binary.rs` to it. | User's choice. X_eTaL-gpu already depends on X_eTaL-extensions (a pinned commit), and not the other way round. |
 | D9 | This repository never edits another. What it needs from a sibling is written as an ask in `docs/xetal-<repository>-asks.md` (X_eTaL-extensions, X_eTaL-gpu, X_eTaL-ML, X_eTaL-libraries), which that repository's own plan takes. A step whose work lies elsewhere is reserved for that repository in agentrail and closed when the ask lands. | User's rule. |
+| D10 | For now X_eTaL reads captures as text: the adapter writes `<name>.txt` beside each `<name>.xta`, row-major with one line per last-axis row. Each f32 is written as the shortest decimal of its f64 widening, so X_eTaL's `n_umbers []N_GET` gives exactly the values a binary reader will give. X_eTaL reshapes them by `<name>_shape` from capture.toml. The X_eTaL code reads arrays in one place, so it moves to the extension (X1) when that lands. The text files then stop. | User's choice: the X_eTaL steps go ahead without waiting for X1. A GPT-2 Small capture as text is about 30 MB, workable. Qwen-sized captures wait for X1. Values match the binary files exactly (a test with the pinned X_eTaL). |
 
 ## Open
 
@@ -80,7 +83,4 @@ Both readers check this.
   (WebAssembly). A browser explorer would carry its data with the page,
   as X_eTaL-ML's pages do. The first views run from the command line
   (`xetal-x`).
-- Until ask X1 lands, X_eTaL cannot read captures. A text-numbers
-  route would unblock the X_eTaL steps at GPT-2 sizes
-  (`docs/xetal-extensions-asks.md`, X1). It is not adopted, and the
-  choice is the user's.
+- Until ask X1 lands, X_eTaL reads captures as text (D10).

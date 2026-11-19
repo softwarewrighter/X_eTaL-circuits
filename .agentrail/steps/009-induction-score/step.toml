@@ -1,10 +1,10 @@
-number = 7
-slug = "attention-heatmap"
+number = 9
+slug = "induction-score"
 status = "pending"
 description = """
-Attention heatmap in X_eTaL, test-first.
+Induction and previous-token scores over L x H, in X_eTaL, test-first.
 
-- Draw one layer/head's T x T atten..."""
+- On ..."""
 role = "production"
 context_files = []
 created_at = "2026-11-17T19:10:36"

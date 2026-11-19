@@ -16,7 +16,7 @@ wait, and the user is told).
 
 | #  | Status | Kind | Ask | Needed by | Workaround |
 | -- | ------ | ---- | --- | --------- | ---------- |
-| X1 | not yet taken, blocker | extension | An extension that reads array files into X_eTaL: XTLARR01 and safetensors (spec below) | Saga 1 steps xetal-load, attention-heatmap, induction-score, model-map | none adopted; a text-numbers route exists (below) and is the user's call |
+| X1 | not yet taken | extension | An extension that reads array files into X_eTaL: XTLARR01 and safetensors (spec below) | Saga 1 steps xetal-load, attention-heatmap, induction-score, model-map | the text-numbers route (below), adopted by the user (D10) |
 | X2 | not yet taken | shared crate | `crates/xetal-arrayfile`: the XTLARR01 and safetensors reading and writing, with no ABI or device dependency, for X1 and for X_eTaL-gpu (spec below) | X1; X_eTaL-gpu (see [`xetal-gpu-asks.md`](xetal-gpu-asks.md)) | none |
 
 ## X1: the array-file extension
@@ -81,12 +81,13 @@ Python adapter (`docs/design.md`, "Capture format"). The metadata
 (`capture.toml`) is read with X_eTaL's own `[]L_IST`, so this
 extension handles numbers only.
 
-**The text-numbers route.** X_eTaL can already read numbers from
-text: `n_umbers []N_GET "attn.txt"`, then `r_eshape`. The adapter
-could write such files beside the binary ones. That would unblock the
-X_eTaL steps at GPT-2 sizes, and they would switch to X1 when it
-lands. It is not adopted. It goes against D1 and D3 (a second format
-to keep), and whether to use it is the user's call.
+**The text-numbers route (adopted, D10).** X_eTaL already reads
+numbers from text: `n_umbers []N_GET "attn.txt"`, then `r_eshape`. The
+adapter writes such files beside the binary ones, each value the exact
+decimal of its f64 widening, and a test with the pinned X_eTaL checks
+that every value equals the binary file's. This serves GPT-2 sizes.
+Qwen-sized captures still need X1. When X1 lands, X_eTaL reads the
+binary files instead and the text copies stop.
 
 ## X2: the shared array-file crate
 

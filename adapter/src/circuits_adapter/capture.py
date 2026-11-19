@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 from safetensors.numpy import save as safetensors_bytes
 
-from circuits_adapter import toml_out, xta
+from circuits_adapter import text_arrays, toml_out, xta
 
 FORMAT = "xetal-circuits-capture-1"
 ROW_SUM_TOL = 1e-4
@@ -63,6 +63,7 @@ def metadata(c: Capture) -> dict:
         "format": [FORMAT],
         **{k: c.info[k] for k in REQUIRED},
         "arrays": ["attn", "logits"],
+        "text_arrays": ["attn", "logits"],
         "attn_axes": ["layer", "head", "query", "key"],
         "attn_shape": shape(c.attn),
         "attn_layers": [str(n) for n in c.attn_layers],
@@ -88,6 +89,7 @@ def write(out, c: Capture, safetensors: bool = False) -> Path:
     arrays = _arrays(c)
     for name, a in arrays.items():
         xta.write(out / f"{name}.xta", a)
+        text_arrays.write(out / f"{name}.txt", a)
     if safetensors:
         (out / "capture.safetensors").write_bytes(safetensors_bytes(arrays))
     (out / "capture.toml").write_text(toml_out.dumps(metadata(c)), encoding="ascii")

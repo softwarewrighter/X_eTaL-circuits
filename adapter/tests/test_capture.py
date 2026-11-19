@@ -40,7 +40,9 @@ def sample(t=5):
 def test_writes_arrays_and_toml(tmp_path):
     out = tmp_path / "cap"
     capture.write(out, sample())
-    assert sorted(p.name for p in out.iterdir()) == ["attn.xta", "capture.toml", "logits.xta"]
+    assert sorted(p.name for p in out.iterdir()) == [
+        "attn.txt", "attn.xta", "capture.toml", "logits.txt", "logits.xta",
+    ]  # fmt: skip
     meta = tomllib.loads((out / "capture.toml").read_text())
     assert meta["format"] == ["xetal-circuits-capture-1"]
     assert meta["arrays"] == ["attn", "logits"]
