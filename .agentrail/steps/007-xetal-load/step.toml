@@ -1,11 +1,12 @@
 number = 7
 slug = "xetal-load"
-status = "in-progress"
+status = "completed"
 description = """
 X_eTaL reads a capture (xetal/), test-first, with the pinned X_eTaL
 (bin/xeta..."""
 role = "production"
 context_files = []
 created_at = "2026-11-17T19:10:36"
+completed_at = "2026-11-20T11:38:02"
 task_type = "xetal"
-commits = []
+commits = ["699adfdd548e01101606f2c53b44dbef18c076a8"]
