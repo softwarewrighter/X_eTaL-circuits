@@ -45,3 +45,6 @@ select = ["E", "F", "W", "I", "B", "UP", "C90"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 7
+
+[tool.ruff.lint.isort]
+known-first-party = ["circuits_adapter"]

@@ -382,13 +382,14 @@ Docs to read before working:
 adapter/       Python (uv) package circuits_adapter: model runs, captures, interventions
   src/circuits_adapter/
   tests/       pytest; tests that need a model are marked `model`
-xetal/         X_eTaL programs and libraries for the analysis
+xetal/         X_eTaL libraries for the analysis: xetal/<Name>/src/<Name>.xtl, tests beside
 experiments/   declarative experiment specifications
 scripts/       the scripts the justfile recipes call
 runs/          run outputs (gitignored)
 third_party/   reference clones such as the paper's code (gitignored, never committed)
 fixtures/      small committed captures the tests read (just fixture remakes them)
 work/xetal/    X_eTaL cloned at XETAL_COMMIT (gitignored; just xetal builds bin/xetal)
+work/xetal-ml/ X_eTaL-ML cloned at XETAL_ML_COMMIT (gitignored; its libraries via scripts/xt)
 ```
 
 ## Build / Test
@@ -399,6 +400,8 @@ just setup --model      # also torch + TransformerLens (large download)
 just adapter-test       # ruff format --check, ruff check, pytest -m "not model"
 just check              # everything: adapter, then ASCII-only markdown
 just xetal              # X_eTaL at XETAL_COMMIT: work/xetal, bin/xetal
+scripts/xt eval -e EXPR # bin/xetal with xetal/*/src and X_eTaL-ML's libraries on XETAL_PATH
+just xetal-test         # the X_eTaL libraries' tests (pytest driving scripts/xt)
 just capture --out runs/NAME ...   # a capture (needs the model extra)
 just fixture            # remake fixtures/gpt2-induction
 ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model

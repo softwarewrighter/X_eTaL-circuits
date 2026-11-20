@@ -3,6 +3,7 @@
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 "$root/scripts/adapter-test.sh"
+"$root/scripts/xetal-test.sh"
 cd "$root"
 sw-markdown-checker -f "docs/*.md"
 sw-markdown-checker -f README.md

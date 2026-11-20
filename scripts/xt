@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Run bin/xetal with this repository's libraries and X_eTaL-ML's on XETAL_PATH:
+#   scripts/xt eval -e 'EXPR'      scripts/xt run FILE      scripts/xt doc --test FILE
+set -euo pipefail
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+[ -x "$root/bin/xetal" ] || "$root/scripts/xetal.sh" >/dev/null
+[ -d "$root/work/xetal-ml/.git" ] || "$root/scripts/xetal-ml.sh" >/dev/null
+ml="$root/work/xetal-ml/libs"
+XETAL_PATH="$root/xetal/Capture/src:$ml/Attention/src:$ml/NN/src${XETAL_PATH:+:$XETAL_PATH}"
+export XETAL_PATH
+exec "$root/bin/xetal" "$@"

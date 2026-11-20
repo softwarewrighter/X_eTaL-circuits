@@ -26,3 +26,7 @@ fixture:
 # Get and build xetal at the known-good commit in XETAL_COMMIT (clone in work/xetal, binary bin/xetal)
 xetal:
     @scripts/xetal.sh
+
+# Test the X_eTaL libraries in xetal/ (needs just xetal)
+xetal-test:
+    scripts/xetal-test.sh

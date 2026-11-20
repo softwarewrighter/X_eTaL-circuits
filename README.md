@@ -86,8 +86,9 @@ byte for byte.
 
 ## Status
 
-Early: the adapter writes captures. Reading them in X_eTaL, the
-heatmaps, the scores and the model map come next. See
+Early: the adapter writes captures, and X_eTaL reads and checks them
+(`xetal/Capture`, see [`xetal/README.md`](xetal/README.md)). The heatmaps,
+the scores and the model map come next. See
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

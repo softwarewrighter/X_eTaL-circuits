@@ -1,6 +1,6 @@
 number = 7
 slug = "xetal-load"
-status = "pending"
+status = "in-progress"
 description = """
 X_eTaL reads a capture (xetal/), test-first, with the pinned X_eTaL
 (bin/xeta..."""

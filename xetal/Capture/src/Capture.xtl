@@ -1,0 +1,117 @@
+## Capture: a model run captured by X_eTaL-circuits' adapter, read into
+## X_eTaL and checked.
+##
+## Import it with an alias of your choice: "cp:" u_se< "Capture".
+## Put xetal/Capture/src on XETAL_PATH (scripts/xt does); it uses
+## X_eTaL-ML's Attention library for the causal mask.
+## Names with l: are exported; h: names are private to this file.
+##
+## A capture is a directory: capture.toml (every value a list of
+## strings) and its arrays. Attention is layer x head x query x key, a
+## row per query summing to 1, nothing on a later key. Layers are
+## counted from 1 in the capture's own order; `p_osition` turns a model
+## layer number (capture.toml's attn_layers, from 0) into that index.
+## Every error is error[capture], naming the directory.
+
+"at:" u_se< "Attention"
+
+captureFormat := "xetal-circuits-capture-1"
+tolerance := 0.0001
+
+### Metadata
+
+## `d t_exts "key"`: a key of capture.toml, its strings (boxed).
+## >> "cp:" u_se< "Capture"
+## >> d_isclose f_irst "fixtures/gpt2-induction" cp:t_exts "model"
+## gpt2
+l:t_exts := { d k -> (d c_at "/capture.toml") []L_IST k }
+
+## `d i_nts "key"`: a key of capture.toml read as integers.
+## >> "cp:" u_se< "Capture"
+## >> "fixtures/gpt2-induction" cp:i_nts "attn_shape"
+## 2 12 17 17
+l:i_nts := { d k -> f_loor r_avel m_ix '{ n_umbers d_isclose _r } m_ap d l:t_exts k }
+
+## `t_okens d`: the prompt's tokens as text, one per position (boxed).
+## >> "cp:" u_se< "Capture"
+## >> t_ally cp:t_okens "fixtures/gpt2-induction"
+## 17
+l:t_okens := { d -> d l:t_exts "tokens" }
+
+### Arrays
+
+## `d r_ead "name"`: one of the capture's arrays (attn, logits), shaped
+## by its <name>_shape. Every array is read here and only here: today
+## from the text copy <name>.txt (n_umbers), later from the binary file
+## through the array-file extension, with no change to its callers.
+## >> "cp:" u_se< "Capture"
+## >> s_hape "fixtures/gpt2-induction" cp:r_ead "logits"
+## 50257
+l:r_ead := { d n ->
+  s := d l:i_nts n c_at "_shape"
+  v := n_umbers []N_GET d c_at "/" c_at n c_at ".txt"
+  (t_ally v) != '* r_/ s ? "capture" []S_IGNAL d c_at ": " c_at n c_at ".txt has " c_at (f_ormat t_ally v) c_at " numbers for shape " c_at f_ormat s
+  s r_eshape v
+}
+
+## `a_ttention d`: the attention array, after checking the capture's
+## format, that nothing attends to a later key, and that each query's
+## row sums to 1 within 0.0001.
+## >> "cp:" u_se< "Capture"
+## >> s_hape cp:a_ttention "fixtures/gpt2-induction"
+## 2 12 17 17
+l:a_ttention := { d ->
+  _ := h:f_ormatChecked d
+  A := d l:r_ead "attn"
+  _ := d h:c_ausalChecked A
+  _ := d h:r_owsChecked A
+  A
+}
+
+## The format key, or the error naming what was found.
+h:f_ormatChecked := { d ->
+  f := d_isclose f_irst d l:t_exts "format"
+  n_ot f m_atch captureFormat ? "capture" []S_IGNAL d c_at ": format " c_at f c_at ", expected " c_at captureFormat
+  ""
+}
+
+## Attention summed over layers and heads is a T x T matrix; its mass
+## above the diagonal (a later key) must be 0 (weights are never negative).
+h:c_ausalChecked := { d A ->
+  M := '+ r_/ '+ r_/ A
+  later := '+ r_/ r_avel M * 1.0 - at:c_ausal t_ally M
+  later > 0.0 ? "capture" []S_IGNAL d c_at ": attention is not causal (" c_at (f_ormat later) c_at " on later keys)"
+  ""
+}
+
+## Each query's row of weights sums to 1 within the tolerance.
+h:r_owsChecked := { d A ->
+  e := 'm_ax r_/ r_avel a_bs ('+ r_/_4 A) - 1.0
+  e > tolerance ? "capture" []S_IGNAL d c_at ": attention rows sum to 1 only within " c_at f_ormat e
+  ""
+}
+
+### Selection
+
+## `d p_osition n`: where model layer n is in the capture's attention
+## (counted from 1), or an error when it was not captured.
+## >> "cp:" u_se< "Capture"
+## >> "fixtures/gpt2-induction" cp:p_osition 5
+## 2
+l:p_osition := { d n ->
+  L := d l:i_nts "attn_layers"
+  i := L i_ndexOf n
+  i > t_ally L ? "capture" []S_IGNAL d c_at ": layer " c_at (f_ormat n) c_at " was not captured (attn_layers " c_at (f_ormat L) c_at ")"
+  i
+}
+
+## `i l_ayer A`: the capture's layer i (from 1): head x query x key.
+l:l_ayer := { i A -> i s_elect A }
+
+## `(i, h) h_ead A`: head h (from 1) of the capture's layer i:
+## query x key, a row per query.
+l:h_ead := { (i, h) A -> h s_elect i s_elect A }
+
+## `(i, h, q) q_uery A`: where the query at position q looks: one row
+## of weights over the keys.
+l:q_uery := { (i, h, q) A -> q s_elect (i, h) l:h_ead A }

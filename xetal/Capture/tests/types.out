@@ -1,0 +1,9 @@
+l:t_exts : Char -> Char -> Box Char
+l:i_nts : Char -> Char -> Int
+l:t_okens : Char -> Box Char
+l:r_ead : Char -> Char -> Float
+l:a_ttention : Char -> Float
+l:p_osition : Char -> Int -> Int
+l:l_ayer : Int -> a -> a
+l:h_ead : (Int, Int) -> a -> a
+l:q_uery : (Int, Int, Int) -> a -> a
