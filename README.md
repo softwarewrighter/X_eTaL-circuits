@@ -3,8 +3,9 @@
 </p>
 
 <p align="center">
-  <b><a href="https://softwarewrighter.github.io/X_eTaL/">Try X_eTaL live in your browser</a></b>
-  -- the editor, running in WebAssembly
+  <b>No live site yet</b>
+  -- everything here runs at the command line, from a clone
+  (<a href="#capturing-a-model-run">Capturing a model run</a>)
   <br>
   <a href="https://blog.softwarewrighter.com/series/#array-languages">Read the blog series on array languages</a>
   -- posts on X_eTaL and array languages
