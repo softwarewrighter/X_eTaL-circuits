@@ -27,6 +27,9 @@ are not separate programs the model switches between. They are
 descriptions of mechanisms inside one fixed, learned computation, and
 they can only be found by experiment.
 
+New to this? [`docs/eli5.md`](docs/eli5.md) explains the paper and this
+repository in plain words.
+
 > An attention map shows where a model looks. A circuit shows what
 > the model needs.
 
@@ -94,6 +97,8 @@ the scores and the model map come next. See
 
 ## Documentation
 
+- [`docs/eli5.md`](docs/eli5.md) -- the paper and this repository,
+  explained simply
 - [`docs/plan.md`](docs/plan.md) -- the roadmap, principles and open
   questions
 - [`docs/reference.md`](docs/reference.md) -- the paper's method, the
