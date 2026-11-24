@@ -1,6 +1,6 @@
 number = 3
 slug = "adapter-patch"
-status = "in-progress"
+status = "completed"
 description = """
 Activation patching in the adapter, test-first.
 
@@ -8,5 +8,6 @@ Activation patching in the adapter, test-first.
 role = "production"
 context_files = []
 created_at = "2026-11-24T08:14:44"
+completed_at = "2026-11-24T15:33:44"
 task_type = "adapter"
-commits = []
+commits = ["354ee02b77db9a300253e838f2b4d68268343983"]

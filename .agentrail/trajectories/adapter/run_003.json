@@ -1,0 +1,11 @@
+{
+  "task_type": "adapter",
+  "state": {
+    "number": 3,
+    "step": "adapter-patch"
+  },
+  "action": "probed hook equivalence; TDD; background fixture generation",
+  "result": "success",
+  "reward": 1,
+  "timestamp": "2026-11-24T15:33:44"
+}

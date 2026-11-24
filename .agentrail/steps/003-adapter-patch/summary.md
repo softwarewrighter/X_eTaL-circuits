@@ -1,0 +1,1 @@
+Activation patching (denoise/noise) of residual per layer x position, each head, and top-6 heads per position (D16); just patch; fixture of 10 finding seeds. Denoising over seeds ranks the five known induction heads first (6.9 .15, 5.1 .12, 7.2 .12, 5.5 .11, 7.10 .08); noising ranks 5.1, 7.6, 8.5, 0.1. Whole-input patch recovers exactly (test). Pushed.
