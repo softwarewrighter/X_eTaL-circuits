@@ -1,0 +1,1 @@
+Head ablation (zero and mean over finding-seed twins) on hook_z; effect = drop in mean logit difference (D15); just ablate with seed sets; fixture of 10 finding seeds. Mean ablation ranks 5.1 (3.5±1.0), 4.11 (1.6), 7.6, 8.5, 5.5, 6.9; single heads close only part of the ~14 gap (redundancy). Model tests: no-op, layer = output bias, 5.1 > layer-0 sanity. Pushed.

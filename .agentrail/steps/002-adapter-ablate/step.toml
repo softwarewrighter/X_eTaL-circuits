@@ -1,6 +1,6 @@
 number = 2
 slug = "adapter-ablate"
-status = "in-progress"
+status = "completed"
 description = """
 Head ablation in the adapter, test-first.
 
@@ -8,5 +8,6 @@ Head ablation in the adapter, test-first.
 role = "production"
 context_files = []
 created_at = "2026-11-24T08:14:44"
+completed_at = "2026-11-24T13:00:33"
 task_type = "adapter"
-commits = []
+commits = ["2a47f15844a89e073073d65e078c212066d4a0b7"]

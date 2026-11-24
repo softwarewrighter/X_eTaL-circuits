@@ -1,0 +1,11 @@
+{
+  "task_type": "adapter",
+  "state": {
+    "number": 2,
+    "step": "adapter-ablate"
+  },
+  "action": "probed bridge hooks; TDD; background fixture generation; torch-optional unit tests",
+  "result": "success",
+  "reward": 1,
+  "timestamp": "2026-11-24T13:00:33"
+}
