@@ -66,3 +66,14 @@ def test_baseline_arguments():
         "runs/b",
     )
     assert cli.COMMANDS["baseline"] is cli.run_baseline
+
+
+def test_ablate_arguments_and_seed_lists():
+    from circuits_adapter import experiment
+
+    args = cli.build_parser().parse_args(["ablate", "--experiment", "e.toml", "--out", "r"])
+    assert (args.command, args.seeds) == ("ablate", "finding")
+    root = __import__("pathlib").Path(__file__).resolve().parents[2]
+    exp = experiment.load(root / "experiments" / "induction.toml")
+    assert cli.seeds_of(exp, "heldout") == exp.heldout_seeds
+    assert cli.seeds_of(exp, "3,5") == (3, 5)

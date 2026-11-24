@@ -33,6 +33,22 @@ def _baseline_parser(sub) -> None:
     p.add_argument("--device", default="cpu")
 
 
+def _ablate_parser(sub) -> None:
+    p = sub.add_parser("ablate", help="each head zero- and mean-ablated: the metric's drop")
+    p.add_argument("--experiment", required=True, help="an experiments/*.toml file")
+    p.add_argument(
+        "--seeds", default="finding", help="finding, heldout, or a comma list (default finding)"
+    )
+    p.add_argument("--out", required=True, help="new directory: one run per seed, seed-N")
+    p.add_argument("--device", default="cpu")
+
+
+def seeds_of(exp, text: str) -> tuple[int, ...]:
+    """The seeds named on the command line: finding, heldout or a comma list."""
+    named = {"finding": exp.finding_seeds, "heldout": exp.heldout_seeds}
+    return named[text] if text in named else tuple(_layers(text))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="circuits-adapter",
@@ -42,6 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command")
     _capture_parser(sub)
     _baseline_parser(sub)
+    _ablate_parser(sub)
     return parser
 
 
@@ -67,7 +84,20 @@ def run_baseline(args) -> int:
     return 0
 
 
-COMMANDS = {"capture": run_capture, "baseline": run_baseline}
+def run_ablate(args) -> int:
+    from pathlib import Path
+
+    from circuits_adapter import ablate, experiment, model
+
+    exp = experiment.load(args.experiment)
+    m = model.load(exp.model, exp.revision, args.device)
+    means = ablate.twin_means(m, exp)
+    for seed in seeds_of(exp, args.seeds):
+        print(ablate.write(Path(args.out) / f"seed-{seed}", m, exp, seed, means))
+    return 0
+
+
+COMMANDS = {"capture": run_capture, "baseline": run_baseline, "ablate": run_ablate}
 
 
 def main(argv: list[str] | None = None) -> int:

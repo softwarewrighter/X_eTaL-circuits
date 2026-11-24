@@ -12,3 +12,8 @@ rm -rf "$out"
 out="$root/fixtures/gpt2-induction-full"
 rm -rf "$out"
 "$root/scripts/capture.sh" --out "$out" --seed 0 --length 16
+# fixtures/gpt2-induction-ablation  each head zero- and mean-ablated, the finding
+#                                   seeds of experiments/induction.toml (seed-N)
+out="$root/fixtures/gpt2-induction-ablation"
+rm -rf "$out"
+"$root/scripts/ablate.sh" --experiment "$root/experiments/induction.toml" --out "$out"

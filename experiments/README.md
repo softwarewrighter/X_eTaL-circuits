@@ -43,3 +43,16 @@ clean prompt (`clean_ld`) and its twin (`corrupt_ld`), each as `.xta`
 and `.txt`. On GPT-2 Small the clean mean is about 14 to 18 and the
 twin's about 0 to 2.5: the gap that ablating or patching a head can
 close.
+
+```bash
+just ablate --experiment experiments/induction.toml --out runs/ablate            # the finding seeds
+just ablate --experiment experiments/induction.toml --seeds heldout --out runs/ablate-heldout
+```
+
+switches off each head in turn on the clean prompt and records how much
+the mean logit difference drops: `zero_effect` (the head's output set to
+0) and `mean_effect` (set to its mean over the finding seeds' twins), a
+layer x head matrix each, one run per seed (`seed-N`). A positive
+effect means the output needs the head. These effects are not yet
+compared with random controls, so they name candidates.
+`fixtures/gpt2-induction-ablation` holds the finding seeds' runs.

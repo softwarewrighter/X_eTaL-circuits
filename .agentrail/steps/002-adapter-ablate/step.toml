@@ -1,6 +1,6 @@
 number = 2
 slug = "adapter-ablate"
-status = "pending"
+status = "in-progress"
 description = """
 Head ablation in the adapter, test-first.
 

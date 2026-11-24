@@ -26,7 +26,9 @@ def metadata(info: dict, arrays: dict) -> dict:
     missing = [k for k in REQUIRED if k not in info]
     if missing:
         raise RunError(f"metadata missing: {', '.join(missing)}")
-    table = {"format": [FORMAT], **{k: info[k] for k in REQUIRED}, "arrays": list(arrays)}
+    extra = {k: v for k, v in info.items() if k not in REQUIRED}
+    table = {"format": [FORMAT], **{k: info[k] for k in REQUIRED}, **extra}
+    table["arrays"] = list(arrays)
     for name, (axes, a) in arrays.items():
         if len(axes) != a.ndim:
             raise RunError(f"{name}: {len(axes)} axis names for rank {a.ndim}")

@@ -54,3 +54,7 @@ screenshot:
 # An experiment's metric on a clean prompt and its twin: just baseline --experiment F --seed N --out runs/NAME
 baseline *ARGS:
     scripts/baseline.sh {{ARGS}}
+
+# Each head zero- and mean-ablated: just ablate --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
+ablate *ARGS:
+    scripts/ablate.sh {{ARGS}}
