@@ -1,0 +1,6 @@
+name = "attention-viewer"
+status = "completed"
+current_step = 11
+created_at = "2026-11-17T19:10:36"
+plan_file = ".agentrail/plan.md"
+retroactive = false

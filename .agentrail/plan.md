@@ -1,12 +1,16 @@
-# Saga 1 -- attention-viewer (Milestone 1)
+# Saga 2 -- causal-experiments (Milestone 2)
 
-Goal: capture GPT-2 Small attention on a repeated-token induction
-prompt, load it into X_eTaL, and render a layer/head-selectable
-heatmap; find the induction heads by an attention-pattern score;
-numbers agree with TransformerLens.
+Goal: test causal importance, not just patterns, on GPT-2 Small's
+induction behavior. Twin prompts (clean and corrupted, token-aligned),
+head ablation and activation patching give an L x H effect matrix `D`
+in X_eTaL, compared with matched random controls and checked on
+held-out seeds. Heads that pass become "tested" or "confirmed" on the
+model map (D13); edges stay "observed" until path patching (Saga 3).
+Every new picture goes on the live pages.
 
-Roadmap, principles and later sagas: docs/plan.md. Source material:
-docs/research.txt (archival, not normative).
+Roadmap, principles, Saga 1's outcome: docs/plan.md. Rules: CLAUDE.md
+(observation is not causation; the margin as the metric; twins line up
+token by token; tests first).
 
-Steps: scaffold, reference-survey, xetal-ingest, adapter-capture,
-xetal-load, attention-heatmap, induction-score.
+Steps: twin-prompt-spec, adapter-ablate, adapter-patch, effect-matrix,
+random-controls, heldout-validation, circuit-evidence.

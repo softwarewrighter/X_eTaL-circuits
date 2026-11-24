@@ -1,0 +1,12 @@
+number = 4
+slug = "effect-matrix"
+status = "pending"
+description = """
+The effect matrix in X_eTaL, test-first.
+
+- An X_eTaL library (xetal/Effects)..."""
+role = "production"
+context_files = []
+created_at = "2026-11-24T08:14:44"
+task_type = "xetal"
+commits = []

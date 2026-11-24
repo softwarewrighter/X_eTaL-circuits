@@ -1,0 +1,12 @@
+number = 7
+slug = "circuit-evidence"
+status = "pending"
+description = """
+Circuit evidence on the map and the pages, test-first; closes the saga.
+
+- He..."""
+role = "production"
+context_files = []
+created_at = "2026-11-24T08:14:44"
+task_type = "xetal"
+commits = []

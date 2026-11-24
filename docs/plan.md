@@ -144,29 +144,29 @@ was learned for later sagas:
   change style as evidence comes in (D13). Every new picture goes on the
   live pages (D12) with a test that keeps the README's copy current.
 
-## Saga 2 -- causal-experiments (Milestone 2)
+## Saga 2 -- causal-experiments (Milestone 2)  [ACTIVE]
 
-Goal: test causal importance, not just patterns. Build clean and
-corrupted prompt pairs, zero/mean ablation of a head, and activation
-patching per layer, head and position. The result is an L x H
-causal-effect matrix `D` in X_eTaL, rendered as a heatmap and checked
-on held-out examples.
+Goal: test causal importance, not just patterns, on GPT-2 Small's
+induction behavior. Twin prompts (clean and corrupted, token-aligned),
+head ablation and activation patching give an L x H effect matrix `D`
+in X_eTaL, compared with matched random controls and checked on
+held-out seeds. Heads that pass become "tested" or "confirmed" on the
+model map (D13). Edges stay "observed": ablating a head tests the
+head, not which head feeds which; path patching (Saga 3) tests edges.
 
-Steps (revised after Saga 1): twin-prompt-spec (a declarative
-experiment specification in experiments/, shared by the adapter and
-X_eTaL; for induction, a repeated random sequence and its corrupted
-twin with the second copy reshuffled, token-aligned), adapter-ablate
-(zero and mean ablation of one head, the margin on the next token as
-the metric), adapter-patch (activation patching per layer, head and
-position, clean into corrupted), effect-matrix (the L x H effect
-matrix `D` in X_eTaL, drawn with `hm:g_rid`), random-controls (matched
-random heads and directions), heldout-validation (new seeds), and
-circuit-evidence (the first edges of experiments/circuits/
-gpt2-induction.toml move from observed to tested or confirmed, so the
-model map redraws them; the effect grid and the updated map go on the
-live pages). Captures with logits per position and per-head outputs
-need the adapter's capture extended; MLP cells get a score once MLP
-outputs are captured.
+| # | Step slug          | Delivers |
+| - | ------------------ | -------- |
+| 1 | twin-prompt-spec   | an experiment file in experiments/; the corrupted twin (second copy replaced by fresh random tokens, aligned); the margin metric decided in design.md; per-position metric in the capture |
+| 2 | adapter-ablate     | zero and mean ablation of each head's output; the L x H change in the metric per seed |
+| 3 | adapter-patch      | clean-into-corrupted and corrupted-into-clean patching per layer, head and position, as the fraction of the gap recovered |
+| 4 | effect-matrix      | xetal/Effects: D per method, mean and spread over seeds, ranking, diverging grids; `just effects`; README and live pages |
+| 5 | random-controls    | matched random heads and directions; a head's effect is real only outside its controls (threshold in design.md) |
+| 6 | heldout-validation | the passing heads rerun on held-out seeds: "confirmed" when they pass there too, "tested" otherwise |
+| 7 | circuit-evidence   | per-head evidence in the circuit file and on the map; the verdicts written in; pages and screenshot updated; closes the saga |
+
+Captures with logits per position and per-head outputs need the
+adapter's capture extended; MLP cells get a score once MLP outputs are
+captured.
 
 ## Saga 3 -- circuit-discovery (Milestone 3)
 
@@ -201,6 +201,11 @@ X_eTaL), compare models (Qwen, SmolLM and the local coding models;
 base against instruction-tuned).
 
 ## Saga 5 -- icl-mechanistic
+
+Needs X_eTaL to read Qwen-sized captures: the array-file extension
+(Saga 1's step arrayfile-extension, reserved for X_eTaL-extensions,
+asks X1 and X2) is carried here as this saga's first step, reserved
+until those asks land.
 
 Goal: run the authors' code unmodified on Qwen3-4B-Base on the RTX
 3090: the `icl/run.py` smoke run on `concept12`, then `check.py` and

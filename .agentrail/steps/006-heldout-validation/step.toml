@@ -1,0 +1,12 @@
+number = 6
+slug = "heldout-validation"
+status = "pending"
+description = """
+Held-out validation, test-first.
+
+- Rerun the passing heads' interventions on..."""
+role = "production"
+context_files = []
+created_at = "2026-11-24T08:14:44"
+task_type = "xetal"
+commits = []
