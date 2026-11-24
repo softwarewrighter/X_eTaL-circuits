@@ -11,9 +11,8 @@ import torch
 from transformer_lens.model_bridge import TransformerBridge
 
 from circuits_adapter.capture import Capture
+from circuits_adapter.model_revisions import GPT2_REVISION, REVISIONS  # noqa: F401
 
-GPT2_REVISION = "607a30d783dfa663caf39e06633721c8d4cfcd7e"
-REVISIONS = {"gpt2": GPT2_REVISION}
 LIBRARIES = ("transformer-lens", "torch", "transformers")
 
 
@@ -76,3 +75,26 @@ def capture(m: Loaded, ids: list[int], seed: int, layers=None, prompt: str = "")
 def encode(m: Loaded, text: str) -> list[int]:
     """BOS, then the text's tokens."""
     return [m.bos, *m.bridge.tokenizer.encode(text, add_special_tokens=False)]
+
+
+def logits(m: Loaded, ids: list[int]) -> np.ndarray:
+    """The logits at every position (position x vocab, f32), with no hooks."""
+    with torch.no_grad():
+        out = m.bridge(torch.tensor([ids], device=m.device))
+    return out[0].float().cpu().numpy()
+
+
+def run_info(m: Loaded, experiment: str, seed: int, length: int, clean, corrupt) -> dict:
+    """A run's metadata (rule 2): model, revision, libraries, device, dtype, seed, prompts."""
+    return {
+        "experiment": [experiment],
+        "model": [m.name],
+        "revision": [m.revision],
+        "library": [f"{lib} {md.version(lib)}" for lib in LIBRARIES],
+        "device": [m.device],
+        "dtype": ["float32"],
+        "seed": [str(seed)],
+        "length": [str(length)],
+        "clean_ids": [str(t) for t in clean],
+        "corrupt_ids": [str(t) for t in corrupt],
+    }

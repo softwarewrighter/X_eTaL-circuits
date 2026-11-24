@@ -1,0 +1,19 @@
+# Induction in GPT-2 Small: which heads does the output need? (Saga 2)
+# Every value is a list of strings, read by Python (tomllib) and X_eTaL ([]L_IST).
+#
+# prompt       BOS + `length` distinct random tokens, then the same tokens again
+# corruption   the twin keeps BOS and the first copy and replaces the second copy
+#              with fresh tokens, so the two line up position by position
+# metric       at each second-copy position, logit(clean next) - logit(twin next),
+#              averaged (docs/design.md, D14)
+# seeds        finding seeds choose heads; held-out seeds only check them
+name = ["induction, GPT-2 Small"]
+model = ["gpt2"]
+revision = ["607a30d783dfa663caf39e06633721c8d4cfcd7e"]
+prompt = ["repeated-random"]
+length = ["16"]
+corruption = ["fresh-second-copy"]
+metric = ["logit-difference"]
+finding_seeds = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+heldout_seeds = ["100", "101", "102", "103", "104", "105", "106", "107", "108", "109"]
+interventions = ["zero-ablation", "mean-ablation", "patch-denoise", "patch-noise"]

@@ -20,6 +20,8 @@ only by a later decision that says what it replaces.
 
 ## Capture format
 
+(Runs of experiments use the run format of D14.)
+
 ```
 runs/<name>/
   capture.toml      metadata, all values arrays of strings (D2)
@@ -79,6 +81,7 @@ Both readers check this.
 | D11 | `XETAL_COMMIT` moved to 0166a52a for `[]N_GRID` (QD8). That X_eTaL finds a relative `[]L_IST` path beside the file naming it (QD9), here the Capture library, while `[]N_GET` reads from the working directory. So `Capture` takes a capture directory as an absolute path and refuses a relative one (`error[capture]`); the command-line scripts make the path absolute. | The heatmap needs `[]N_GRID`. One absolute path means both readers see the same file. The pin moves on purpose, with the tests, never silently. |
 | D12 | Live pages on GitHub Pages: a static site built by a script from committed captures only, its SVGs drawn by X_eTaL; the page only picks among them (no model, no server, no extension in the browser). Deployed by a GitHub Actions workflow on a push to main. | User's choice. Every picture viewable without a clone. Pictures drawn ahead of time avoid the browser's lack of native extensions. |
 | D13 | One evidence key in every picture: each component and edge carries the level it has reached. Dashed: observed (an attention pattern or attribution score only). Solid: tested (an intervention moves the margin, against matched random controls). Thick: confirmed (also on held-out prompts). Attention heatmaps are always labeled observation. | User's choice. The model map becomes a running record of what is discovered where, and how sure it is (research rule 1). |
+| D14 | The induction experiment (experiments/induction.toml): the clean prompt is BOS + t distinct random tokens twice; its corrupted twin keeps BOS and the first copy and replaces the second copy with t fresh distinct tokens found nowhere in the clean prompt, so the two line up position by position (checked by `twins.check`). The metric is the logit difference at each second-copy position q = t+1 .. 2t-1 (0-based): logit(clean next token) minus logit(twin's next token at q), and its mean. Results are written as run directories (`run.toml`, format `xetal-circuits-run-1`, every value a list of strings, plus each array as .xta and .txt, shaped by `<name>_shape`). Finding seeds choose heads; held-out seeds only check them, and the file refuses a seed in both. | Rule 3: a margin, not accuracy. A logit difference does not depend on the rest of the vocabulary (the softmax's normalizer cancels), the usual choice for patching. The twin gives induction nothing to copy and keeps every position, so the same positions are compared. On GPT-2 Small (seeds 0-2, 100) the clean mean is 14 to 18 and the twin's -0.3 to 2.5. Only the metric is kept, not every position's logits (about 35 MB of text per run). |
 
 ## Open
 

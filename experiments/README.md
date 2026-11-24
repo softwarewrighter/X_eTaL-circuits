@@ -21,3 +21,25 @@ circuit comes from), `heads` (layer.head by the model's numbers, from
 `circuits/gpt2-induction.toml` is the previous-token head 4.11
 feeding the induction heads 5.1, 5.5, 6.9, 7.2 and 7.10; every edge
 is observed.
+
+## induction.toml
+
+Does GPT-2 Small's output need its induction heads? The clean prompt
+is a beginning token, then 16 distinct random tokens, then the same 16
+again. Its corrupted twin replaces the second copy with 16 fresh
+tokens, so the two line up position by position and the twin gives
+nothing to copy. The metric, at each second-copy position, is the
+logit of the clean prompt's next token minus the logit of the twin's
+next token there, averaged over the positions. The finding seeds
+choose heads; the held-out seeds only check them.
+
+```bash
+just baseline --experiment experiments/induction.toml --seed 0 --out runs/baseline-0
+```
+
+writes a run directory: `run.toml` (the model, revision, libraries,
+seed and both prompts' tokens) and the metric per position for the
+clean prompt (`clean_ld`) and its twin (`corrupt_ld`), each as `.xta`
+and `.txt`. On GPT-2 Small the clean mean is about 14 to 18 and the
+twin's about 0 to 2.5: the gap that ablating or patching a head can
+close.

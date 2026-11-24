@@ -50,3 +50,7 @@ pages *ARGS:
 # Retake the README's screenshot of the live demo (images/demo.png; needs Chrome)
 screenshot:
     scripts/screenshot.sh
+
+# An experiment's metric on a clean prompt and its twin: just baseline --experiment F --seed N --out runs/NAME
+baseline *ARGS:
+    scripts/baseline.sh {{ARGS}}

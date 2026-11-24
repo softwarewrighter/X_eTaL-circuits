@@ -25,13 +25,23 @@ def _capture_parser(sub) -> None:
     p.add_argument("--safetensors", action="store_true", help="also write capture.safetensors")
 
 
+def _baseline_parser(sub) -> None:
+    p = sub.add_parser("baseline", help="the experiment's metric on a clean prompt and its twin")
+    p.add_argument("--experiment", required=True, help="an experiments/*.toml file")
+    p.add_argument("--seed", type=int, required=True)
+    p.add_argument("--out", required=True, help="new directory for the run")
+    p.add_argument("--device", default="cpu")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="circuits-adapter",
         description="Run a model and export its internals for X_eTaL-circuits.",
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
-    _capture_parser(parser.add_subparsers(dest="command"))
+    sub = parser.add_subparsers(dest="command")
+    _capture_parser(sub)
+    _baseline_parser(sub)
     return parser
 
 
@@ -48,10 +58,22 @@ def run_capture(args) -> int:
     return 0
 
 
+def run_baseline(args) -> int:
+    from circuits_adapter import baseline, experiment, model
+
+    exp = experiment.load(args.experiment)
+    m = model.load(exp.model, exp.revision, args.device)
+    print(baseline.write(args.out, m, exp, args.seed))
+    return 0
+
+
+COMMANDS = {"capture": run_capture, "baseline": run_baseline}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.command == "capture":
-        return run_capture(args)
+    if args.command in COMMANDS:
+        return COMMANDS[args.command](args)
     parser.print_help()
     return 2

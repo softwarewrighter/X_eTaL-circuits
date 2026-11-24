@@ -53,3 +53,16 @@ def test_capture_command_with_text(tmp_path):
     assert meta["prompt"] == ["Hello world"]
     assert meta["prompt_kind"] == ["text"]
     assert meta["tokens"][1:] == ["Hello", " world"]
+
+
+def test_baseline_arguments():
+    args = cli.build_parser().parse_args(
+        ["baseline", "--experiment", "e.toml", "--seed", "3", "--out", "runs/b"]
+    )
+    assert (args.command, args.experiment, args.seed, args.out) == (
+        "baseline",
+        "e.toml",
+        3,
+        "runs/b",
+    )
+    assert cli.COMMANDS["baseline"] is cli.run_baseline

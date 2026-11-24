@@ -1,6 +1,6 @@
 number = 1
 slug = "twin-prompt-spec"
-status = "pending"
+status = "in-progress"
 description = """
 Twin prompts and the experiment specification, test-first.
 
