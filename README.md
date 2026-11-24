@@ -3,12 +3,15 @@
 </p>
 
 <p align="center">
-  <b>No live site yet</b>
-  -- everything here runs at the command line, from a clone
-  (<a href="#capturing-a-model-run">Capturing a model run</a>)
+  <b><a href="https://softwarewrighter.github.io/X_eTaL-circuits/">The live demo</a></b>
+  -- GPT-2 Small's model map, every head's attention and the head scores, drawn by X_eTaL
   <br>
   <a href="https://blog.softwarewrighter.com/series/#array-languages">Read the blog series on array languages</a>
   -- posts on X_eTaL and array languages
+</p>
+
+<p align="center">
+  <a href="https://softwarewrighter.github.io/X_eTaL-circuits/"><img src="images/demo.png" alt="The live demo: GPT-2 Small's model map, heads colored by their scores, with the induction circuit drawn over it" width="720"></a>
 </p>
 
 # X_eTaL-circuits
@@ -207,13 +210,31 @@ it is observed in attention patterns and known from the literature,
 but not yet tested here. As interventions test each edge, the same
 map draws it solid, and then thick once it holds on held-out prompts.
 
+## The live demo
+
+`just pages` builds the site from the committed captures into
+`work/site`: the model map (hover a head for its numbers), every
+head's attention heatmap with a layer and head picker, the score
+grids, and [`docs/eli5.md`](docs/eli5.md). Every picture is drawn by
+X_eTaL, exactly as at the command line. A GitHub Actions workflow
+(`.github/workflows/pages.yml`) builds and deploys it on each push to
+main. `just screenshot` retakes the picture at the top of this README
+with headless Chrome.
+
+```bash
+just pages                 # work/site; open work/site/index.html
+just screenshot            # images/demo.png
+```
+
 ## Status
 
 Early: the adapter writes captures, X_eTaL reads and checks them
 (`xetal/Capture`), draws any head as a heatmap (`xetal/Heatmap`),
 scores every head (`xetal/Scores`) and draws the model map with a
 circuit over it (`xetal/Map`, see [`xetal/README.md`](xetal/README.md)).
-Live pages come next. See
+The [live demo](https://softwarewrighter.github.io/X_eTaL-circuits/)
+shows all of it. Next: interventions that test which heads the output
+needs. See
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

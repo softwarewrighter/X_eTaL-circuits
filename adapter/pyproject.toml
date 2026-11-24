@@ -18,6 +18,7 @@ model = [
 dev = [
     "pytest>=8",
     "ruff>=0.6",
+    "markdown>=3.6",
 ]
 
 [project.scripts]

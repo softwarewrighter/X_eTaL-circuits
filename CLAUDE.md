@@ -388,6 +388,8 @@ scripts/       the scripts the justfile recipes call
 runs/          run outputs (gitignored)
 third_party/   reference clones such as the paper's code (gitignored, never committed)
 fixtures/      small committed captures the tests read (just fixture remakes them)
+pages/         the static site's builder (just pages) and its tests
+images/        README pictures, kept current by tests
 work/xetal/    X_eTaL cloned at XETAL_COMMIT (gitignored; just xetal builds bin/xetal)
 work/xetal-ml/ X_eTaL-ML cloned at XETAL_ML_COMMIT (gitignored; its libraries via scripts/xt)
 ```
@@ -407,6 +409,8 @@ just fixture            # remake fixtures/gpt2-induction and gpt2-induction-full
 just heatmap DIR L H [OUT.svg]    # one head as an SVG heatmap (model numbers from 0)
 just scores DIR [OUT_DIR]         # previous-token and induction scores of every head
 just map DIR CIRCUIT.toml [OUT.svg]   # the model map with a circuit (experiments/circuits/)
+just pages [OUT_DIR]    # the static site (work/site); CI deploys it (.github/workflows/pages.yml)
+just screenshot         # retake images/demo.png (headless Chrome)
 ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model
 ```
 

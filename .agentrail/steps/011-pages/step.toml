@@ -1,6 +1,6 @@
 number = 11
 slug = "pages"
-status = "pending"
+status = "in-progress"
 description = """
 Live pages on GitHub Pages (the user's choice), test-first: every
 picture thi..."""

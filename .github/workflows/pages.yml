@@ -1,0 +1,54 @@
+# Build the site from the committed captures and deploy it to GitHub Pages:
+# X_eTaL at XETAL_COMMIT draws every picture (scripts/pages.sh), as locally.
+# Pages must be turned on once in the repository's settings (Source: GitHub Actions).
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/cache@v4
+        with:
+          path: |
+            target/xetal
+            work/xetal
+          key: xetal-${{ runner.os }}-${{ hashFiles('XETAL_COMMIT') }}
+      - name: X_eTaL and X_eTaL-ML at their pinned commits
+        run: |
+          scripts/xetal.sh
+          scripts/xetal-ml.sh
+      - name: The adapter's environment (no model)
+        run: scripts/setup-adapter.sh
+      - name: Build the site
+        run: scripts/pages.sh site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

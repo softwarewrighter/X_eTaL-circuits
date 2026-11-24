@@ -105,7 +105,7 @@ plan takes:
 GPT-2 Small runs anywhere, including on a CPU, so Sagas 1-3 need no
 GPU host.
 
-## Saga 1 -- attention-viewer (Milestone 1)  [ACTIVE]
+## Saga 1 -- attention-viewer (Milestone 1)  [DONE]
 
 Goal: capture GPT-2 Small's attention on a repeated-token induction
 prompt, load it into X_eTaL, and show a layer/head-selectable heatmap.
@@ -128,6 +128,22 @@ live pages.
 | 10 | model-map           | one picture of the model: a row per layer, a cell per head and per MLP, scores as color, a circuit overlay drawn with the evidence key (D13) |
 | 11 | pages               | GitHub Pages site built from committed captures: every heatmap with a layer/head picker, the score grids, the model map, the ELI5 (D12); a README screenshot linking to the demo; closes the saga |
 
+Outcome. GPT-2 Small at the pinned revision gives, from attention
+patterns alone, exactly the induction heads the literature names (5.1,
+5.5, 6.9, 7.2, 7.10 lead the induction score) and 4.11 as the
+previous-token head; X_eTaL's values agree with TransformerLens's cache
+within 1e-5 relative. Step 5 (the array-file extension) stays reserved
+for X_eTaL-extensions; the text route (D10) carried GPT-2 sizes. What
+was learned for later sagas:
+
+- Moving the X_eTaL pin can break the libraries (QD9 broke relative
+  capture paths, D11): move it on purpose, with the tests.
+- A 16-token repeat (33 positions) is enough to find the induction
+  heads; the committed captures stay a few MB.
+- Pictures stay data-driven: a circuit is a TOML file, and its edges
+  change style as evidence comes in (D13). Every new picture goes on the
+  live pages (D12) with a test that keeps the README's copy current.
+
 ## Saga 2 -- causal-experiments (Milestone 2)
 
 Goal: test causal importance, not just patterns. Build clean and
@@ -136,11 +152,21 @@ patching per layer, head and position. The result is an L x H
 causal-effect matrix `D` in X_eTaL, rendered as a heatmap and checked
 on held-out examples.
 
-Steps (draft): twin-prompt-spec (a declarative experiment
-specification shared by the adapter and X_eTaL), adapter-ablate,
-adapter-patch, effect-matrix, random-controls (matched-magnitude
-random directions and heads), heldout-validation, effect-explorer
-(select a head, see how patching it changes the prediction).
+Steps (revised after Saga 1): twin-prompt-spec (a declarative
+experiment specification in experiments/, shared by the adapter and
+X_eTaL; for induction, a repeated random sequence and its corrupted
+twin with the second copy reshuffled, token-aligned), adapter-ablate
+(zero and mean ablation of one head, the margin on the next token as
+the metric), adapter-patch (activation patching per layer, head and
+position, clean into corrupted), effect-matrix (the L x H effect
+matrix `D` in X_eTaL, drawn with `hm:g_rid`), random-controls (matched
+random heads and directions), heldout-validation (new seeds), and
+circuit-evidence (the first edges of experiments/circuits/
+gpt2-induction.toml move from observed to tested or confirmed, so the
+model map redraws them; the effect grid and the updated map go on the
+live pages). Captures with logits per position and per-head outputs
+need the adapter's capture extended; MLP cells get a score once MLP
+outputs are captured.
 
 ## Saga 3 -- circuit-discovery (Milestone 3)
 

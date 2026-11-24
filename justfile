@@ -42,3 +42,11 @@ scores *ARGS:
 # Draw the model map with a circuit: just map CAPTURE_DIR CIRCUIT.toml [OUT.svg]
 map *ARGS:
     scripts/map.sh {{ARGS}}
+
+# Build the static site into work/site (or OUT_DIR): every picture, drawn by X_eTaL
+pages *ARGS:
+    scripts/pages.sh {{ARGS}}
+
+# Retake the README's screenshot of the live demo (images/demo.png; needs Chrome)
+screenshot:
+    scripts/screenshot.sh
