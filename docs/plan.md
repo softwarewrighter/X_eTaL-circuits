@@ -111,7 +111,8 @@ Goal: capture GPT-2 Small's attention on a repeated-token induction
 prompt, load it into X_eTaL, and show a layer/head-selectable heatmap.
 Find the induction heads by an attention-pattern score. The numbers
 must agree with TransformerLens. Draw the whole model as a map, with
-the scores and a candidate circuit on it.
+the scores and a candidate circuit on it, and publish every picture as
+live pages.
 
 | #  | Step slug           | Delivers                                                                |
 | -- | ------------------- | ----------------------------------------------------------------------- |
@@ -124,7 +125,8 @@ the scores and a candidate circuit on it.
 | 7  | xetal-load          | X_eTaL reads and validates a capture: axes layer head query key, token labels, metadata; selection helpers |
 | 8  | attention-heatmap   | one layer/head drawn with `[]N_GRID` and token labels; checked against TransformerLens numbers |
 | 9  | induction-score     | induction and previous-token scores swept over L x H in X_eTaL; the ranked heads match known GPT-2 induction heads |
-| 10 | model-map           | one picture of the model: a row per layer, a cell per head and per MLP, scores as color, a circuit overlay whose edge style shows the kind of evidence |
+| 10 | model-map           | one picture of the model: a row per layer, a cell per head and per MLP, scores as color, a circuit overlay drawn with the evidence key (D13) |
+| 11 | pages               | GitHub Pages site built from committed captures: every heatmap with a layer/head picker, the score grids, the model map, the ELI5 (D12); a README screenshot linking to the demo; closes the saga |
 
 ## Saga 2 -- causal-experiments (Milestone 2)
 

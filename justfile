@@ -30,3 +30,7 @@ xetal:
 # Test the X_eTaL libraries in xetal/ (needs just xetal)
 xetal-test:
     scripts/xetal-test.sh
+
+# Draw one attention head as SVG: just heatmap CAPTURE_DIR LAYER HEAD [OUT.svg] (model numbers, from 0)
+heatmap *ARGS:
+    scripts/heatmap.sh {{ARGS}}

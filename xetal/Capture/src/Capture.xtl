@@ -6,8 +6,10 @@
 ## X_eTaL-ML's Attention library for the causal mask.
 ## Names with l: are exported; h: names are private to this file.
 ##
-## A capture is a directory: capture.toml (every value a list of
-## strings) and its arrays. Attention is layer x head x query x key, a
+## A capture is a directory, named by its absolute path (X_eTaL finds
+## a relative data path beside the file that names it, here this
+## library, QD9): capture.toml (every value a list of strings) and its
+## arrays. Attention is layer x head x query x key, a
 ## row per query summing to 1, nothing on a later key. Layers are
 ## counted from 1 in the capture's own order; `p_osition` turns a model
 ## layer number (capture.toml's attn_layers, from 0) into that index.
@@ -20,22 +22,21 @@ tolerance := 0.0001
 
 ### Metadata
 
-## `d t_exts "key"`: a key of capture.toml, its strings (boxed).
-## >> "cp:" u_se< "Capture"
-## >> d_isclose f_irst "fixtures/gpt2-induction" cp:t_exts "model"
-## gpt2
-l:t_exts := { d k -> (d c_at "/capture.toml") []L_IST k }
+## `d t_exts "key"`: a key of capture.toml, its strings (boxed). Every
+## read starts here, so a relative directory is refused here.
+l:t_exts := { d k -> (h:a_bsolute d) []L_IST k }
+
+## The path of capture.toml, or the error when d is not absolute.
+h:a_bsolute := { d ->
+  (t_ally d) = 0 ? "capture" []S_IGNAL "a capture directory is needed"
+  (f_irst d) != f_irst "/" ? "capture" []S_IGNAL d c_at ": give the capture directory as an absolute path"
+  d c_at "/capture.toml"
+}
 
 ## `d i_nts "key"`: a key of capture.toml read as integers.
-## >> "cp:" u_se< "Capture"
-## >> "fixtures/gpt2-induction" cp:i_nts "attn_shape"
-## 2 12 17 17
 l:i_nts := { d k -> f_loor r_avel m_ix '{ n_umbers d_isclose _r } m_ap d l:t_exts k }
 
 ## `t_okens d`: the prompt's tokens as text, one per position (boxed).
-## >> "cp:" u_se< "Capture"
-## >> t_ally cp:t_okens "fixtures/gpt2-induction"
-## 17
 l:t_okens := { d -> d l:t_exts "tokens" }
 
 ### Arrays
@@ -44,9 +45,6 @@ l:t_okens := { d -> d l:t_exts "tokens" }
 ## by its <name>_shape. Every array is read here and only here: today
 ## from the text copy <name>.txt (n_umbers), later from the binary file
 ## through the array-file extension, with no change to its callers.
-## >> "cp:" u_se< "Capture"
-## >> s_hape "fixtures/gpt2-induction" cp:r_ead "logits"
-## 50257
 l:r_ead := { d n ->
   s := d l:i_nts n c_at "_shape"
   v := n_umbers []N_GET d c_at "/" c_at n c_at ".txt"
@@ -57,9 +55,6 @@ l:r_ead := { d n ->
 ## `a_ttention d`: the attention array, after checking the capture's
 ## format, that nothing attends to a later key, and that each query's
 ## row sums to 1 within 0.0001.
-## >> "cp:" u_se< "Capture"
-## >> s_hape cp:a_ttention "fixtures/gpt2-induction"
-## 2 12 17 17
 l:a_ttention := { d ->
   _ := h:f_ormatChecked d
   A := d l:r_ead "attn"
@@ -95,9 +90,6 @@ h:r_owsChecked := { d A ->
 
 ## `d p_osition n`: where model layer n is in the capture's attention
 ## (counted from 1), or an error when it was not captured.
-## >> "cp:" u_se< "Capture"
-## >> "fixtures/gpt2-induction" cp:p_osition 5
-## 2
 l:p_osition := { d n ->
   L := d l:i_nts "attn_layers"
   i := L i_ndexOf n

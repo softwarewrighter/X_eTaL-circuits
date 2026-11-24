@@ -8,13 +8,16 @@ X_eTaL-ML's, on `XETAL_PATH`:
 ```bash
 just xetal                                   # build bin/xetal at XETAL_COMMIT
 scripts/xt eval -e '"cp:" u_se< "Capture"
-s_hape cp:a_ttention "fixtures/gpt2-induction"'
+s_hape cp:a_ttention "'"$PWD"'/fixtures/gpt2-induction"'
 just xetal-test                              # the libraries' tests
 ```
 
 ## Capture
 
 Reads a capture written by the adapter (`just capture`) and checks it.
+A capture directory `d` is given as an absolute path: X_eTaL finds a
+relative data path beside the library that names it, not in the
+working directory, so a relative one is refused (`error[capture]`).
 
 | Function | Gives |
 | -------- | ----- |
@@ -34,3 +37,24 @@ in the library's `##` comments are run by `xetal doc --test`.
 
 These are observations of where the model attends. They are not
 evidence that a head matters to the output.
+
+## Heatmap
+
+Draws one attention head of a capture as an SVG heatmap: a row per
+query token, a column per key token, each cell the weight in whole
+percent on `[]N_GRID`'s heat scale, the tokens on both axes, and a
+title that says it is an observation. `just heatmap` (scripts/heatmap.sh)
+is its command line and makes the directory absolute.
+
+| Function | Gives |
+| -------- | ----- |
+| `d hm:p_attern (layer, head)` | one head, query x key, by the model's numbers from 0 (head 5.1 is `(5, 1)`); a layer not captured or a head outside the model is an error |
+| `hm:p_ercent A` | weights as whole percents, rounded half up |
+| `hm:x_ml s` | text made safe inside SVG (`&`, `<`, `>`, `"` escaped) |
+| `d hm:s_vg (layer, head)` | the head's heatmap as SVG text |
+
+Layers and heads here are the model's numbers, from 0, as
+TransformerLens and the papers name heads; `Capture`'s selection
+functions count from 1, as X_eTaL counts. A test reruns GPT-2 Small
+and checks the values drawn against TransformerLens's cache within
+1e-5 relative (`ADAPTER_MODEL_TESTS=1 just xetal-test`).

@@ -404,6 +404,7 @@ scripts/xt eval -e EXPR # bin/xetal with xetal/*/src and X_eTaL-ML's libraries o
 just xetal-test         # the X_eTaL libraries' tests (pytest driving scripts/xt)
 just capture --out runs/NAME ...   # a capture (needs the model extra)
 just fixture            # remake fixtures/gpt2-induction
+just heatmap DIR L H [OUT.svg]    # one head as an SVG heatmap (model numbers from 0)
 ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model
 ```
 

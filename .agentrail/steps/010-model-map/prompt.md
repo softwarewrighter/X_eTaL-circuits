@@ -10,13 +10,19 @@ user).
   with a scale; select a layer, head or MLP to see its numbers.
 - Overlay a circuit: a named set of components and edges (for example
   previous-token head 4.11 feeding induction heads 5.1, 5.5, 6.9, 7.2,
-  7.10). Edge style shows the evidence kind: attention-pattern candidate,
-  attribution, or validated by intervention; until Saga 2 every edge is
-  a candidate and is drawn and labeled as one.
+  7.10).
+- One evidence key, the same in every picture this repository draws
+  (the user's choice): each component and edge carries the level it
+  has reached, and its style shows it. Dashed: **observed** (an
+  attention pattern or attribution score only). Solid: **tested** (an
+  intervention moves the margin, against matched random controls).
+  Thick: **confirmed** (also on held-out prompts). Until Saga 2 every
+  edge is observed and is drawn and labeled as such. The map is then a
+  running record of discoveries: the same picture, edges moving from
+  dashed to solid as evidence comes in. The key is drawn on the map.
 - The circuit is data (a file in experiments/), not code, so later sagas
   draw their own circuits with the same view.
 - Generic pieces (grid layout, directed-graph overlay) are written so
   they could later move to X_eTaL-libraries; do not move them yet.
 - Check against the Python preview in docs/reference.md's numbers.
-- Close the saga: update docs/plan.md (Saga 1 DONE, Saga 2 steps
-  revised from what was learned).
+- The pages step after this one publishes the map.

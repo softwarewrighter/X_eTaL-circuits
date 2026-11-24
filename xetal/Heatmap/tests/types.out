@@ -1,0 +1,4 @@
+l:p_attern : Char -> (Int, Int) -> Float
+l:p_ercent : Float -> Int
+l:x_ml : Char -> Char
+l:s_vg : Char -> (Int, Int) -> Char

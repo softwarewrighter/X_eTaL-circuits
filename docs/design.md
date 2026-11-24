@@ -76,11 +76,14 @@ Both readers check this.
 | D8 | The shared array-file crate (XTLARR01 and safetensors) belongs to X_eTaL-extensions, as `crates/xetal-arrayfile`. X_eTaL-gpu switches its `binary.rs` to it. | User's choice. X_eTaL-gpu already depends on X_eTaL-extensions (a pinned commit), and not the other way round. |
 | D9 | This repository never edits another. What it needs from a sibling is written as an ask in `docs/xetal-<repository>-asks.md` (X_eTaL-extensions, X_eTaL-gpu, X_eTaL-ML, X_eTaL-libraries), which that repository's own plan takes. A step whose work lies elsewhere is reserved for that repository in agentrail and closed when the ask lands. | User's rule. |
 | D10 | For now X_eTaL reads captures as text: the adapter writes `<name>.txt` beside each `<name>.xta`, row-major with one line per last-axis row. Each f32 is written as the shortest decimal of its f64 widening, so X_eTaL's `n_umbers []N_GET` gives exactly the values a binary reader will give. X_eTaL reshapes them by `<name>_shape` from capture.toml. The X_eTaL code reads arrays in one place, so it moves to the extension (X1) when that lands. The text files then stop. | User's choice: the X_eTaL steps go ahead without waiting for X1. A GPT-2 Small capture as text is about 30 MB, workable. Qwen-sized captures wait for X1. Values match the binary files exactly (a test with the pinned X_eTaL). |
+| D11 | `XETAL_COMMIT` moved to 0166a52a for `[]N_GRID` (QD8). That X_eTaL finds a relative `[]L_IST` path beside the file naming it (QD9), here the Capture library, while `[]N_GET` reads from the working directory. So `Capture` takes a capture directory as an absolute path and refuses a relative one (`error[capture]`); the command-line scripts make the path absolute. | The heatmap needs `[]N_GRID`. One absolute path means both readers see the same file. The pin moves on purpose, with the tests, never silently. |
+| D12 | Live pages on GitHub Pages: a static site built by a script from committed captures only, its SVGs drawn by X_eTaL; the page only picks among them (no model, no server, no extension in the browser). Deployed by a GitHub Actions workflow on a push to main. | User's choice. Every picture viewable without a clone. Pictures drawn ahead of time avoid the browser's lack of native extensions. |
+| D13 | One evidence key in every picture: each component and edge carries the level it has reached. Dashed: observed (an attention pattern or attribution score only). Solid: tested (an intervention moves the margin, against matched random controls). Thick: confirmed (also on held-out prompts). Attention heatmaps are always labeled observation. | User's choice. The model map becomes a running record of what is discovered where, and how sure it is (research rule 1). |
 
 ## Open
 
-- Browser pages. Native extensions do not load in the browser
-  (WebAssembly). A browser explorer would carry its data with the page,
-  as X_eTaL-ML's pages do. The first views run from the command line
-  (`xetal-x`).
+- An interactive explorer in the browser (running X_eTaL there, not
+  only showing pictures drawn ahead of time, D12). Native extensions do
+  not load in WebAssembly, so it would carry its data with the page, as
+  X_eTaL-ML's pages do.
 - Until ask X1 lands, X_eTaL reads captures as text (D10).

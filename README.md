@@ -88,11 +88,39 @@ just capture --out runs/hello --text "Hello world" --layers 0,5 --safetensors
 17 positions) that the tests read. `just fixture` makes it again,
 byte for byte.
 
+## Drawing an attention head
+
+`just heatmap` draws one head of a capture as an SVG heatmap, in
+X_eTaL (`xetal/Heatmap`): a row per query token, a column per key
+token, each cell the attention weight in whole percent, colored on
+`[]N_GRID`'s heat scale, and the prompt's tokens on both axes. Layers
+and heads are the model's numbers, from 0, so head 5.1 is layer 5,
+head 1.
+
+```bash
+just heatmap fixtures/gpt2-induction 5 1 images/gpt2-head-5.1.svg
+just heatmap fixtures/gpt2-induction 5 5 > head-5.5.svg
+```
+
+![GPT-2 Small head 5.1 on a repeated random sequence](images/gpt2-head-5.1.svg)
+
+The prompt is a beginning-of-text token, then eight random tokens,
+then the same eight again. On the first half head 5.1 rests on the
+first token. On the second half each token looks at the token that
+followed its earlier copy: the stripe below the diagonal, which is
+what an induction head does. The values X_eTaL reads agree with
+TransformerLens's own cache within 1e-5 relative (a test).
+
+This is an observation of where the head looks. It is not evidence
+that the head matters to the output; that takes the interventions
+of the next studies.
+
 ## Status
 
-Early: the adapter writes captures, and X_eTaL reads and checks them
-(`xetal/Capture`, see [`xetal/README.md`](xetal/README.md)). The heatmaps,
-the scores and the model map come next. See
+Early: the adapter writes captures, X_eTaL reads and checks them
+(`xetal/Capture`) and draws any head as a heatmap (`xetal/Heatmap`,
+see [`xetal/README.md`](xetal/README.md)). The head scores, the model
+map and live pages come next. See
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

@@ -6,6 +6,7 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 [ -x "$root/bin/xetal" ] || "$root/scripts/xetal.sh" >/dev/null
 [ -d "$root/work/xetal-ml/.git" ] || "$root/scripts/xetal-ml.sh" >/dev/null
 ml="$root/work/xetal-ml/libs"
-XETAL_PATH="$root/xetal/Capture/src:$ml/Attention/src:$ml/NN/src${XETAL_PATH:+:$XETAL_PATH}"
+ours="$(printf '%s:' "$root"/xetal/*/src)"
+XETAL_PATH="$ours$ml/Attention/src:$ml/NN/src${XETAL_PATH:+:$XETAL_PATH}"
 export XETAL_PATH
 exec "$root/bin/xetal" "$@"

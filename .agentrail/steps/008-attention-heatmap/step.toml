@@ -1,6 +1,6 @@
 number = 8
 slug = "attention-heatmap"
-status = "pending"
+status = "in-progress"
 description = """
 Attention heatmap in X_eTaL, test-first.
 

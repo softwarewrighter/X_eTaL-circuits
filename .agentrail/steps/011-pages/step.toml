@@ -1,0 +1,11 @@
+number = 11
+slug = "pages"
+status = "pending"
+description = """
+Live pages on GitHub Pages (the user's choice), test-first: every
+picture thi..."""
+role = "production"
+context_files = []
+created_at = "2026-11-23T18:08:42"
+task_type = "xetal"
+commits = []

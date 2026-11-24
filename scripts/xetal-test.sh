@@ -7,4 +7,9 @@ cd "$root"
 [[ -x adapter/.venv/bin/python ]] || scripts/setup-adapter.sh
 adapter/.venv/bin/python -m ruff format --config adapter/pyproject.toml --check xetal
 adapter/.venv/bin/python -m ruff check --config adapter/pyproject.toml xetal
-adapter/.venv/bin/python -m pytest -q -p no:cacheprovider --rootdir=. xetal
+# Tests marked `model` (TransformerLens agreement) run only with ADAPTER_MODEL_TESTS=1.
+if [[ "${ADAPTER_MODEL_TESTS:-0}" == "1" ]]; then
+    adapter/.venv/bin/python -m pytest -q -p no:cacheprovider --rootdir=. xetal
+else
+    adapter/.venv/bin/python -m pytest -q -p no:cacheprovider --rootdir=. -m "not model" xetal
+fi
