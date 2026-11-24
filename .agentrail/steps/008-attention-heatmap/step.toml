@@ -1,6 +1,6 @@
 number = 8
 slug = "attention-heatmap"
-status = "in-progress"
+status = "completed"
 description = """
 Attention heatmap in X_eTaL, test-first.
 
@@ -8,5 +8,6 @@ Attention heatmap in X_eTaL, test-first.
 role = "production"
 context_files = []
 created_at = "2026-11-17T19:10:36"
+completed_at = "2026-11-23T18:15:49"
 task_type = "xetal"
-commits = []
+commits = ["fef79d214d2db372a4c73ba0781995a95763200a"]
