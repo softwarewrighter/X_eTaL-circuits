@@ -82,3 +82,24 @@ previous token 4.11).
 
 `Heatmap` also exports `hm:g_rid (title, note, rows, cols, P)`: any
 labeled Int matrix drawn as such a grid.
+
+## Map
+
+The model map: a row per layer (the first at the bottom), a cell per
+head colored by its scores (blue induction, orange previous token,
+deeper for higher, gray under 20%; the numbers on hover), an MLP cell
+per layer, the residual stream, and a circuit from a TOML file in
+`experiments/circuits/` drawn over it, each edge dashed (observed),
+solid (tested) or thick (confirmed). `just map` (scripts/map.sh) is
+its command line and makes both paths absolute.
+
+| Function | Gives |
+| -------- | ----- |
+| `d mp:s_vg c` | the map of capture d with circuit file c, as SVG |
+| `mp:f_ill (previous, induction)` | a head's color from its two scores |
+| `mp:h_ex v` | three channels 0-255 as `#rrggbb` |
+
+A circuit is refused (`error[map]`) when it is for another model, has
+an evidence level other than the three or not one per edge, names a
+layer not captured or a head outside the model, or has an edge that
+does not go to a later layer.

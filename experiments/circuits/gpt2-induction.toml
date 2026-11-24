@@ -1,0 +1,13 @@
+# A circuit to draw on the model map (just map). Every value is a list of
+# strings. Heads are named layer.head by the model's numbers, from 0.
+# Each edge "a b" (a feeds b) has an evidence level, one per edge:
+#   observed   an attention pattern or attribution score only (dashed)
+#   tested     an intervention moves the margin, against matched random controls (solid)
+#   confirmed  also on held-out prompts (thick)
+name = ["induction, GPT-2 Small"]
+model = ["gpt2"]
+source = ["attention-pattern scores (just scores fixtures/gpt2-induction-full) and the literature"]
+heads = ["4.11", "5.1", "5.5", "6.9", "7.2", "7.10"]
+roles = ["previous token", "induction", "induction", "induction", "induction", "induction"]
+edges = ["4.11 5.1", "4.11 5.5", "4.11 6.9", "4.11 7.2", "4.11 7.10"]
+evidence = ["observed", "observed", "observed", "observed", "observed"]

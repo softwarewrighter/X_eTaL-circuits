@@ -1,6 +1,6 @@
 number = 10
 slug = "model-map"
-status = "pending"
+status = "in-progress"
 description = """
 Model map in X_eTaL, test-first: one picture of the whole model that
 highligh..."""

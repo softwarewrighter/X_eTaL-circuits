@@ -38,3 +38,7 @@ heatmap *ARGS:
 # Previous-token and induction scores of every head: just scores CAPTURE_DIR [OUT_DIR]
 scores *ARGS:
     scripts/scores.sh {{ARGS}}
+
+# Draw the model map with a circuit: just map CAPTURE_DIR CIRCUIT.toml [OUT.svg]
+map *ARGS:
+    scripts/map.sh {{ARGS}}

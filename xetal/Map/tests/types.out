@@ -1,0 +1,3 @@
+l:h_ex : Int -> Char
+l:f_ill : (Float, Float) -> Char
+l:s_vg : Char -> Char -> Char

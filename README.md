@@ -175,13 +175,45 @@ These scores are candidates: they say where heads look, not that the
 output needs them. Whether it does is tested by switching heads off
 and patching them, in the next studies.
 
+## The model map
+
+`just map` draws the whole model in one picture, in X_eTaL
+(`xetal/Map`): a row per layer with the embedding at the bottom and
+the unembedding at the top, a cell per attention head and one per
+MLP, and the residual stream beside them. Each head is colored by its
+scores: blue for induction, orange for previous token, deeper for
+higher, gray when neither reaches 20%. Hovering a head shows its
+numbers. MLPs have no score yet.
+
+A circuit is drawn over the map from a file in
+[`experiments/circuits/`](experiments/README.md): its heads and its
+edges, each edge with the evidence it has reached.
+
+| Line | Evidence |
+| ---- | -------- |
+| dashed | observed: an attention pattern or score only |
+| solid | tested: an intervention moves the margin, against matched random controls |
+| thick | confirmed: also on held-out prompts |
+
+```bash
+just map fixtures/gpt2-induction-full experiments/circuits/gpt2-induction.toml images/gpt2-model-map.svg
+```
+
+![The GPT-2 Small model map, with the induction circuit](images/gpt2-model-map.svg)
+
+The circuit drawn is the previous-token head 4.11 feeding the
+induction heads 5.1, 5.5, 6.9, 7.2 and 7.10. Every edge is dashed:
+it is observed in attention patterns and known from the literature,
+but not yet tested here. As interventions test each edge, the same
+map draws it solid, and then thick once it holds on held-out prompts.
+
 ## Status
 
 Early: the adapter writes captures, X_eTaL reads and checks them
-(`xetal/Capture`), draws any head as a heatmap (`xetal/Heatmap`) and
-scores every head (`xetal/Scores`, see
-[`xetal/README.md`](xetal/README.md)). The model map and live pages
-come next. See
+(`xetal/Capture`), draws any head as a heatmap (`xetal/Heatmap`),
+scores every head (`xetal/Scores`) and draws the model map with a
+circuit over it (`xetal/Map`, see [`xetal/README.md`](xetal/README.md)).
+Live pages come next. See
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

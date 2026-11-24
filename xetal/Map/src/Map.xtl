@@ -1,0 +1,204 @@
+## Map: one picture of the whole model, as SVG. A row per layer, the
+## first at the bottom (the embedding) and the last at the top (the
+## unembedding); in each row a cell per attention head and an MLP cell;
+## the residual stream as the spine beside them. Each head is colored
+## by its attention-pattern scores (Scores): blue for induction, orange
+## for previous token, deeper for higher; hovering a head shows its
+## numbers. A circuit (a TOML file, experiments/circuits/) is drawn
+## over it, each edge styled by its evidence: dashed observed, solid
+## tested, thick confirmed.
+##
+## Import it with an alias of your choice: "mp:" u_se< "Map".
+## The capture directory and the circuit file are absolute paths
+## (X_eTaL finds a relative data path beside this library).
+
+"cp:" u_se< "Capture"
+"sc:" u_se< "Scores"
+"hm:" u_se< "Heatmap"
+
+cw := 44
+ch := 28
+gap := 8
+left := 48
+top := 100
+mlpWidth := 56
+hexDigits := "0123456789abcdef"
+blue := 59 130 246
+orange := 245 158 11
+edgeInk := "#be123c"
+mono := "font-family=\"monospace\""
+
+### Colors
+
+## `h_ex v`: three channels 0-255 as a color #rrggbb.
+## >> "mp:" u_se< "Map"
+## >> mp:h_ex 59 130 246
+## #3b82f6
+l:h_ex := { v -> "#" c_at r_avel 2 1 t_ranspose (2 c_at 3) r_eshape ((1 + v d_iv 16) s_elect hexDigits) c_at (1 + v m_od 16) s_elect hexDigits }
+
+## `f_ill (previous, induction)`: a head's color: the stronger score's
+## hue (induction wins a tie), from near white at 0 to full at 1, and
+## light gray when neither reaches 20%.
+## >> "mp:" u_se< "Map"
+## >> mp:f_ill (0.0, 1.0)
+## #3b82f6
+## >> mp:f_ill (0.1, 0.19)
+## #f3f4f6
+l:f_ill := { (p, i) ->
+  s := p m_ax i
+  s < 0.2 ? "#f3f4f6"
+  i >= p ? l:h_ex f_loor 0.5 + 245.0 + s * (f_loat blue) - 245.0
+  l:h_ex f_loor 0.5 + 245.0 + s * (f_loat orange) - 245.0
+}
+
+## Ink that reads on a fill of score s.
+h:i_nk := { s ->
+  s > 0.6 ? "#ffffff"
+  "#1f2937"
+}
+
+### Layout
+
+## The top of row r (1 is the first layer, drawn lowest) of R rows.
+h:r_owY := { (r, R) -> top + (ch + gap) * R - r }
+
+## The left of head h (from 0).
+h:h_eadX := { h -> left + (cw + gap) * h }
+
+## Boxed lines as one text, a newline after each.
+h:l_ines := { B ->
+  (t_ally B) = 0 ? ""
+  d_isclose '{ a b -> e_nclose (d_isclose a) c_at d_isclose b } r_/ '{ b -> (d_isclose b) c_at "\n" } m_ap B
+}
+
+## A number as text.
+h:n_ := { v -> f_ormat v }
+
+### Cells
+
+## One head's cell: a group with its hover title, rectangle and name.
+h:h_eadCell := { (lay, hd, y, p, i) ->
+  x := h:h_eadX hd
+  name := (h:n_ lay) c_at "." c_at h:n_ hd
+  title := "head " c_at name c_at ": induction " c_at (h:n_ hm:p_ercent i) c_at "%, previous token " c_at (h:n_ hm:p_ercent p) c_at "%"
+  rect := "<rect x=\"" c_at (h:n_ x) c_at "\" y=\"" c_at (h:n_ y) c_at "\" width=\"" c_at (h:n_ cw) c_at "\" height=\"" c_at (h:n_ ch) c_at "\" rx=\"3\" fill=\"" c_at (l:f_ill (p, i)) c_at "\" stroke=\"#cbd5e1\"/>"
+  label := "<text x=\"" c_at (h:n_ x + cw d_iv 2) c_at "\" y=\"" c_at (h:n_ y + ch d_iv 2) c_at "\" " c_at mono c_at " font-size=\"9\" fill=\"" c_at (h:i_nk p m_ax i) c_at "\" text-anchor=\"middle\" dominant-baseline=\"central\">" c_at name c_at "</text>"
+  "<g class=\"head\" id=\"head-" c_at name c_at "\"><title>" c_at title c_at "</title>" c_at rect c_at label c_at "</g>"
+}
+
+## One layer's MLP cell (no score yet) and its label on the left.
+h:m_lpCell := { (lay, y, H) ->
+  x := 12 + h:h_eadX H
+  rect := "<rect x=\"" c_at (h:n_ x) c_at "\" y=\"" c_at (h:n_ y) c_at "\" width=\"" c_at (h:n_ mlpWidth) c_at "\" height=\"" c_at (h:n_ ch) c_at "\" rx=\"3\" fill=\"#f3f4f6\" stroke=\"#cbd5e1\"/>"
+  text := "<text x=\"" c_at (h:n_ x + mlpWidth d_iv 2) c_at "\" y=\"" c_at (h:n_ y + ch d_iv 2) c_at "\" " c_at mono c_at " font-size=\"10\" fill=\"#6b7280\" text-anchor=\"middle\" dominant-baseline=\"central\">MLP</text>"
+  mlp := "<g class=\"mlp\" id=\"mlp-" c_at (h:n_ lay) c_at "\"><title>MLP " c_at (h:n_ lay) c_at ": no score yet</title>" c_at rect c_at text c_at "</g>"
+  layer := "<text class=\"layer-label\" x=\"" c_at (h:n_ left - 8) c_at "\" y=\"" c_at (h:n_ y + ch d_iv 2) c_at "\" " c_at mono c_at " font-size=\"11\" fill=\"#1f2937\" text-anchor=\"end\" dominant-baseline=\"central\">L" c_at (h:n_ lay) c_at "</text>"
+  mlp c_at "\n" c_at layer
+}
+
+### The circuit
+
+## A circuit file's key (its strings, boxed).
+h:k_ey := { c k -> c []L_IST k }
+
+## The edge "a.b c.d" as layer, head, layer, head (model numbers),
+## when both heads are in the capture.
+h:e_dge := { (c, e, L, H) ->
+  v := f_loor n_umbers '{ x ->
+    x = f_irst "." ? f_irst " "
+    x
+  } e_ach e
+  (t_ally v) != 4 ? "map" []S_IGNAL c c_at ": edge \"" c_at e c_at "\" is not \"layer.head layer.head\""
+  (L i_ndexOf 1 s_elect v) > t_ally L ? "map" []S_IGNAL c c_at ": edge \"" c_at e c_at "\": layer " c_at (h:n_ 1 s_elect v) c_at " was not captured"
+  (L i_ndexOf 3 s_elect v) > t_ally L ? "map" []S_IGNAL c c_at ": edge \"" c_at e c_at "\": layer " c_at (h:n_ 3 s_elect v) c_at " was not captured"
+  (L i_ndexOf 3 s_elect v) <= L i_ndexOf 1 s_elect v ? "map" []S_IGNAL c c_at ": edge \"" c_at e c_at "\": a head feeds only a later layer"
+  (2 s_elect v) >= H ? "map" []S_IGNAL c c_at ": edge \"" c_at e c_at "\": no head " c_at h:n_ 2 s_elect v
+  (4 s_elect v) >= H ? "map" []S_IGNAL c c_at ": edge \"" c_at e c_at "\": no head " c_at h:n_ 4 s_elect v
+  v
+}
+
+## The line of an evidence level, or the error naming the levels.
+h:s_tyle := { (c, ev) ->
+  ev m_atch "observed" ? "stroke-width=\"2\" stroke-dasharray=\"6 4\""
+  ev m_atch "tested" ? "stroke-width=\"2\""
+  ev m_atch "confirmed" ? "stroke-width=\"4\""
+  "map" []S_IGNAL c c_at ": evidence \"" c_at ev c_at "\" is not observed, tested or confirmed"
+}
+
+## The middle of head (lay, hd)'s top edge (side 0) or bottom edge
+## (side 1), as x y.
+h:e_nd := { (lay, hd, side, L) ->
+  x := (cw d_iv 2) + h:h_eadX hd
+  y := (ch * side) + h:r_owY ((L i_ndexOf lay), t_ally L)
+  (h:n_ x) c_at " " c_at h:n_ y
+}
+
+## One edge as a curve from the top of its first head to the bottom of
+## its second, a later layer's.
+h:e_dgePath := { (c, e, ev, L, H) ->
+  v := h:e_dge (c, e, L, H)
+  style := h:s_tyle (c, ev)
+  y2 := h:r_owY ((L i_ndexOf 3 s_elect v), t_ally L)
+  mx := ((cw + h:h_eadX 2 s_elect v) + h:h_eadX 4 s_elect v) d_iv 2
+  my := 24 + ch + y2
+  from := (h:n_ 1 s_elect v) c_at "." c_at h:n_ 2 s_elect v
+  to := (h:n_ 3 s_elect v) c_at "." c_at h:n_ 4 s_elect v
+  d := "M" c_at (h:e_nd ((1 s_elect v), (2 s_elect v), 0, L)) c_at " Q " c_at (h:n_ mx) c_at " " c_at (h:n_ my) c_at " " c_at h:e_nd ((3 s_elect v), (4 s_elect v), 1, L)
+  "<path class=\"edge\" data-from=\"" c_at from c_at "\" data-to=\"" c_at to c_at "\" data-evidence=\"" c_at ev c_at "\" d=\"" c_at d c_at "\" fill=\"none\" stroke=\"" c_at edgeInk c_at "\" " c_at style c_at " marker-end=\"url(#arrow)\"/>"
+}
+
+### Keys
+
+## A line of text at (x, y) in size z.
+h:t_ext := { (x, y, z, s) -> "<text x=\"" c_at (h:n_ x) c_at "\" y=\"" c_at (h:n_ y) c_at "\" " c_at mono c_at " font-size=\"" c_at (h:n_ z) c_at "\" fill=\"#1f2937\" xml:space=\"preserve\">" c_at (hm:x_ml s) c_at "</text>" }
+
+## A color swatch and its words at (x, y).
+h:s_watch := { (x, y, f, s) -> "<rect x=\"" c_at (h:n_ x) c_at "\" y=\"" c_at (h:n_ y - 10) c_at "\" width=\"14\" height=\"12\" fill=\"" c_at f c_at "\" stroke=\"#cbd5e1\"/>" c_at h:t_ext (x + 20, y, 11, s) }
+
+## A sample line of an evidence level and its words at (x, y).
+h:k_eyEdge := { (x, y, ev, s) -> "<path class=\"key-edge\" d=\"M" c_at (h:n_ x) c_at " " c_at (h:n_ y - 4) c_at " H" c_at (h:n_ x + 40) c_at "\" stroke=\"" c_at edgeInk c_at "\" " c_at (h:s_tyle ("key", ev)) c_at "/>" c_at h:t_ext (x + 52, y, 11, s) }
+
+## The color key and the evidence key, from y down.
+h:k_eys := { y ->
+  colors := (h:s_watch (left, y, l:f_ill (0.0, 0.9), "induction score")) c_at (h:s_watch (left + 170, y, l:f_ill (0.9, 0.0), "previous token score")) c_at h:s_watch (left + 380, y, "#f3f4f6", "neither reaches 20%")
+  words := h:t_ext (left, y + 20, 11, "Head colors are attention-pattern scores: candidates, not causal evidence. Hover a head for its numbers.")
+  e1 := h:k_eyEdge (left, y + 46, "observed", "observed: an attention pattern or score only")
+  e2 := h:k_eyEdge (left, y + 66, "tested", "tested: an intervention moves the margin, against random controls")
+  e3 := h:k_eyEdge (left, y + 86, "confirmed", "confirmed: also on held-out prompts")
+  colors c_at "\n" c_at words c_at "\n" c_at e1 c_at "\n" c_at e2 c_at "\n" c_at e3 c_at "\n"
+}
+
+### The picture
+
+## `d s_vg c`: the model map of capture d with circuit file c, as SVG.
+l:s_vg := { d c ->
+  model := d_isclose f_irst d cp:t_exts "model"
+  cm := d_isclose f_irst c h:k_ey "model"
+  n_ot cm m_atch model ? "map" []S_IGNAL c c_at ": the circuit is for " c_at cm c_at ", the capture is of " c_at model
+  E := c h:k_ey "edges"
+  V := c h:k_ey "evidence"
+  (t_ally E) != t_ally V ? "map" []S_IGNAL c c_at ": one evidence level per edge (" c_at (h:n_ t_ally E) c_at " edges, " c_at (h:n_ t_ally V) c_at " levels)"
+  P := sc:p_revious d
+  I := sc:i_nduction d
+  L := d cp:i_nts "attn_layers"
+  R := t_ally L
+  H := 2 s_elect s_hape P
+  heads := '{ k ->
+    r := 1 + (k - 1) d_iv H
+    hd := (k - 1) m_od H
+    h:h_eadCell ((r s_elect L), hd, h:r_owY (r, R), (hd + 1) s_elect r s_elect P, (hd + 1) s_elect r s_elect I)
+  } m_ap r_ange R * H
+  mlps := '{ r -> h:m_lpCell ((r s_elect L), h:r_owY (r, R), H) } m_ap r_ange R
+  edges := '{ k -> h:e_dgePath (c, (d_isclose k s_elect E), (d_isclose k s_elect V), L, H) } m_ap r_ange t_ally E
+  bottom := top + (ch + gap) * R
+  cols := '{ hd -> "<text x=\"" c_at (h:n_ (cw d_iv 2) + h:h_eadX hd) c_at "\" y=\"" c_at (h:n_ bottom + 8) c_at "\" " c_at mono c_at " font-size=\"10\" fill=\"#6b7280\" text-anchor=\"middle\">H" c_at (h:n_ hd) c_at "</text>" } m_ap (r_ange H) - 1
+  spine := 40 + mlpWidth + h:h_eadX H
+  w := spine + 96
+  z := bottom + 130
+  name := d_isclose f_irst c h:k_ey "name"
+  source := d_isclose f_irst c h:k_ey "source"
+  head := "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" c_at (h:n_ w) c_at "\" height=\"" c_at (h:n_ z) c_at "\" viewBox=\"0 0 " c_at (h:n_ w) c_at " " c_at (h:n_ z) c_at "\" role=\"img\">\n<rect width=\"" c_at (h:n_ w) c_at "\" height=\"" c_at (h:n_ z) c_at "\" fill=\"#ffffff\"/>\n<defs><marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\"><path d=\"M0 0L10 5L0 10z\" fill=\"" c_at edgeInk c_at "\"/></marker><marker id=\"spine\" viewBox=\"0 0 10 10\" refX=\"5\" refY=\"5\" markerWidth=\"4\" markerHeight=\"4\" orient=\"auto\"><path d=\"M0 0L10 5L0 10z\" fill=\"#4b5563\"/></marker></defs>\n"
+  titles := (h:t_ext (8, 20, 14, model c_at " model map, circuit: " c_at name)) c_at "\n" c_at (h:t_ext (8, 40, 11, "a row per layer (embedding at the bottom), a cell per head and per MLP")) c_at "\n" c_at (h:t_ext (8, 56, 11, "circuit from: " c_at source)) c_at "\n"
+  stream := "<path class=\"residual\" d=\"M" c_at (h:n_ spine) c_at " " c_at (h:n_ bottom) c_at " V" c_at (h:n_ top - 12) c_at "\" stroke=\"#4b5563\" stroke-width=\"4\" marker-end=\"url(#spine)\"/>\n" c_at (h:t_ext (spine - 24, top - 22, 11, "unembed")) c_at "\n" c_at (h:t_ext (spine - 18, bottom + 18, 11, "embed")) c_at "\n"
+  head c_at titles c_at stream c_at (h:l_ines heads) c_at (h:l_ines mlps) c_at (h:l_ines cols) c_at (h:l_ines edges) c_at (h:k_eys bottom + 40) c_at "</svg>"
+}

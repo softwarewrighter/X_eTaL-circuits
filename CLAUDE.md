@@ -406,6 +406,7 @@ just capture --out runs/NAME ...   # a capture (needs the model extra)
 just fixture            # remake fixtures/gpt2-induction and gpt2-induction-full
 just heatmap DIR L H [OUT.svg]    # one head as an SVG heatmap (model numbers from 0)
 just scores DIR [OUT_DIR]         # previous-token and induction scores of every head
+just map DIR CIRCUIT.toml [OUT.svg]   # the model map with a circuit (experiments/circuits/)
 ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model
 ```
 
