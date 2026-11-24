@@ -56,3 +56,17 @@ layer x head matrix each, one run per seed (`seed-N`). A positive
 effect means the output needs the head. These effects are not yet
 compared with random controls, so they name candidates.
 `fixtures/gpt2-induction-ablation` holds the finding seeds' runs.
+
+```bash
+just patch --experiment experiments/induction.toml --out runs/patch            # the finding seeds
+```
+
+copies one activation between the twins at a time. *Denoising* runs the
+twin with one activation from the clean prompt and records the fraction
+of the clean-twin gap it restores; *noising* runs the clean prompt with
+one activation from the twin and records the fraction it destroys. Each
+run (`seed-N`) holds `resid_denoise` (the residual stream entering each
+layer, at each position), `head_denoise` and `head_noise` (each head's
+output, layer x head), and `position_denoise` (the six most restoring
+heads, named in `run.toml`'s `leading_heads`, position by position).
+`fixtures/gpt2-induction-patch` holds the finding seeds' runs.

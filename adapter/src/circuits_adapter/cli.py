@@ -43,6 +43,16 @@ def _ablate_parser(sub) -> None:
     p.add_argument("--device", default="cpu")
 
 
+def _patch_parser(sub) -> None:
+    p = sub.add_parser("patch", help="activation patching between the twins, per seed")
+    p.add_argument("--experiment", required=True, help="an experiments/*.toml file")
+    p.add_argument(
+        "--seeds", default="finding", help="finding, heldout, or a comma list (default finding)"
+    )
+    p.add_argument("--out", required=True, help="new directory: one run per seed, seed-N")
+    p.add_argument("--device", default="cpu")
+
+
 def seeds_of(exp, text: str) -> tuple[int, ...]:
     """The seeds named on the command line: finding, heldout or a comma list."""
     named = {"finding": exp.finding_seeds, "heldout": exp.heldout_seeds}
@@ -59,6 +69,7 @@ def build_parser() -> argparse.ArgumentParser:
     _capture_parser(sub)
     _baseline_parser(sub)
     _ablate_parser(sub)
+    _patch_parser(sub)
     return parser
 
 
@@ -97,7 +108,24 @@ def run_ablate(args) -> int:
     return 0
 
 
-COMMANDS = {"capture": run_capture, "baseline": run_baseline, "ablate": run_ablate}
+def run_patch(args) -> int:
+    from pathlib import Path
+
+    from circuits_adapter import experiment, model, patch
+
+    exp = experiment.load(args.experiment)
+    m = model.load(exp.model, exp.revision, args.device)
+    for seed in seeds_of(exp, args.seeds):
+        print(patch.write(Path(args.out) / f"seed-{seed}", m, exp, seed))
+    return 0
+
+
+COMMANDS = {
+    "capture": run_capture,
+    "baseline": run_baseline,
+    "ablate": run_ablate,
+    "patch": run_patch,
+}
 
 
 def main(argv: list[str] | None = None) -> int:

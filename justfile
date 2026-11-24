@@ -58,3 +58,7 @@ baseline *ARGS:
 # Each head zero- and mean-ablated: just ablate --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
 ablate *ARGS:
     scripts/ablate.sh {{ARGS}}
+
+# Activation patching between the twins: just patch --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
+patch *ARGS:
+    scripts/patch.sh {{ARGS}}

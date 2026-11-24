@@ -77,3 +77,11 @@ def test_ablate_arguments_and_seed_lists():
     exp = experiment.load(root / "experiments" / "induction.toml")
     assert cli.seeds_of(exp, "heldout") == exp.heldout_seeds
     assert cli.seeds_of(exp, "3,5") == (3, 5)
+
+
+def test_patch_arguments():
+    args = cli.build_parser().parse_args(
+        ["patch", "--experiment", "e.toml", "--seeds", "heldout", "--out", "r"]
+    )
+    assert (args.command, args.seeds) == ("patch", "heldout")
+    assert cli.COMMANDS["patch"] is cli.run_patch
