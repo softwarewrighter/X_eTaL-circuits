@@ -1,0 +1,1 @@
+Twin prompts (clean repeat vs fresh second copy, aligned and checked), experiments/induction.toml (seeds disjoint), logit-difference metric at second-copy positions (D14), run-directory format, circuits-adapter baseline / just baseline. GPT-2 Small: clean mean LD 14-18, twin ~0-2.5. Pushed.
