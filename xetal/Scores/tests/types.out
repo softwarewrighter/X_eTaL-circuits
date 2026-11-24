@@ -1,0 +1,5 @@
+l:p_revious : Char -> Float
+l:i_nduction : Char -> Float
+l:r_anked : Char -> Float -> Int
+l:r_eport : Char -> Char
+l:s_vg : Char -> Char -> Char

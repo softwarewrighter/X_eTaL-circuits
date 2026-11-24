@@ -115,12 +115,73 @@ This is an observation of where the head looks. It is not evidence
 that the head matters to the output; that takes the interventions
 of the next studies.
 
+## Scoring every head
+
+`just scores` gives every head two scores, in X_eTaL
+(`xetal/Scores`), from a capture of a repeated random-token prompt
+with all layers. The **previous-token** score is a head's mean weight
+from each position to the one before it. The **induction** score is
+its mean weight from each token of the second copy to the token that
+followed the same token in the first copy. It prints the leading
+heads of each and, given a directory, draws both as layer x head
+grids.
+
+```bash
+just scores fixtures/gpt2-induction-full
+just scores fixtures/gpt2-induction-full images/gpt2-scores
+```
+
+```text
+Head scores from attention patterns only: candidates, not causal evidence.
+gpt2 at 607a30d783dfa663caf39e06633721c8d4cfcd7e, a beginning token then 16 random tokens, twice.
+
+induction
+5.5 95%
+5.1 86%
+6.9 85%
+7.10 83%
+7.2 72%
+10.7 67%
+5.0 56%
+9.6 52%
+10.1 50%
+9.9 49%
+
+previous token
+4.11 100%
+3.7 57%
+2.2 51%
+2.9 43%
+3.2 43%
+6.8 41%
+7.0 39%
+5.6 38%
+3.8 37%
+2.5 36%
+```
+
+![Induction score of every GPT-2 Small head](images/gpt2-scores/induction.svg)
+
+![Previous-token score of every GPT-2 Small head](images/gpt2-scores/previous.svg)
+
+The five leading induction heads, 5.5, 5.1, 6.9, 7.10 and 7.2, are
+the GPT-2 Small induction heads known from the literature, and 4.11
+is its known previous-token head. The scores agree with the same
+scores computed from TransformerLens's cache within 1e-5 relative (a
+test). `fixtures/gpt2-induction-full` is GPT-2 Small on a beginning
+token then 16 random tokens twice, all 12 layers.
+
+These scores are candidates: they say where heads look, not that the
+output needs them. Whether it does is tested by switching heads off
+and patching them, in the next studies.
+
 ## Status
 
 Early: the adapter writes captures, X_eTaL reads and checks them
-(`xetal/Capture`) and draws any head as a heatmap (`xetal/Heatmap`,
-see [`xetal/README.md`](xetal/README.md)). The head scores, the model
-map and live pages come next. See
+(`xetal/Capture`), draws any head as a heatmap (`xetal/Heatmap`) and
+scores every head (`xetal/Scores`, see
+[`xetal/README.md`](xetal/README.md)). The model map and live pages
+come next. See
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

@@ -58,3 +58,27 @@ TransformerLens and the papers name heads; `Capture`'s selection
 functions count from 1, as X_eTaL counts. A test reruns GPT-2 Small
 and checks the values drawn against TransformerLens's cache within
 1e-5 relative (`ADAPTER_MODEL_TESTS=1 just xetal-test`).
+
+## Scores
+
+Previous-token and induction scores of every head, from a capture of
+a repeated random-token prompt (a beginning token, then t random
+tokens, then the same t again) with all layers. `just scores`
+(scripts/scores.sh) prints the leading heads and draws both grids.
+
+| Function | Gives |
+| -------- | ----- |
+| `sc:p_revious d` | layer x head: each head's mean weight from a position to the one before it |
+| `sc:i_nduction d` | layer x head: each head's mean weight from a token of the second copy to the token after its earlier occurrence; a prompt that does not repeat is an error |
+| `d sc:r_anked S` | every head, best score first, a row (layer, head) each by the model's numbers |
+| `sc:r_eport d` | the leading heads of each score as text, in percent |
+| `d sc:s_vg "induction"` | a score's layer x head grid as SVG (`"induction"` or `"previous"`) |
+
+These are attention-pattern scores: candidates, not evidence that a
+head matters. Tests check them against numpy on the binary capture,
+against TransformerLens's cache (within 1e-5 relative), and that the
+known GPT-2 Small heads lead (induction 5.1, 5.5, 6.9, 7.2, 7.10;
+previous token 4.11).
+
+`Heatmap` also exports `hm:g_rid (title, note, rows, cols, P)`: any
+labeled Int matrix drawn as such a grid.

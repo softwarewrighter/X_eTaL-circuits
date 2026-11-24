@@ -1,6 +1,6 @@
 number = 9
 slug = "induction-score"
-status = "pending"
+status = "in-progress"
 description = """
 Induction and previous-token scores over L x H, in X_eTaL, test-first.
 

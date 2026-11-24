@@ -1,4 +1,4 @@
-"""The committed fixture capture (fixtures/gpt2-induction, made by `just fixture`) stays valid."""
+"""The committed fixture captures (fixtures/, made by `just fixture`) stay valid."""
 
 import tomllib
 from pathlib import Path
@@ -31,3 +31,16 @@ def test_fixture_second_copy_repeats_the_first():
     ids = tomllib.loads((FIXTURE / "capture.toml").read_text())["token_ids"]
     half = (len(ids) - 1) // 2
     assert ids[1 : 1 + half] == ids[1 + half :]
+
+
+FULL = FIXTURE.parent / "gpt2-induction-full"
+
+
+def test_full_fixture_has_every_layer_and_repeats():
+    meta = tomllib.loads((FULL / "capture.toml").read_text())
+    assert meta["attn_layers"] == [str(n) for n in range(12)]
+    assert meta["attn_shape"] == ["12", "12", "33", "33"]
+    attn = xta.read(FULL / "attn.xta")
+    capture.check_attention(attn)
+    ids = meta["token_ids"]
+    assert ids[1:17] == ids[17:]

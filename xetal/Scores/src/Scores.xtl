@@ -1,0 +1,103 @@
+## Scores: previous-token and induction scores of every attention head,
+## from a capture of a repeated random-token prompt (a beginning token,
+## then t random tokens, then the same t again).
+##
+## previous token: the mean weight from each position to the one before
+## it. induction: the mean weight from each token of the second copy to
+## the token after its earlier occurrence. Both are layer x head
+## matrices. They come from attention patterns only: they name
+## candidates, not evidence that a head matters to the output.
+##
+## Import it with an alias of your choice: "sc:" u_se< "Scores".
+## A capture directory is an absolute path (see Capture). Heads are
+## named by the model's numbers, from 0 (5.1 is layer 5, head 1).
+
+"cp:" u_se< "Capture"
+"hm:" u_se< "Heatmap"
+
+shown := 10
+
+### Scores
+
+## `p_revious d`: each head's mean weight on the previous position.
+l:p_revious := { d ->
+  A := cp:a_ttention d
+  n := f_irst r_ev s_hape A
+  A h:m_asked f_loat (r_ange n) '{ a b -> a = b + 1 } t_able r_ange n
+}
+
+## `i_nduction d`: each head's mean weight, over the second copy, on the
+## token after the current token's earlier occurrence.
+l:i_nduction := { d ->
+  t := h:r_epeat d
+  A := cp:a_ttention d
+  n := f_irst r_ev s_hape A
+  A h:m_asked f_loat (r_ange n) '{ a b -> (a > t + 1) * b = 1 + a - t } t_able r_ange n
+}
+
+## Each head's mean of A's query x key matrix where the mask M is 1.
+h:m_asked := { A M -> 2 '{ S -> ('+ r_/ r_avel S * M) / '+ r_/ r_avel M } r_ank A }
+
+## t, when the prompt is a beginning token and then t tokens twice.
+h:r_epeat := { d ->
+  ids := d cp:i_nts "token_ids"
+  t := ((t_ally ids) - 1) d_iv 2
+  n_ot ((t_ally ids) = 1 + 2 * t) * (t > 0) * (t t_ake 1 d_rop ids) m_atch t t_ake (t + 1) d_rop ids ? "scores" []S_IGNAL d c_at ": the prompt does not repeat (a beginning token, then t tokens twice)"
+  t
+}
+
+### Ranking
+
+## `d r_anked S`: every head, best score first, a row (layer, head)
+## each by the model's numbers.
+l:r_anked := { d S ->
+  H := 2 s_elect s_hape S
+  o := g_rade 0.0 - r_avel S
+  layers := (1 + (o - 1) d_iv H) s_elect d cp:i_nts "attn_layers"
+  heads := (o - 1) m_od H
+  2 1 t_ranspose (2 c_at t_ally o) r_eshape layers c_at heads
+}
+
+## `r_eport d`: the leading heads of each score as text, a line each:
+## the head and its score in percent.
+l:r_eport := { d ->
+  model := d_isclose f_irst d cp:t_exts "model"
+  revision := d_isclose f_irst d cp:t_exts "revision"
+  t := h:r_epeat d
+  intro := "Head scores from attention patterns only: candidates, not causal evidence.\n" c_at model c_at " at " c_at revision c_at ", a beginning token then " c_at (f_ormat t) c_at " random tokens, twice.\n\n"
+  intro c_at (d h:t_op ("induction", l:i_nduction d)) c_at "\n" c_at d h:t_op ("previous token", l:p_revious d)
+}
+
+## The name, then the leading heads of S, a line each.
+h:t_op := { d (name, S) ->
+  R := d l:r_anked S
+  P := hm:p_ercent S
+  L := d cp:i_nts "attn_layers"
+  line := '{ i ->
+    row := i s_elect R
+    lay := f_irst row
+    hd := f_irst r_ev row
+    v := (hd + 1) s_elect (L i_ndexOf lay) s_elect P
+    (f_ormat lay) c_at "." c_at (f_ormat hd) c_at " " c_at (f_ormat v) c_at "%\n"
+  } m_ap r_ange shown
+  name c_at "\n" c_at d_isclose '{ a b -> e_nclose (d_isclose a) c_at d_isclose b } r_/ line
+}
+
+### Pictures
+
+## `d s_vg "induction"` or `d s_vg "previous"`: the score's layer x head
+## grid as SVG, in percent.
+l:s_vg := { d name ->
+  name m_atch "induction" ? d h:g_rid ("induction", l:i_nduction d)
+  name m_atch "previous" ? d h:g_rid ("previous-token", l:p_revious d)
+  "scores" []S_IGNAL "no score " c_at name c_at " (induction, previous)"
+}
+
+h:g_rid := { d (name, S) ->
+  model := d_isclose f_irst d cp:t_exts "model"
+  rows := '{ n -> "L" c_at f_ormat n } m_ap d cp:i_nts "attn_layers"
+  cols := '{ n -> "H" c_at f_ormat n - 1 } m_ap r_ange 2 s_elect s_hape S
+  title := model c_at ": " c_at name c_at " score of every head, in percent"
+  note := "rows: layers, columns: heads. Attention-pattern scores: candidates, not causal evidence."
+  hm:g_rid (title, note, rows, cols, hm:p_ercent S)
+}

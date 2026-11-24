@@ -34,3 +34,7 @@ xetal-test:
 # Draw one attention head as SVG: just heatmap CAPTURE_DIR LAYER HEAD [OUT.svg] (model numbers, from 0)
 heatmap *ARGS:
     scripts/heatmap.sh {{ARGS}}
+
+# Previous-token and induction scores of every head: just scores CAPTURE_DIR [OUT_DIR]
+scores *ARGS:
+    scripts/scores.sh {{ARGS}}

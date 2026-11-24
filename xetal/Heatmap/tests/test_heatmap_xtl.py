@@ -95,7 +95,7 @@ def test_tokens_label_both_axes():
     tokens = [line for line in (FIXTURE / "capture.toml").read_text().splitlines()]
     toks = next(t for t in tokens if t.startswith("tokens = "))
     want = re.findall(r'"((?:[^"\\]|\\.)*)"', toks)
-    for axis in ("queries", "keys"):
+    for axis in ("rows", "cols"):
         g = root.find(f".//{SVG}g[@class='{axis}']")
         assert [t.text for t in g.iter(f"{SVG}text")] == want
 

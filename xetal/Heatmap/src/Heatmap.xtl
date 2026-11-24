@@ -63,24 +63,30 @@ h:l_abel := { (x, y, a, s) ->
 
 ### The picture
 
-## `d s_vg (layer, head)`: the head's heatmap as SVG text: a title, the
-## query tokens down the left, the key tokens along the top, and the
-## cells drawn by []N_GRID on the heat scale.
-l:s_vg := { d (l, h) ->
-  note := "rows: queries, columns: keys. An observation, not causal evidence."
-  P := l:p_ercent d l:p_attern (l, h)
-  T := t_ally P
-  toks := cp:t_okens d
-  m := 12 + 7 * 'm_ax r_/ '[t_ally d_isclose] e_ach toks
-  top := 44 + m
-  n := cell * T
-  w := (m + n + 12) m_ax 16 + 8 * t_ally note
-  z := top + n + 12
-  model := d_isclose f_irst d cp:t_exts "model"
-  title := model c_at " layer " c_at (f_ormat l) c_at " head " c_at (f_ormat h) c_at ": attention, in percent"
-  rows := '{ i -> h:l_abel ((m - 6), top + (cell * i - 1) + 12, "font-size=\"11\" text-anchor=\"end\" dominant-baseline=\"central\"", d_isclose i s_elect toks) } m_ap r_ange T
-  cols := '{ i -> h:l_abel (0, 0, "font-size=\"11\" text-anchor=\"start\" dominant-baseline=\"central\" transform=\"translate(" c_at (f_ormat m + (cell * i - 1) + 12) c_at " " c_at (f_ormat top - 6) c_at ") rotate(-90)\"", d_isclose i s_elect toks) } m_ap r_ange T
+## `g_rid (title, note, rows, cols, P)`: a labeled grid as SVG text: the
+## title and a note above, the boxed labels `rows` down the left and
+## `cols` along the top (one per row and column of the Int matrix P),
+## and P's cells drawn by []N_GRID on the heat scale.
+l:g_rid := { (title, note, rows, cols, P) ->
+  R := t_ally P
+  C := 2 s_elect s_hape P
+  m := 12 + 7 * 'm_ax r_/ '[t_ally d_isclose] e_ach rows
+  top := 44 + 7 * 'm_ax r_/ '[t_ally d_isclose] e_ach cols
+  w := (m + (cell * C) + 12) m_ax (16 + 8 * t_ally title) m_ax 16 + 7 * t_ally note
+  z := top + (cell * R) + 12
+  left := '{ i -> h:l_abel ((m - 6), top + (cell * i - 1) + 12, "font-size=\"11\" text-anchor=\"end\" dominant-baseline=\"central\"", d_isclose i s_elect rows) } m_ap r_ange R
+  above := '{ i -> h:l_abel (0, 0, "font-size=\"11\" text-anchor=\"start\" dominant-baseline=\"central\" transform=\"translate(" c_at (f_ormat m + (cell * i - 1) + 12) c_at " " c_at (f_ormat top - 6) c_at ") rotate(-90)\"", d_isclose i s_elect cols) } m_ap r_ange C
   head := "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" c_at (f_ormat w) c_at "\" height=\"" c_at (f_ormat z) c_at "\" viewBox=\"0 0 " c_at (f_ormat w) c_at " " c_at (f_ormat z) c_at "\" role=\"img\">\n<rect width=\"" c_at (f_ormat w) c_at "\" height=\"" c_at (f_ormat z) c_at "\" fill=\"#ffffff\"/>\n" c_at (h:l_abel (8, 18, "font-size=\"13\"", title)) c_at "\n" c_at (h:l_abel (8, 36, "font-size=\"11\"", note)) c_at "\n"
   grid := "<g class=\"cells\" transform=\"translate(" c_at (f_ormat m) c_at " " c_at (f_ormat top) c_at ")\">\n" c_at (([]S_CALE 2) []N_GRID P) c_at "</g>\n"
-  head c_at "<g class=\"queries\">\n" c_at (h:l_ines rows) c_at "</g>\n<g class=\"keys\">\n" c_at (h:l_ines cols) c_at "</g>\n" c_at grid c_at "</svg>"
+  head c_at "<g class=\"rows\">\n" c_at (h:l_ines left) c_at "</g>\n<g class=\"cols\">\n" c_at (h:l_ines above) c_at "</g>\n" c_at grid c_at "</svg>"
+}
+
+## `d s_vg (layer, head)`: the head's heatmap as SVG text: a row per
+## query token, a column per key token, each cell the weight in percent.
+l:s_vg := { d (l, h) ->
+  toks := cp:t_okens d
+  model := d_isclose f_irst d cp:t_exts "model"
+  title := model c_at " layer " c_at (f_ormat l) c_at " head " c_at (f_ormat h) c_at ": attention, in percent"
+  note := "rows: queries, columns: keys. An observation, not causal evidence."
+  l:g_rid (title, note, toks, toks, l:p_ercent d l:p_attern (l, h))
 }

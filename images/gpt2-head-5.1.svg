@@ -1,46 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="544" height="567" viewBox="0 0 544 567" role="img">
-<rect width="544" height="567" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="523" height="555" viewBox="0 0 523 555" role="img">
+<rect width="523" height="555" fill="#ffffff"/>
 <text x="8" y="18" font-family="monospace" fill="#1f2937" font-size="13" xml:space="preserve">gpt2 layer 5 head 1: attention, in percent</text>
 <text x="8" y="36" font-family="monospace" fill="#1f2937" font-size="11" xml:space="preserve">rows: queries, columns: keys. An observation, not causal evidence.</text>
-<g class="queries">
-<text x="97" y="159" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve">&lt;|endoftext|&gt;</text>
-<text x="97" y="183" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> terrorism</text>
-<text x="97" y="207" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve">EN</text>
-<text x="97" y="231" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> Is</text>
-<text x="97" y="255" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> prepared</text>
-<text x="97" y="279" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> provides</text>
-<text x="97" y="303" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> European</text>
-<text x="97" y="327" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> attack</text>
-<text x="97" y="351" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> advert</text>
-<text x="97" y="375" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> terrorism</text>
-<text x="97" y="399" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve">EN</text>
-<text x="97" y="423" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> Is</text>
-<text x="97" y="447" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> prepared</text>
-<text x="97" y="471" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> provides</text>
-<text x="97" y="495" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> European</text>
-<text x="97" y="519" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> attack</text>
-<text x="97" y="543" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> advert</text>
+<g class="rows">
+<text x="97" y="147" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve">&lt;|endoftext|&gt;</text>
+<text x="97" y="171" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> terrorism</text>
+<text x="97" y="195" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve">EN</text>
+<text x="97" y="219" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> Is</text>
+<text x="97" y="243" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> prepared</text>
+<text x="97" y="267" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> provides</text>
+<text x="97" y="291" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> European</text>
+<text x="97" y="315" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> attack</text>
+<text x="97" y="339" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> advert</text>
+<text x="97" y="363" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> terrorism</text>
+<text x="97" y="387" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve">EN</text>
+<text x="97" y="411" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> Is</text>
+<text x="97" y="435" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> prepared</text>
+<text x="97" y="459" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> provides</text>
+<text x="97" y="483" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> European</text>
+<text x="97" y="507" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> attack</text>
+<text x="97" y="531" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="end" dominant-baseline="central" xml:space="preserve"> advert</text>
 </g>
-<g class="keys">
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(115 141) rotate(-90)" xml:space="preserve">&lt;|endoftext|&gt;</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(139 141) rotate(-90)" xml:space="preserve"> terrorism</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(163 141) rotate(-90)" xml:space="preserve">EN</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(187 141) rotate(-90)" xml:space="preserve"> Is</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(211 141) rotate(-90)" xml:space="preserve"> prepared</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(235 141) rotate(-90)" xml:space="preserve"> provides</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(259 141) rotate(-90)" xml:space="preserve"> European</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(283 141) rotate(-90)" xml:space="preserve"> attack</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(307 141) rotate(-90)" xml:space="preserve"> advert</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(331 141) rotate(-90)" xml:space="preserve"> terrorism</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(355 141) rotate(-90)" xml:space="preserve">EN</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(379 141) rotate(-90)" xml:space="preserve"> Is</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(403 141) rotate(-90)" xml:space="preserve"> prepared</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(427 141) rotate(-90)" xml:space="preserve"> provides</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(451 141) rotate(-90)" xml:space="preserve"> European</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(475 141) rotate(-90)" xml:space="preserve"> attack</text>
-<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(499 141) rotate(-90)" xml:space="preserve"> advert</text>
+<g class="cols">
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(115 129) rotate(-90)" xml:space="preserve">&lt;|endoftext|&gt;</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(139 129) rotate(-90)" xml:space="preserve"> terrorism</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(163 129) rotate(-90)" xml:space="preserve">EN</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(187 129) rotate(-90)" xml:space="preserve"> Is</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(211 129) rotate(-90)" xml:space="preserve"> prepared</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(235 129) rotate(-90)" xml:space="preserve"> provides</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(259 129) rotate(-90)" xml:space="preserve"> European</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(283 129) rotate(-90)" xml:space="preserve"> attack</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(307 129) rotate(-90)" xml:space="preserve"> advert</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(331 129) rotate(-90)" xml:space="preserve"> terrorism</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(355 129) rotate(-90)" xml:space="preserve">EN</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(379 129) rotate(-90)" xml:space="preserve"> Is</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(403 129) rotate(-90)" xml:space="preserve"> prepared</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(427 129) rotate(-90)" xml:space="preserve"> provides</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(451 129) rotate(-90)" xml:space="preserve"> European</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(475 129) rotate(-90)" xml:space="preserve"> attack</text>
+<text x="0" y="0" font-family="monospace" fill="#1f2937" font-size="11" text-anchor="start" dominant-baseline="central" transform="translate(499 129) rotate(-90)" xml:space="preserve"> advert</text>
 </g>
-<g class="cells" transform="translate(103 147)">
+<g class="cells" transform="translate(103 135)">
 <svg xmlns="http://www.w3.org/2000/svg" width="408" height="408" viewBox="0 0 408 408" role="img">
 <rect width="408" height="408" fill="#f8fafc"/>
 <rect x="0" y="0" width="24" height="24" fill="#fde725"/>
