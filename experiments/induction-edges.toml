@@ -1,0 +1,18 @@
+# Which edges of GPT-2 Small to test for the induction experiment (Saga 3).
+# Every value is a list of strings, read by Python (tomllib) and X_eTaL ([]L_IST).
+#
+# base         the experiment (beside this file) whose prompts, metric, seeds and
+#              controls are used
+# senders      heads "layer.head" and "embed", or "all"
+# receivers    head inputs "layer.head.q|k|v" and "logits", or "all"
+# inputs       which head inputs count as receivers when receivers is "all"
+# path_patch   which edges to path-patch: "all", or "top" N by edge attribution
+# always       edges path-patched whatever the attribution says (the circuit's)
+# (docs/design.md, D19)
+name = ["induction edges, GPT-2 Small"]
+base = ["induction.toml"]
+senders = ["all"]
+receivers = ["all"]
+inputs = ["q", "k", "v"]
+path_patch = ["top", "200"]
+always = ["4.11 5.1.k", "4.11 5.5.k", "4.11 6.9.k", "4.11 7.2.k", "4.11 7.10.k"]

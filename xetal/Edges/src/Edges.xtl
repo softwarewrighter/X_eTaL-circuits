@@ -1,0 +1,82 @@
+## Edges: the paths of a transformer, named as the adapter names them
+## (docs/design.md, D19). A sender is a head "layer.head" or "embed"; a
+## receiver is a head's query, key or value input "layer.head.q|k|v" or
+## "logits"; an edge "sender receiver" goes to a later layer. As numbers
+## an edge is five Ints: sender layer and head (embed: -1 0), receiver
+## layer and head (logits: the number of layers, 0), and the input (1 q,
+## 2 k, 3 v, 0 the logits). Layers and heads count from 0, as the model
+## counts them. (L, H) is the model's number of layers and heads.
+##
+## Import it with an alias of your choice: "ed:" u_se< "Edges".
+
+inputNames := "qkv"
+
+### Names
+
+## The numbers in a "layer.head" text (none when it holds anything but
+## digits and dots).
+h:n_ums := { t ->
+  0 < '+ r_/ n_ot t m_ember? "0123456789." ? 0 t_ake 0
+  f_loor n_umbers '{ x ->
+    x = f_irst "." ? f_irst " "
+    x
+  } e_ach t
+}
+
+## v (layer, head) when it is inside the model, else the error naming t.
+h:i_nside := { (L, H, t, v) ->
+  0 < ((f_irst v) >= L) + (f_irst r_ev v) >= H ? "graph" []S_IGNAL "\"" c_at t c_at "\" is outside the model (" c_at (f_ormat L) c_at " layers, " c_at (f_ormat H) c_at " heads)"
+  v
+}
+
+## `(L, H) s_ender "4.11"`: a sender's layer and head (embed: -1 0).
+## >> "ed:" u_se< "Edges"
+## >> (12, 12) ed:s_ender "4.11"
+## 4 11
+l:s_ender := { (L, H) t ->
+  t m_atch "embed" ? (0 - 1) c_at 0
+  v := h:n_ums t
+  0 < ((t_ally v) != 2) + 0 = '+ r_/ t = f_irst "." ? "graph" []S_IGNAL "sender \"" c_at t c_at "\" is not layer.head or embed"
+  h:i_nside (L, H, t, v)
+}
+
+## `(L, H) r_eceiver "5.1.k"`: a receiver's layer, head and input
+## (logits: L 0 0).
+## >> "ed:" u_se< "Edges"
+## >> (12, 12) ed:r_eceiver "5.1.k"
+## 5 1 2
+l:r_eceiver := { (L, H) t ->
+  t m_atch "logits" ? L c_at 0 0
+  n := t_ally t
+  i := inputNames i_ndexOf f_irst r_ev t
+  0 < (n < 5) + (i > 3) + (f_irst 1 d_rop r_ev t) != f_irst "." ? "graph" []S_IGNAL "receiver \"" c_at t c_at "\" is not layer.head.q|k|v or logits"
+  v := h:n_ums (n - 2) t_ake t
+  (t_ally v) != 2 ? "graph" []S_IGNAL "receiver \"" c_at t c_at "\" is not layer.head.q|k|v or logits"
+  (h:i_nside (L, H, t, v)) c_at i
+}
+
+## `(L, H) e_dge "4.11 5.1.k"`: the edge's five Ints; a receiver not in
+## a later layer than its sender is refused.
+## >> "ed:" u_se< "Edges"
+## >> (12, 12) ed:e_dge "4.11 5.1.k"
+## 4 11 5 1 2
+l:e_dge := { (L, H) t ->
+  w := (t != f_irst " ") p_artition t
+  (t_ally w) != 2 ? "graph" []S_IGNAL "edge \"" c_at t c_at "\" is not \"sender receiver\""
+  s := (L, H) l:s_ender d_isclose f_irst w
+  r := (L, H) l:r_eceiver d_isclose f_irst r_ev w
+  (f_irst r) <= f_irst s ? "graph" []S_IGNAL "edge \"" c_at t c_at "\": the receiver is not in a later layer than the sender"
+  s c_at r
+}
+
+### Counting
+
+## `c_ount (L, H, k)`: how many edges a model of L layers and H heads
+## has when k inputs of each head are receivers.
+## >> "ed:" u_se< "Edges"
+## >> ed:c_ount (12, 12, 3)
+## 29089
+l:c_ount := { (L, H, k) ->
+  l := (r_ange L) - 1
+  (1 + k * H * L) + '+ r_/ H * 1 + k * H * (L - 1) - l
+}

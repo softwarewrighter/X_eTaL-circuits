@@ -96,3 +96,15 @@ same three, and gives each head that passes on the finding seeds its
 verdict: confirmed when it passes again on the held-out seeds, tested
 only when it does not (docs/design.md, D18). The held-out runs are made
 with `--seeds heldout`; `fixtures/gpt2-induction-heldout-*` hold them.
+
+## induction-edges.toml
+
+Which paths between heads to test (docs/design.md, D19). A sender is a
+head `layer.head` or `embed`; a receiver is a head's query, key or
+value input `layer.head.q|k|v` or `logits`; an edge `"4.11 5.1.k"` goes
+to a later layer. GPT-2 Small has 29,089 such edges. The file names its
+base experiment (`induction.toml`, for the prompts, metric, seeds and
+controls), the senders and receivers in scope, the inputs, how many
+edges to path-patch (the top 200 by edge attribution), and edges
+always path-patched: here the circuit's, 4.11 into each induction
+head's key.

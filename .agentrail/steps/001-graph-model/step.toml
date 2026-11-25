@@ -1,6 +1,6 @@
 number = 1
 slug = "graph-model"
-status = "pending"
+status = "in-progress"
 description = """
 The graph model, test-first: which edges exist and how they are named.
 

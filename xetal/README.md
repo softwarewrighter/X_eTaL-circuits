@@ -130,3 +130,17 @@ destroyed).
 `Heatmap` also exports `hm:g_ridOn (scale, title, note, rows, cols, P)`:
 `g_rid` on any `[]N_GRID` scale. These effects are not yet compared
 with random controls.
+
+## Edges
+
+Edge names as the adapter writes them (docs/design.md, D19): an edge
+`"sender receiver"` is five Ints, sender layer and head (`embed` is
+`-1 0`), receiver layer and head (`logits` is the number of layers and
+`0`) and its input (1 q, 2 k, 3 v, 0 the logits). `(L, H)` is the
+model's number of layers and heads.
+
+| Function | Gives |
+| -------- | ----- |
+| `(L, H) ed:e_dge "4.11 5.1.k"` | `4 11 5 1 2`; a receiver not in a later layer is refused (`error[graph]`) |
+| `(L, H) ed:s_ender "4.11"`, `(L, H) ed:r_eceiver "5.1.k"` | one end of an edge |
+| `ed:c_ount (L, H, k)` | how many edges there are with k inputs per head (GPT-2 Small, 3: 29089) |

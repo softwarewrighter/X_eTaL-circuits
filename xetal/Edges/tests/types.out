@@ -1,0 +1,4 @@
+l:s_ender : (Int, Int) -> Char -> Int
+l:r_eceiver : (Int, Int) -> Char -> Int
+l:e_dge : (Int, Int) -> Char -> Int
+l:c_ount : (Int, Int, Int) -> Int
