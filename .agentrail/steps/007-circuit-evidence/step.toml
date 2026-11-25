@@ -1,6 +1,6 @@
 number = 7
 slug = "circuit-evidence"
-status = "in-progress"
+status = "completed"
 description = """
 Circuit evidence on the map and the pages, test-first; closes the saga.
 
@@ -8,5 +8,6 @@ Circuit evidence on the map and the pages, test-first; closes the saga.
 role = "production"
 context_files = []
 created_at = "2026-11-24T08:14:44"
+completed_at = "2026-11-24T19:29:53"
 task_type = "xetal"
-commits = []
+commits = ["788e2a69f4c63937f3450e04f97f21fc0b3e7076"]

@@ -1,0 +1,1 @@
+Per-head evidence in the circuit file (12 heads confirmed, edges observed) drawn as outlines on the model map with hover verdicts; test derives evidence from runs; README/pages/screenshot; Saga 2 closed in plan.md, Saga 3 revised (path patching of edges). Pushed; Pages redeploys.
