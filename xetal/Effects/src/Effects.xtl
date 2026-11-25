@@ -1,0 +1,131 @@
+## Effects: the results of interventions on GPT-2 Small's heads, read
+## from the adapter's run directories (one per seed, run.toml and the
+## arrays), as layer x head effects in percent:
+##
+##   "zero", "mean"      ablation runs: the percent of the seed's clean
+##                       logit difference lost when the head is ablated
+##   "denoise", "noise"  patching runs: the percent of the clean-twin gap
+##                       the head's output restores or destroys
+##
+## A set of runs is named by one text: the seed directories' absolute
+## paths, separated by spaces (scripts/effects.sh makes it). These are
+## effects of interventions on one prompt family, not yet compared with
+## random controls.
+##
+## Import it with an alias of your choice: "ef:" u_se< "Effects".
+
+"hm:" u_se< "Heatmap"
+
+shown := 10
+
+### Runs
+
+## `r_uns D`: the run directories named by D (boxed), split at spaces.
+## >> "ef:" u_se< "Effects"
+## >> t_ally ef:r_uns "/a/seed-0 /a/seed-1"
+## 2
+l:r_uns := { D -> (D != f_irst " ") p_artition D }
+
+## `d k_ey "key"`: a key of run d's run.toml, its strings (boxed).
+l:k_ey := { d k ->
+  (t_ally d) = 0 ? "effects" []S_IGNAL "a run directory is needed"
+  (f_irst d) != f_irst "/" ? "effects" []S_IGNAL d c_at ": give the run directory as an absolute path"
+  (d c_at "/run.toml") []L_IST k
+}
+
+## `d r_ead "name"`: one of run d's arrays, shaped by <name>_shape.
+l:r_ead := { d n ->
+  s := f_loor r_avel m_ix '{ n_umbers d_isclose _r } m_ap d l:k_ey n c_at "_shape"
+  v := n_umbers []N_GET d c_at "/" c_at n c_at ".txt"
+  (t_ally v) != '* r_/ s ? "effects" []S_IGNAL d c_at ": " c_at n c_at ".txt has " c_at (f_ormat t_ally v) c_at " numbers for shape " c_at f_ormat s
+  s r_eshape v
+}
+
+### Effects
+
+## One seed's effects of method m, in percent.
+h:p_ercentOf := { (d, m) ->
+  m m_atch "zero" ? (100.0 / h:b_aseline d) * d l:r_ead "zero_effect"
+  m m_atch "mean" ? (100.0 / h:b_aseline d) * d l:r_ead "mean_effect"
+  m m_atch "denoise" ? 100.0 * d l:r_ead "head_denoise"
+  m m_atch "noise" ? 100.0 * d l:r_ead "head_noise"
+  "effects" []S_IGNAL "no method " c_at m c_at " (zero, mean, denoise, noise)"
+}
+
+## The clean logit difference an ablation run's effects are measured on.
+h:b_aseline := { d -> f_irst n_umbers d_isclose f_irst d l:k_ey "baseline" }
+
+## `D e_ffects "method"`: seeds x layer x head, in percent.
+l:e_ffects := { D m -> m_ix '{ d -> h:p_ercentOf ((d_isclose d), m) } m_ap l:r_uns D }
+
+## `m_ean S`: the mean over the first axis (the seeds).
+## >> "ef:" u_se< "Effects"
+## >> ef:m_ean 2 2 r_eshape 1.0 2.0 3.0 6.0
+## 2.0 4.0
+l:m_ean := { S -> ('+ r_/ S) / f_loat t_ally S }
+
+## `s_pread S`: the standard deviation over the first axis (the seeds),
+## dividing by their number.
+## >> "ef:" u_se< "Effects"
+## >> ef:s_pread 2 2 r_eshape 1.0 2.0 3.0 6.0
+## 1.0 2.0
+l:s_pread := { S ->
+  M := l:m_ean S
+  s_qrt 0.0 m_ax (l:m_ean S * S) - M * M
+}
+
+## `r_anked M`: every head of a layer x head matrix, largest first, a
+## row (layer, head) each, counted from 0 as the model counts.
+l:r_anked := { M ->
+  H := 2 s_elect s_hape M
+  o := g_rade 0.0 - r_avel M
+  2 1 t_ranspose (2 c_at t_ally o) r_eshape ((o - 1) d_iv H) c_at (o - 1) m_od H
+}
+
+### Words
+
+## What method m measures, in words.
+h:w_ords := { m ->
+  m m_atch "zero" ? "zero ablation: percent of the clean logit difference lost"
+  m m_atch "mean" ? "mean ablation: percent of the clean logit difference lost"
+  m m_atch "denoise" ? "denoising: percent of the clean-twin gap restored"
+  m m_atch "noise" ? "noising: percent of the clean-twin gap destroyed"
+  "effects" []S_IGNAL "no method " c_at m c_at " (zero, mean, denoise, noise)"
+}
+
+## A number rounded half up to an Int.
+h:r_ound := { x -> f_loor 0.5 + x }
+
+## `D r_eport "method"`: the method in words, the number of seeds, then
+## the leading heads, a line each: the head, its mean and its spread.
+l:r_eport := { D m ->
+  S := D l:e_ffects m
+  M := l:m_ean S
+  V := l:s_pread S
+  R := l:r_anked M
+  line := '{ i ->
+    row := i s_elect R
+    lay := f_irst row
+    hd := f_irst r_ev row
+    k := 1 + hd + lay * 2 s_elect s_hape M
+    (f_ormat lay) c_at "." c_at (f_ormat hd) c_at " " c_at (f_ormat h:r_ound k s_elect r_avel M) c_at "% +- " c_at (f_ormat h:r_ound k s_elect r_avel V) c_at "\n"
+  } m_ap r_ange shown
+  intro := (h:w_ords m) c_at ", over " c_at (f_ormat t_ally S) c_at " seeds; not yet compared with random controls.\n\n"
+  intro c_at d_isclose '{ a b -> e_nclose (d_isclose a) c_at d_isclose b } r_/ line
+}
+
+### Pictures
+
+## `D s_vg "method"`: the mean effect of every head as a layer x head
+## grid, in percent, on the diverging scale (blue below 0, red above).
+l:s_vg := { D m ->
+  S := D l:e_ffects m
+  M := l:m_ean S
+  first := d_isclose f_irst l:r_uns D
+  model := d_isclose f_irst first l:k_ey "model"
+  rows := '{ n -> "L" c_at f_ormat n - 1 } m_ap r_ange t_ally M
+  cols := '{ n -> "H" c_at f_ormat n - 1 } m_ap r_ange 2 s_elect s_hape M
+  title := model c_at ": " c_at (h:w_ords m) c_at ", mean of " c_at (f_ormat t_ally S) c_at " seeds"
+  note := "rows: layers, columns: heads. Effects of interventions on one prompt family; not yet compared with random controls."
+  hm:g_ridOn (3, title, note, rows, cols, h:r_ound M)
+}

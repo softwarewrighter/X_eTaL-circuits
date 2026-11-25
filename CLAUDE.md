@@ -409,6 +409,8 @@ just fixture            # remake fixtures/gpt2-induction and gpt2-induction-full
 just heatmap DIR L H [OUT.svg]    # one head as an SVG heatmap (model numbers from 0)
 just scores DIR [OUT_DIR]         # previous-token and induction scores of every head
 just map DIR CIRCUIT.toml [OUT.svg]   # the model map with a circuit (experiments/circuits/)
+just baseline|ablate|patch --experiment experiments/induction.toml ...   # runs (model extra)
+just effects RUNS_DIR [OUT_DIR]   # interventions' effects per head, in X_eTaL
 just pages [OUT_DIR]    # the static site (work/site); CI deploys it (.github/workflows/pages.yml)
 just screenshot         # retake images/demo.png (headless Chrome)
 ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model

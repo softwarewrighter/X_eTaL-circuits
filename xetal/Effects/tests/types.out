@@ -1,0 +1,9 @@
+l:r_uns : Char -> Box Char
+l:k_ey : Char -> Char -> Box Char
+l:r_ead : Char -> Char -> Float
+l:e_ffects : Char -> Char -> Float
+l:m_ean : Float -> Float
+l:s_pread : Float -> Float
+l:r_anked : Float -> Int
+l:r_eport : Char -> Char -> Char
+l:s_vg : Char -> Char -> Char

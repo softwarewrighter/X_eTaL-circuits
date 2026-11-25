@@ -47,13 +47,34 @@ def refs(page: Path) -> list[str]:
 
 
 def test_the_pages_and_pictures_are_there(site):
-    for name in ("index.html", "heads.html", "scores.html", "eli5.html", "style.css", "map.svg"):
+    for name in (
+        "index.html",
+        "heads.html",
+        "scores.html",
+        "effects.html",
+        "eli5.html",
+        "style.css",
+    ):
         assert (site / name).is_file(), name
     assert sorted(p.name for p in (site / "heads").iterdir()) == sorted(
         f"L{layer}H{h}.svg" for layer, h in SOME
     )
     assert (site / "scores" / "induction.svg").is_file()
     assert (site / "scores" / "previous.svg").is_file()
+    assert (site / "map.svg").is_file()
+    assert sorted(p.name for p in (site / "effects").iterdir()) == [
+        "denoise.svg",
+        "mean.svg",
+        "noise.svg",
+        "zero.svg",
+    ]
+
+
+def test_the_effects_page_shows_both_reports_and_says_candidates(site):
+    text = (site / "effects.html").read_text()
+    assert "denoising: percent of the clean-twin gap restored" in text
+    assert "mean ablation: percent of the clean logit difference lost" in text
+    assert "not yet compared with random controls" in text
 
 
 def test_every_local_link_resolves_and_external_ones_are_https(site):

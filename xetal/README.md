@@ -103,3 +103,26 @@ A circuit is refused (`error[map]`) when it is for another model, has
 an evidence level other than the three or not one per edge, names a
 layer not captured or a head outside the model, or has an edge that
 does not go to a later layer.
+
+## Effects
+
+The effects of interventions on every head, from the adapter's runs
+(`just ablate`, `just patch`; one run directory per seed). A set of
+runs is one text: the seed directories' absolute paths separated by
+spaces (`just effects` makes it). Methods: `"zero"` and `"mean"`
+(ablation: percent of the clean logit difference lost), `"denoise"` and
+`"noise"` (patching: percent of the clean-twin gap restored or
+destroyed).
+
+| Function | Gives |
+| -------- | ----- |
+| `D ef:e_ffects "method"` | seeds x layer x head, in percent |
+| `ef:m_ean S`, `ef:s_pread S` | the mean and standard deviation over the seeds |
+| `ef:r_anked M` | every head, largest effect first, a row (layer, head) each |
+| `D ef:r_eport "method"` | the leading heads with mean and spread, as text |
+| `D ef:s_vg "method"` | the mean effects as a layer x head grid on the diverging scale |
+| `d ef:r_ead "name"`, `d ef:k_ey "key"` | one run's array or run.toml key |
+
+`Heatmap` also exports `hm:g_ridOn (scale, title, note, rows, cols, P)`:
+`g_rid` on any `[]N_GRID` scale. These effects are not yet compared
+with random controls.

@@ -210,6 +210,91 @@ it is observed in attention patterns and known from the literature,
 but not yet tested here. As interventions test each edge, the same
 map draws it solid, and then thick once it holds on held-out prompts.
 
+## Testing heads by intervention
+
+Attention patterns name candidates; interventions test them. The
+experiment `experiments/induction.toml` pairs each repeated prompt with
+a twin whose second copy is fresh tokens, and measures the logit
+difference between the right next token and the twin's at each
+position of the second copy (see
+[`experiments/README.md`](experiments/README.md)). `just ablate`
+switches off one head at a time; `just patch` copies one head's output
+between the twins. `just effects`, in X_eTaL (`xetal/Effects`), reads
+the runs, one per seed, and gives each head's mean effect and its
+spread over the seeds, in percent.
+
+```bash
+just effects fixtures/gpt2-induction-ablation images/gpt2-effects
+just effects fixtures/gpt2-induction-patch images/gpt2-effects
+```
+
+```text
+zero ablation: percent of the clean logit difference lost, over 10 seeds; not yet compared with random controls.
+
+7.6 15% +- 4
+5.5 13% +- 4
+1.3 12% +- 5
+0.1 11% +- 5
+0.10 10% +- 9
+5.9 10% +- 3
+5.1 10% +- 6
+3.0 7% +- 4
+0.9 7% +- 4
+1.1 7% +- 3
+
+mean ablation: percent of the clean logit difference lost, over 10 seeds; not yet compared with random controls.
+
+5.1 22% +- 6
+4.11 10% +- 3
+7.6 9% +- 4
+8.5 9% +- 2
+5.5 6% +- 3
+0.1 5% +- 3
+6.9 5% +- 2
+9.3 4% +- 1
+7.11 4% +- 1
+6.7 4% +- 2
+```
+
+```text
+denoising: percent of the clean-twin gap restored, over 10 seeds; not yet compared with random controls.
+
+6.9 15% +- 2
+5.1 12% +- 2
+7.2 12% +- 2
+5.5 11% +- 2
+7.10 8% +- 1
+9.9 7% +- 1
+9.6 7% +- 2
+10.1 6% +- 1
+0.1 5% +- 3
+10.0 5% +- 1
+
+noising: percent of the clean-twin gap destroyed, over 10 seeds; not yet compared with random controls.
+
+5.1 25% +- 7
+7.6 10% +- 4
+8.5 9% +- 3
+0.1 7% +- 3
+5.5 6% +- 4
+6.9 6% +- 3
+9.3 5% +- 2
+7.11 4% +- 2
+6.7 4% +- 3
+8.2 4% +- 2
+```
+
+![Denoising: the share of the gap each head's output restores](images/gpt2-effects/denoise.svg)
+
+![Mean ablation: the share of the clean logit difference lost without each head](images/gpt2-effects/mean.svg)
+
+Restoring one head's output into the twin brings back the most for
+6.9, 5.1, 7.2, 5.5 and 7.10: the five induction heads the attention
+scores named. Removing one head costs little except for 5.1: the heads
+back each other up. 7.6 and 8.5 matter when removed but restore little
+on their own. None of this is yet compared with random controls, so
+these heads are still candidates.
+
 ## The live demo
 
 `just pages` builds the site from the committed captures into
@@ -233,8 +318,8 @@ Early: the adapter writes captures, X_eTaL reads and checks them
 scores every head (`xetal/Scores`) and draws the model map with a
 circuit over it (`xetal/Map`, see [`xetal/README.md`](xetal/README.md)).
 The [live demo](https://softwarewrighter.github.io/X_eTaL-circuits/)
-shows all of it. Next: interventions that test which heads the output
-needs. See
+shows all of it. Interventions (ablation and patching) are measured
+and drawn too; comparing them with random controls comes next.
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

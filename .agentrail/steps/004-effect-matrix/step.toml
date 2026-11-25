@@ -1,6 +1,6 @@
 number = 4
 slug = "effect-matrix"
-status = "pending"
+status = "in-progress"
 description = """
 The effect matrix in X_eTaL, test-first.
 

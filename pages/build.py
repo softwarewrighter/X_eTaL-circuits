@@ -59,9 +59,15 @@ def build(out: Path, heads: list[tuple[int, int]] | None = None) -> None:
     draw_heads(out, heads)
     report = script("scores.sh", str(CAPTURE), str(out / "scores"))
     script("map.sh", str(CAPTURE), str(CIRCUIT), str(out / "map.svg"))
+    effects = {
+        kind: script(
+            "effects.sh", str(ROOT / "fixtures" / f"gpt2-induction-{kind}"), str(out / "effects")
+        )
+        for kind in ("patch", "ablation")
+    }
     meta = tomllib.loads((CAPTURE / "capture.toml").read_text())
     circuit = tomllib.loads(CIRCUIT.read_text())
-    html.write(out, meta, circuit, heads, report)
+    html.write(out, meta, circuit, heads, report, effects)
 
 
 if __name__ == "__main__":

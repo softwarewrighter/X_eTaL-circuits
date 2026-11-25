@@ -2,4 +2,5 @@ l:p_attern : Char -> (Int, Int) -> Float
 l:p_ercent : Float -> Int
 l:x_ml : Char -> Char
 l:g_rid : Num a => (Char, Char, Box Char, Box Char, a) -> Char
+l:g_ridOn : Num a => (Int, Char, Char, Box Char, Box Char, a) -> Char
 l:s_vg : Char -> (Int, Int) -> Char

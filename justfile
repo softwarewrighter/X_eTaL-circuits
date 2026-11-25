@@ -62,3 +62,7 @@ ablate *ARGS:
 # Activation patching between the twins: just patch --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
 patch *ARGS:
     scripts/patch.sh {{ARGS}}
+
+# Effects of interventions on every head, from ablation or patching runs: just effects RUNS_DIR [OUT_DIR]
+effects *ARGS:
+    scripts/effects.sh {{ARGS}}

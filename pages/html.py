@@ -52,7 +52,8 @@ def page(title: str, meta: dict, body: str) -> str:
 </head>
 <body>
 <nav><a href="index.html">Model map</a><a href="heads.html">Heads</a>
-<a href="scores.html">Scores</a><a href="eli5.html">Explain it simply</a>
+<a href="scores.html">Scores</a><a href="effects.html">Effects</a>
+<a href="eli5.html">Explain it simply</a>
 <a href="{REPO}">Source</a></nav>
 <h1>{escape(title)}</h1>
 <p class="about">{about}</p>
@@ -134,18 +135,43 @@ after the current token's earlier occurrence). The leading heads:</p>
 """
 
 
+def effects_body(reports: dict) -> str:
+    grids = "".join(
+        f"<h2>{escape(title)}</h2>\n<pre>{escape(reports[kind])}</pre>\n"
+        + "".join(
+            f'<div class="picture"><img src="effects/{m}.svg" alt="{m}: every head"></div>\n'
+            for m in methods
+        )
+        for kind, title, methods in (
+            (
+                "patch",
+                "Patching: copying one head's output between the twins",
+                ("denoise", "noise"),
+            ),
+            ("ablation", "Ablation: switching one head off", ("mean", "zero")),
+        )
+    )
+    return f"""<p>Interventions on every head. Each repeated prompt has a twin whose
+second copy is fresh tokens; the metric is the logit difference between the
+right next token and the twin's, at each position of the second copy. Effects
+are in percent, the mean over 10 seeds (blue below 0, red above). They are not
+yet compared with random controls, so the heads they name are candidates.</p>
+{grids}"""
+
+
 def eli5_body() -> str:
     text = (ROOT / "docs" / "eli5.md").read_text()
     body = markdown.markdown(text, extensions=["tables", "fenced_code"])
     return re.sub(r'href="([\w./-]+\.md)"', rf'href="{REPO}/blob/main/docs/\1"', body)
 
 
-def write(out: Path, meta: dict, circuit: dict, heads: list, report: str) -> None:
+def write(out: Path, meta: dict, circuit: dict, heads: list, report: str, effects: dict) -> None:
     (out / "style.css").write_text(CSS)
     pages = {
         "index.html": ("GPT-2 Small: the model map", index_body(out, circuit)),
         "heads.html": ("GPT-2 Small: one head's attention", heads_body(circuit, heads)),
         "scores.html": ("GPT-2 Small: every head's scores", scores_body(report)),
+        "effects.html": ("GPT-2 Small: interventions on every head", effects_body(effects)),
         "eli5.html": ("Explain it simply", eli5_body()),
     }
     for name, (title, body) in pages.items():
