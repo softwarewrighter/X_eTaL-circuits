@@ -1,0 +1,12 @@
+number = 7
+slug = "circuit-graph-view"
+status = "pending"
+description = """
+The circuit graph view, test-first; closes the saga.
+
+- The model map draws e..."""
+role = "production"
+context_files = []
+created_at = "2026-11-24T19:40:39"
+task_type = "xetal"
+commits = []

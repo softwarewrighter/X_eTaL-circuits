@@ -187,7 +187,7 @@ What was learned for later sagas:
 - The circuit file is checked against the runs by a test, so the map
   cannot claim more than the runs show.
 
-## Saga 3 -- circuit-discovery (Milestone 3)
+## Saga 3 -- circuit-discovery (Milestone 3)  [ACTIVE]
 
 Goal: test the edges of the induction circuit in GPT-2 Small, which
 Saga 2 left observed: does 4.11 feed the induction heads, and through

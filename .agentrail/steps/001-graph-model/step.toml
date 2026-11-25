@@ -1,0 +1,12 @@
+number = 1
+slug = "graph-model"
+status = "pending"
+description = """
+The graph model, test-first: which edges exist and how they are named.
+
+- Sen..."""
+role = "production"
+context_files = []
+created_at = "2026-11-24T19:40:39"
+task_type = "xetal"
+commits = []

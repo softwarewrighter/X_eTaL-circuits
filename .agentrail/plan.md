@@ -1,16 +1,19 @@
-# Saga 2 -- causal-experiments (Milestone 2)
+# Saga 3 -- circuit-discovery (Milestone 3)
 
-Goal: test causal importance, not just patterns, on GPT-2 Small's
-induction behavior. Twin prompts (clean and corrupted, token-aligned),
-head ablation and activation patching give an L x H effect matrix `D`
-in X_eTaL, compared with matched random controls and checked on
-held-out seeds. Heads that pass become "tested" or "confirmed" on the
-model map (D13); edges stay "observed" until path patching (Saga 3).
-Every new picture goes on the live pages.
+Goal: test the edges of the induction circuit in GPT-2 Small, which
+Saga 2 left observed. Does 4.11 feed the induction heads, and through
+which input (query, key or value)? Which heads do 7.6, 8.5, 9.9, 9.6,
+10.1 and 0.1 read from or feed? Edges are scored by path patching (a
+sender head's output patched only into a receiver's query, key or
+value input), with Saga 2's twins, metric, matched random controls,
+5% floor and held-out seeds. Edge attribution patching ranks edges
+cheaply first. The resulting subgraph is checked for faithfulness,
+completeness and minimality against random subgraphs of the same size.
 
-Roadmap, principles, Saga 1's outcome: docs/plan.md. Rules: CLAUDE.md
-(observation is not causation; the margin as the metric; twins line up
-token by token; tests first).
+Roadmap, principles, Saga 1 and 2 outcomes: docs/plan.md. Rules:
+CLAUDE.md (observation is not causation; the margin; twins aligned;
+tests first). Decisions: docs/design.md (D14-D18 for the experiment,
+the metric, controls and held-out seeds).
 
-Steps: twin-prompt-spec, adapter-ablate, adapter-patch, effect-matrix,
-random-controls, heldout-validation, circuit-evidence.
+Steps: graph-model, path-patching, edge-attribution, edge-effects,
+heldout-edges, faithfulness, circuit-graph-view.
