@@ -6,11 +6,13 @@ from pathlib import Path
 
 import markdown
 
+from pages import intro
+
 ROOT = Path(__file__).resolve().parents[1]
 REPO = "https://github.com/softwarewrighter/X_eTaL-circuits"
 OBSERVATION = (
     "Attention pictures and scores show where heads look: observations, not causal "
-    "evidence. Which heads the output needs is tested by interventions, in later work."
+    "evidence. What the model needs is tested by interventions, on the Effects page."
 )
 
 CSS = """body { font-family: system-ui, sans-serif; max-width: 980px; margin: 0 auto;
@@ -22,6 +24,10 @@ nav a { color: #1d4ed8; text-decoration: none; font-weight: 600; }
   font-size: 14px; }
 .picture { overflow-x: auto; }
 .picture svg, .picture img { max-width: none; }
+.how { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px;
+  font-size: 14px; }
+table { border-collapse: collapse; font-size: 14px; }
+td, th { border: 1px solid #e5e7eb; padding: 4px 8px; text-align: left; vertical-align: top; }
 pre { background: #f3f4f6; padding: 12px; overflow-x: auto; font-size: 13px; }
 select, button { font-size: 15px; margin-right: 8px; }
 button { cursor: pointer; }
@@ -51,8 +57,9 @@ def page(title: str, meta: dict, body: str) -> str:
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<nav><a href="index.html">Model map</a><a href="heads.html">Heads</a>
-<a href="scores.html">Scores</a><a href="effects.html">Effects</a>
+<nav><a href="index.html">Introduction</a><a href="map.html">Model map</a>
+<a href="heads.html">Heads</a><a href="scores.html">Scores</a>
+<a href="effects.html">Effects</a><a href="glossary.html">Glossary</a>
 <a href="eli5.html">Explain it simply</a>
 <a href="{REPO}">Source</a></nav>
 <h1>{escape(title)}</h1>
@@ -193,11 +200,13 @@ def eli5_body() -> str:
 def write(out: Path, meta: dict, circuit: dict, heads: list, report: str, effects: dict) -> None:
     (out / "style.css").write_text(CSS)
     pages = {
-        "index.html": ("GPT-2 Small: the model map", index_body(out, circuit)),
+        "index.html": ("Finding circuits inside GPT-2 Small", intro.index_body(circuit)),
+        "map.html": ("GPT-2 Small: the model map", index_body(out, circuit)),
         "heads.html": ("GPT-2 Small: one head's attention", heads_body(circuit, heads)),
         "scores.html": ("GPT-2 Small: every head's scores", scores_body(report)),
         "effects.html": ("GPT-2 Small: interventions on every head", effects_body(effects)),
         "eli5.html": ("Explain it simply", eli5_body()),
+        "glossary.html": ("Glossary", intro.render("glossary.md")),
     }
     for name, (title, body) in pages.items():
-        (out / name).write_text(page(title, meta, body))
+        (out / name).write_text(page(title, meta, intro.how_to_read(name) + body))

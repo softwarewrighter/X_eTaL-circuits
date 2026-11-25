@@ -4,14 +4,14 @@
 
 <p align="center">
   <b><a href="https://softwarewrighter.github.io/X_eTaL-circuits/">The live demo</a></b>
-  -- GPT-2 Small's model map, every head's attention and the head scores, drawn by X_eTaL
+  -- an introduction, then GPT-2 Small's model map, every head's attention, the scores and the interventions, drawn by X_eTaL
   <br>
   <a href="https://blog.softwarewrighter.com/series/#array-languages">Read the blog series on array languages</a>
   -- posts on X_eTaL and array languages
 </p>
 
 <p align="center">
-  <a href="https://softwarewrighter.github.io/X_eTaL-circuits/"><img src="images/demo.png" alt="The live demo: GPT-2 Small's model map, heads colored by their scores, with the induction circuit drawn over it" width="720"></a>
+  <a href="https://softwarewrighter.github.io/X_eTaL-circuits/map.html"><img src="images/demo.png" alt="The live demo: GPT-2 Small's model map, heads colored by their scores, with the induction circuit drawn over it" width="720"></a>
 </p>
 
 # X_eTaL-circuits
@@ -387,7 +387,9 @@ takes path patching.
 ## The live demo
 
 `just pages` builds the site from the committed captures into
-`work/site`: the model map (hover a head for its numbers), every
+`work/site`: an introduction for a first-time reader (what a circuit
+is, the task, how it is tested, how sure we are, what was found, with
+a glossary), the model map (hover a head for its numbers), every
 head's attention heatmap with a layer and head picker, the score
 grids, and [`docs/eli5.md`](docs/eli5.md). Every picture is drawn by
 X_eTaL, exactly as at the command line. A GitHub Actions workflow

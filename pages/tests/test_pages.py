@@ -49,6 +49,8 @@ def refs(page: Path) -> list[str]:
 def test_the_pages_and_pictures_are_there(site):
     for name in (
         "index.html",
+        "map.html",
+        "glossary.html",
         "heads.html",
         "scores.html",
         "effects.html",
@@ -114,9 +116,8 @@ def test_the_pictures_are_x_etal_s(site):
     assert (site / "map.svg").read_text() == (ROOT / "images/gpt2-model-map.svg").read_text()
 
 
-def test_the_map_is_inline_on_the_front_page_so_hovering_works(site):
-    index = (site / "index.html").read_text()
-    assert '<g class="head" id="head-5.5">' in index
+def test_the_map_is_inline_on_its_page_so_hovering_works(site):
+    assert '<g class="head" id="head-5.5">' in (site / "map.html").read_text()
 
 
 def test_the_head_picker_offers_the_built_heads_and_the_circuit(site):
@@ -153,7 +154,7 @@ def test_the_full_build_draws_every_head():
 def test_readme_links_the_live_demo_with_a_current_screenshot():
     readme = (ROOT / "README.md").read_text()
     assert f'<a href="{SITE_URL}">' in readme
-    assert f'<a href="{SITE_URL}"><img src="images/demo.png"' in readme
+    assert f'<a href="{SITE_URL}map.html"><img src="images/demo.png"' in readme
     assert "No live site yet" not in readme
     source = (ROOT / "images/demo.png.source").read_text().split()
     digest = hashlib.sha256((ROOT / "images/gpt2-model-map.svg").read_bytes()).hexdigest()
@@ -170,3 +171,40 @@ def test_the_workflow_builds_and_deploys_the_site():
         "actions/deploy-pages",
     ):
         assert needed in wf, needed
+
+
+def test_the_front_page_introduces_before_any_picture(site):
+    text = (site / "index.html").read_text()
+    first_picture = min(i for i in (text.find("<img"), text.find("<svg")) if i >= 0)
+    for heading in ("What this is", "The job studied", "How we test it", "How sure we are",
+                    "What we found so far", "The pages"):  # fmt: skip
+        assert -1 < text.find(heading) < first_picture, heading
+
+
+def test_the_findings_are_the_circuit_files(site):
+    circuit = tomllib.loads((ROOT / "experiments/circuits/gpt2-induction.toml").read_text())
+    text = (site / "index.html").read_text()
+    for head, ev in zip(circuit["heads"], circuit["head_evidence"], strict=True):
+        assert f"<tr><td>{head}</td>" in text and ev in text
+
+
+def test_every_page_links_the_introduction_and_the_glossary(site):
+    for page in site.glob("*.html"):
+        links = refs(page)
+        assert "index.html" in links and "glossary.html" in links, page.name
+
+
+def test_every_glossary_link_names_a_term_it_defines(site):
+    glossary = (site / "glossary.html").read_text()
+    ids = set(re.findall(r'<h2 id="([^"]+)"', glossary))
+    assert len(ids) >= 15
+    used = set()
+    for page in site.glob("*.html"):
+        used |= {r.split("#", 1)[1] for r in refs(page) if r.startswith("glossary.html#")}
+    assert used and used <= ids, used - ids
+
+
+def test_every_page_but_the_front_has_a_reading_note(site):
+    for page in site.glob("*.html"):
+        has = 'class="how"' in page.read_text()
+        assert has == (page.name != "index.html"), page.name

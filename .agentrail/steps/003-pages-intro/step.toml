@@ -1,6 +1,6 @@
 number = 3
 slug = "pages-intro"
-status = "pending"
+status = "in-progress"
 description = "The live demo explains itself to a first-time reader (the user's ask), test-f..."
 role = "production"
 context_files = []
