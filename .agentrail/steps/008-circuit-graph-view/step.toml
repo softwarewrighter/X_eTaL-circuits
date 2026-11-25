@@ -1,10 +1,10 @@
-number = 5
-slug = "heldout-edges"
+number = 8
+slug = "circuit-graph-view"
 status = "pending"
 description = """
-Held-out edges, test-first.
+The circuit graph view, test-first; closes the saga.
 
-- Path patching and edge controls rerun on the h..."""
+- The model map draws e..."""
 role = "production"
 context_files = []
 created_at = "2026-11-24T19:40:39"

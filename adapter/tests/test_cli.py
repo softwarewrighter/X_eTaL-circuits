@@ -91,3 +91,9 @@ def test_controls_arguments():
     args = cli.build_parser().parse_args(["controls", "--experiment", "e.toml", "--out", "r"])
     assert (args.command, args.seeds) == ("controls", "finding")
     assert cli.COMMANDS["controls"] is cli.run_controls
+
+
+def test_pathpatch_arguments():
+    args = cli.build_parser().parse_args(["pathpatch", "--experiment", "e.toml", "--out", "r"])
+    assert (args.command, args.seeds) == ("pathpatch", "finding")
+    assert cli.COMMANDS["pathpatch"] is cli.run_pathpatch

@@ -32,3 +32,7 @@ for kind in ablate patch controls; do
     rm -rf "$out"
     "$root/scripts/$kind.sh" --experiment "$root/experiments/induction.toml" --seeds heldout --out "$out"
 done
+# fixtures/gpt2-induction-paths     path patching of every edge, seed 0
+out="$root/fixtures/gpt2-induction-paths"
+rm -rf "$out"
+"$root/scripts/pathpatch.sh" --experiment "$root/experiments/induction.toml" --seeds 0 --out "$out"

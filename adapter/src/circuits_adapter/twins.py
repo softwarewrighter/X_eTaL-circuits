@@ -19,3 +19,10 @@ def check(clean: list[int], corrupt: list[int], length: int) -> None:
         raise TwinError("the clean prompt's second copy is not the first copy")
     if set(corrupt[1 + length :]) & set(first) or len(set(corrupt[1 + length :])) != length:
         raise TwinError("the corrupted second copy is not fresh, distinct tokens")
+
+
+def check_key(clean: list[int], key: list[int], corrupt: list[int], length: int) -> None:
+    """Refuse a key twin that is not BOS + the twin's fresh tokens + the clean second copy."""
+    check(clean, corrupt, length)
+    if key != [clean[0], *corrupt[1 + length :], *clean[1 + length :]]:
+        raise TwinError("the key twin is not BOS, the fresh tokens, then the clean second copy")

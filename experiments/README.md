@@ -108,3 +108,18 @@ controls), the senders and receivers in scope, the inputs, how many
 edges to path-patch (the top 200 by edge attribution), and edges
 always path-patched: here the circuit's, 4.11 into each induction
 head's key.
+
+```bash
+just pathpatch --experiment experiments/induction.toml --seeds 0 --out runs/paths
+```
+
+path-patches every edge (docs/design.md, D20): a sender's clean output
+reaches one receiver only, on the twin. For a receiver's key the twin
+is the *key twin* (BOS, the fresh tokens, then the clean second copy),
+for queries, values and the logits it is the usual twin. Queries and
+keys are measured by the receiving head's attention score at the
+induction target, values and the logits by the logit difference; each
+as the fraction of its gap restored. Each run (`seed-N`) holds
+`edge_effect`, a sender x receiver matrix (`senders` and `receivers`
+named in `run.toml`), about 10 minutes per seed on a CPU.
+`fixtures/gpt2-induction-paths` holds seed 0.

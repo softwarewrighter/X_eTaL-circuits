@@ -1,10 +1,10 @@
-number = 7
-slug = "circuit-graph-view"
+number = 5
+slug = "edge-effects"
 status = "pending"
 description = """
-The circuit graph view, test-first; closes the saga.
+Edge effects in X_eTaL, test-first.
 
-- The model map draws e..."""
+- xetal/Edges (or Effects extended): rea..."""
 role = "production"
 context_files = []
 created_at = "2026-11-24T19:40:39"

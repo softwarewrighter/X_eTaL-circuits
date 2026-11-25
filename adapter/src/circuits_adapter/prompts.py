@@ -27,3 +27,12 @@ def twins(seed: int, length: int, bos: int, low: int = 1000, high: int = 10000):
     rng = np.random.default_rng([seed, 1])
     fresh = rng.choice(pool, size=length, replace=False).tolist()
     return clean, [bos, *clean[1 : 1 + length], *fresh]
+
+
+def key_twin(seed: int, length: int, bos: int, low: int = 1000, high: int = 10000):
+    """The twin that differs where an induction head's keys look: BOS, the fresh
+    tokens of `twins`'s twin, then the clean prompt's second copy. Its first copy
+    holds nothing the second copy repeats, so previous-token information at the
+    keys is what changes; the metric's tokens are the same as for `twins`."""
+    clean, corrupt = twins(seed, length, bos, low, high)
+    return [bos, *corrupt[1 + length :], *clean[1 + length :]]

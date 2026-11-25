@@ -78,3 +78,7 @@ verdict *ARGS:
 # Tested heads checked on held-out seeds: just confirm RUNS_PREFIX HELDOUT_PREFIX [OUT_DIR]
 confirm *ARGS:
     scripts/confirm.sh {{ARGS}}
+
+# Path patching of every edge: just pathpatch --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
+pathpatch *ARGS:
+    scripts/pathpatch.sh {{ARGS}}

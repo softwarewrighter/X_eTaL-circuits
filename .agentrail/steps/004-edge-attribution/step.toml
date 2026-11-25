@@ -1,12 +1,12 @@
 number = 4
-slug = "edge-effects"
+slug = "edge-attribution"
 status = "pending"
 description = """
-Edge effects in X_eTaL, test-first.
+Edge attribution patching in the adapter, test-first: a cheap ranking.
 
-- xetal/Edges (or Effects extended): rea..."""
+- The..."""
 role = "production"
 context_files = []
 created_at = "2026-11-24T19:40:39"
-task_type = "xetal"
+task_type = "adapter"
 commits = []
