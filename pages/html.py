@@ -69,7 +69,8 @@ def index_body(out: Path, circuit: dict) -> str:
     return f"""<p>GPT-2 Small in one picture: a row per layer, a cell per attention head
 colored by its scores (blue induction, orange previous token), an MLP cell
 per layer, and the circuit <b>{escape(circuit["name"][0])}</b> drawn over it,
-each edge dashed (observed), solid (tested) or thick (confirmed). Hover a
+each head and edge drawn dashed (observed), solid (tested by intervention
+against random controls) or thick (confirmed on held-out seeds). Hover a
 head for its numbers; see any head's attention on the <a href="heads.html">Heads</a>
 page. Drawn by <a href="https://github.com/softwarewrighter/X_eTaL">X_eTaL</a>.</p>
 <div class="picture">

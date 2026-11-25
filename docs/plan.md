@@ -144,7 +144,7 @@ was learned for later sagas:
   change style as evidence comes in (D13). Every new picture goes on the
   live pages (D12) with a test that keeps the README's copy current.
 
-## Saga 2 -- causal-experiments (Milestone 2)  [ACTIVE]
+## Saga 2 -- causal-experiments (Milestone 2)  [DONE]
 
 Goal: test causal importance, not just patterns, on GPT-2 Small's
 induction behavior. Twin prompts (clean and corrupted, token-aligned),
@@ -168,18 +168,45 @@ Captures with logits per position and per-head outputs need the
 adapter's capture extended; MLP cells get a score once MLP outputs are
 captured.
 
+Outcome. On GPT-2 Small's repeated-token task, with matched random
+controls and a 5% floor (D17) and ten held-out seeds (D18):
+mean ablation confirms 5.1 (22% of the clean logit difference), 4.11
+(10-13%), 7.6, 8.5 and 5.5; denoising confirms the five induction
+heads (6.9, 5.1, 7.2, 5.5, 7.10: 8-15% of the gap each) and 9.9, 9.6,
+10.1 and 0.1. Effects agree within about a point between seed sets.
+Single heads matter little except 5.1: the heads back each other up.
+10.7 and 11.10 restore negatively (they work against copying). All
+twelve heads are confirmed on the model map; its edges stay observed.
+What was learned for later sagas:
+
+- Beating random controls is not enough when they average to 0 over
+  seeds: a minimum effect is needed, fixed before the held-out seeds.
+- Batching the controls (20 copies of the prompt per forward pass)
+  makes them cheap; a full set of runs for 20 seeds takes about an hour
+  on CPU.
+- The circuit file is checked against the runs by a test, so the map
+  cannot claim more than the runs show.
+
 ## Saga 3 -- circuit-discovery (Milestone 3)
 
-Goal: a candidate circuit graph for induction in GPT-2 Small. Edges
-are scored by path patching or edge attribution patching. Low-impact
-edges are pruned. The remaining subgraph is validated for
-faithfulness, completeness and minimality against random control
-subgraphs.
+Goal: test the edges of the induction circuit in GPT-2 Small, which
+Saga 2 left observed: does 4.11 feed the induction heads, and through
+which input (query, key or value), and which heads do 7.6, 8.5, 9.9,
+9.6, 10.1 and 0.1 read from or feed? Edges are scored by path patching
+(a sender head's output patched only into a receiver's query, key or
+value input), with the same twins, metric, random controls, 5% floor
+and held-out seeds as Saga 2. Edge attribution patching gives a cheap
+ranking first. The resulting subgraph is checked for faithfulness
+(the circuit alone recovers the behavior), completeness and minimality
+against random subgraphs of the same size.
 
-Steps (draft): graph-model, path-patching, edge-attribution, pruning,
-validation-metrics, circuit-graph-view (it shows which edges are only
-attention-derived, which are attribution-derived and which are
-validated by intervention).
+Steps (revised after Saga 2): graph-model (senders, receivers and
+their q/k/v inputs as data), path-patching (adapter), edge-attribution
+(adapter, a ranking to choose which edges to path-patch), edge-effects
+(X_eTaL: effect per edge, controls, verdicts, as Effects does for
+heads), heldout-edges, faithfulness (keep only the circuit, mean-ablate
+the rest), circuit-graph-view (the map draws edge evidence, and a graph
+view per input; README, pages and screenshot).
 
 ## Saga 4 -- icl-behavior
 

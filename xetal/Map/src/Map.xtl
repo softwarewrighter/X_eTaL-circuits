@@ -147,6 +147,38 @@ h:e_dgePath := { (c, e, ev, L, H) ->
   "<path class=\"edge\" data-from=\"" c_at from c_at "\" data-to=\"" c_at to c_at "\" data-evidence=\"" c_at ev c_at "\" d=\"" c_at d c_at "\" fill=\"none\" stroke=\"" c_at edgeInk c_at "\" " c_at style c_at " marker-end=\"url(#arrow)\"/>"
 }
 
+### Head evidence
+
+## The outline of a head's evidence level, or the error naming the levels.
+h:o_utline := { (c, ev) ->
+  ev m_atch "observed" ? "stroke-width=\"1.5\" stroke-dasharray=\"4 3\""
+  ev m_atch "tested" ? "stroke-width=\"1.5\""
+  ev m_atch "confirmed" ? "stroke-width=\"3.5\""
+  "map" []S_IGNAL c c_at ": head evidence \"" c_at ev c_at "\" is not observed, tested or confirmed"
+}
+
+## A head "layer.head" as (layer, head), when it is in the capture.
+h:h_eadOf := { (c, name, L, H) ->
+  v := f_loor n_umbers '{ x ->
+    x = f_irst "." ? f_irst " "
+    x
+  } e_ach name
+  (t_ally v) != 2 ? "map" []S_IGNAL c c_at ": head \"" c_at name c_at "\" is not \"layer.head\""
+  (L i_ndexOf f_irst v) > t_ally L ? "map" []S_IGNAL c c_at ": head " c_at name c_at ": layer " c_at (h:n_ f_irst v) c_at " was not captured"
+  (2 s_elect v) >= H ? "map" []S_IGNAL c c_at ": no head " c_at name
+  v
+}
+
+## One circuit head's outline over its cell, its evidence and basis on hover.
+h:h_eadOutline := { (c, name, ev, basis, L, H) ->
+  v := h:h_eadOf (c, name, L, H)
+  style := h:o_utline (c, ev)
+  x := (h:h_eadX 2 s_elect v) - 3
+  y := (h:r_owY ((L i_ndexOf f_irst v), t_ally L)) - 3
+  rect := "<rect x=\"" c_at (h:n_ x) c_at "\" y=\"" c_at (h:n_ y) c_at "\" width=\"" c_at (h:n_ cw + 6) c_at "\" height=\"" c_at (h:n_ ch + 6) c_at "\" rx=\"5\" fill=\"none\" stroke=\"#111827\" " c_at style c_at "/>"
+  "<g class=\"head-evidence\" data-head=\"" c_at name c_at "\" data-evidence=\"" c_at ev c_at "\"><title>head " c_at name c_at ": " c_at ev c_at " (" c_at (hm:x_ml basis) c_at ")</title>" c_at rect c_at "</g>"
+}
+
 ### Keys
 
 ## A line of text at (x, y) in size z.
@@ -162,11 +194,18 @@ h:k_eyEdge := { (x, y, ev, s) -> "<path class=\"key-edge\" d=\"M" c_at (h:n_ x) 
 h:k_eys := { y ->
   colors := (h:s_watch (left, y, l:f_ill (0.0, 0.9), "induction score")) c_at (h:s_watch (left + 170, y, l:f_ill (0.9, 0.0), "previous token score")) c_at h:s_watch (left + 380, y, "#f3f4f6", "neither reaches 20%")
   words := h:t_ext (left, y + 20, 11, "Head colors are attention-pattern scores: candidates, not causal evidence. Hover a head for its numbers.")
-  e1 := h:k_eyEdge (left, y + 46, "observed", "observed: an attention pattern or score only")
-  e2 := h:k_eyEdge (left, y + 66, "tested", "tested: an intervention moves the margin, against random controls")
-  e3 := h:k_eyEdge (left, y + 86, "confirmed", "confirmed: also on held-out prompts")
-  colors c_at "\n" c_at words c_at "\n" c_at e1 c_at "\n" c_at e2 c_at "\n" c_at e3 c_at "\n"
+  e1 := h:k_eyEdge (left, y + 46, "observed", "edge observed: attention patterns only (which head feeds which is untested)")
+  e2 := h:k_eyEdge (left, y + 66, "tested", "edge tested: path patching beats random controls")
+  e3 := h:k_eyEdge (left, y + 86, "confirmed", "edge confirmed: also on held-out seeds")
+  h1 := h:k_eyHead (left, y + 132, "observed", "observed: attention only")
+  h2 := h:k_eyHead (left, y + 156, "tested", "tested: beats random controls on the finding seeds")
+  h3 := h:k_eyHead (left, y + 180, "confirmed", "confirmed: also on the held-out seeds")
+  heads := (h:t_ext (left, y + 112, 11, "head outlines (hover a head for its verdicts):")) c_at "\n" c_at h1 c_at "\n" c_at h2 c_at "\n" c_at h3 c_at "\n"
+  colors c_at "\n" c_at words c_at "\n" c_at e1 c_at "\n" c_at e2 c_at "\n" c_at e3 c_at "\n" c_at heads
 }
+
+## A sample head outline of an evidence level and its words at (x, y).
+h:k_eyHead := { (x, y, ev, s) -> "<rect class=\"key-head\" x=\"" c_at (h:n_ x + 8) c_at "\" y=\"" c_at (h:n_ y - 13) c_at "\" width=\"24\" height=\"16\" rx=\"3\" fill=\"#f3f4f6\" stroke=\"#111827\" " c_at (h:o_utline ("key", ev)) c_at "/>" c_at h:t_ext (x + 52, y, 11, s) }
 
 ### The picture
 
@@ -178,6 +217,11 @@ l:s_vg := { d c ->
   E := c h:k_ey "edges"
   V := c h:k_ey "evidence"
   (t_ally E) != t_ally V ? "map" []S_IGNAL c c_at ": one evidence level per edge (" c_at (h:n_ t_ally E) c_at " edges, " c_at (h:n_ t_ally V) c_at " levels)"
+  N := c h:k_ey "heads"
+  NE := c h:k_ey "head_evidence"
+  NB := c h:k_ey "head_basis"
+  (t_ally N) != t_ally NE ? "map" []S_IGNAL c c_at ": one head_evidence level per head (" c_at (h:n_ t_ally N) c_at " heads, " c_at (h:n_ t_ally NE) c_at " levels)"
+  (t_ally N) != t_ally NB ? "map" []S_IGNAL c c_at ": one head_basis per head"
   P := sc:p_revious d
   I := sc:i_nduction d
   L := d cp:i_nts "attn_layers"
@@ -189,16 +233,17 @@ l:s_vg := { d c ->
     h:h_eadCell ((r s_elect L), hd, h:r_owY (r, R), (hd + 1) s_elect r s_elect P, (hd + 1) s_elect r s_elect I)
   } m_ap r_ange R * H
   mlps := '{ r -> h:m_lpCell ((r s_elect L), h:r_owY (r, R), H) } m_ap r_ange R
+  outlines := '{ k -> h:h_eadOutline (c, (d_isclose k s_elect N), (d_isclose k s_elect NE), (d_isclose k s_elect NB), L, H) } m_ap r_ange t_ally N
   edges := '{ k -> h:e_dgePath (c, (d_isclose k s_elect E), (d_isclose k s_elect V), L, H) } m_ap r_ange t_ally E
   bottom := top + (ch + gap) * R
   cols := '{ hd -> "<text x=\"" c_at (h:n_ (cw d_iv 2) + h:h_eadX hd) c_at "\" y=\"" c_at (h:n_ bottom + 8) c_at "\" " c_at mono c_at " font-size=\"10\" fill=\"#6b7280\" text-anchor=\"middle\">H" c_at (h:n_ hd) c_at "</text>" } m_ap (r_ange H) - 1
   spine := 40 + mlpWidth + h:h_eadX H
   w := spine + 96
-  z := bottom + 130
+  z := bottom + 236
   name := d_isclose f_irst c h:k_ey "name"
   source := d_isclose f_irst c h:k_ey "source"
   head := "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" c_at (h:n_ w) c_at "\" height=\"" c_at (h:n_ z) c_at "\" viewBox=\"0 0 " c_at (h:n_ w) c_at " " c_at (h:n_ z) c_at "\" role=\"img\">\n<rect width=\"" c_at (h:n_ w) c_at "\" height=\"" c_at (h:n_ z) c_at "\" fill=\"#ffffff\"/>\n<defs><marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\"><path d=\"M0 0L10 5L0 10z\" fill=\"" c_at edgeInk c_at "\"/></marker><marker id=\"spine\" viewBox=\"0 0 10 10\" refX=\"5\" refY=\"5\" markerWidth=\"4\" markerHeight=\"4\" orient=\"auto\"><path d=\"M0 0L10 5L0 10z\" fill=\"#4b5563\"/></marker></defs>\n"
   titles := (h:t_ext (8, 20, 14, model c_at " model map, circuit: " c_at name)) c_at "\n" c_at (h:t_ext (8, 40, 11, "a row per layer (embedding at the bottom), a cell per head and per MLP")) c_at "\n" c_at (h:t_ext (8, 56, 11, "circuit from: " c_at source)) c_at "\n"
   stream := "<path class=\"residual\" d=\"M" c_at (h:n_ spine) c_at " " c_at (h:n_ bottom) c_at " V" c_at (h:n_ top - 12) c_at "\" stroke=\"#4b5563\" stroke-width=\"4\" marker-end=\"url(#spine)\"/>\n" c_at (h:t_ext (spine - 24, top - 22, 11, "unembed")) c_at "\n" c_at (h:t_ext (spine - 18, bottom + 18, 11, "embed")) c_at "\n"
-  head c_at titles c_at stream c_at (h:l_ines heads) c_at (h:l_ines mlps) c_at (h:l_ines cols) c_at (h:l_ines edges) c_at (h:k_eys bottom + 40) c_at "</svg>"
+  head c_at titles c_at stream c_at (h:l_ines heads) c_at (h:l_ines mlps) c_at (h:l_ines cols) c_at (h:l_ines outlines) c_at (h:l_ines edges) c_at (h:k_eys bottom + 40) c_at "</svg>"
 }

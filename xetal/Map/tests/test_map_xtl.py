@@ -142,6 +142,13 @@ def test_evidence_levels_change_the_line(tmp_path):
         ('"4.11 7.10"', '"4.11 7.12"', "no head"),
         ('"4.11 7.10"', '"7.10 4.11"', "later layer"),
         ('evidence = ["observed", ', "evidence = [", "one evidence level per edge"),
+        (
+            'head_evidence = [\n    "confirmed",',
+            'head_evidence = [\n    "proven",',
+            "head evidence",
+        ),
+        ('head_evidence = [\n    "confirmed", ', "head_evidence = [\n    ", "one head_evidence"),
+        ('"10.1", "0.1"]', '"10.1", "12.1"]', "was not captured"),
     ],
 )
 def test_a_bad_circuit_is_refused(tmp_path, old, new, says):
@@ -164,6 +171,24 @@ def test_the_map_carries_both_keys_and_says_candidates(picture):
     ):
         assert words in text, words
     assert len(by_class(picture, "key-edge")) == 3
+
+
+def test_circuit_heads_are_outlined_by_their_evidence(picture, tmp_path):
+    outlines = by_class(picture, "head-evidence")
+    assert [g.get("data-head") for g in outlines] == [
+        "4.11", "5.1", "5.5", "6.9", "7.2", "7.10", "7.6", "8.5", "9.9", "9.6", "10.1", "0.1"
+    ]  # fmt: skip
+    assert {g.get("data-evidence") for g in outlines} == {"confirmed"}
+    assert {g.find(f"{SVG}rect").get("stroke-width") for g in outlines} == {"3.5"}
+    title = next(g for g in outlines if g.get("data-head") == "6.9").find(f"{SVG}title").text
+    assert title.startswith("head 6.9: confirmed (mean ablation tested only")
+    levels = '"tested", "observed", "confirmed",'
+    root = draw(edited(tmp_path, '"confirmed", "confirmed", "confirmed",', levels))
+    rects = [g.find(f"{SVG}rect") for g in by_class(root, "head-evidence")[:3]]
+    assert [(r.get("stroke-width"), r.get("stroke-dasharray")) for r in rects] == [
+        ("1.5", None), ("1.5", "4 3"), ("3.5", None)
+    ]  # fmt: skip
+    assert len(by_class(picture, "key-head")) == 3
 
 
 def test_the_residual_stream_and_layer_labels(picture):

@@ -1,6 +1,6 @@
 number = 7
 slug = "circuit-evidence"
-status = "pending"
+status = "in-progress"
 description = """
 Circuit evidence on the map and the pages, test-first; closes the saga.
 

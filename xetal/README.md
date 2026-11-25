@@ -99,7 +99,11 @@ its command line and makes both paths absolute.
 | `mp:f_ill (previous, induction)` | a head's color from its two scores |
 | `mp:h_ex v` | three channels 0-255 as `#rrggbb` |
 
+Each circuit head is outlined by its `head_evidence` (dashed observed,
+solid tested, thick confirmed), with its `head_basis` on hover.
+
 A circuit is refused (`error[map]`) when it is for another model, has
+a head evidence level other than the three or not one per head,
 an evidence level other than the three or not one per edge, names a
 layer not captured or a head outside the model, or has an edge that
 does not go to a later layer.

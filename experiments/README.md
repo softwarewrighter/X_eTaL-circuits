@@ -9,7 +9,8 @@ analysis. Outputs go to `runs/`, which is not committed.
 Circuits to draw on the model map (`just map`), one TOML file each,
 every value a list of strings: `name`, `model`, `source` (where the
 circuit comes from), `heads` (layer.head by the model's numbers, from
-0) with their `roles`, and `edges` ("a b": a feeds b) with one
+0) with their `roles`, each head's `head_evidence` level and its
+`head_basis` (each method's verdict), and `edges` ("a b": a feeds b) with one
 `evidence` level each:
 
 | Level | Drawn | Means |
@@ -18,9 +19,11 @@ circuit comes from), `heads` (layer.head by the model's numbers, from
 | tested | solid | an intervention moves the margin, against matched random controls |
 | confirmed | thick | also on held-out prompts |
 
-`circuits/gpt2-induction.toml` is the previous-token head 4.11
-feeding the induction heads 5.1, 5.5, 6.9, 7.2 and 7.10; every edge
-is observed.
+`circuits/gpt2-induction.toml` has the previous-token head 4.11, the
+induction heads 5.1, 5.5, 6.9, 7.2 and 7.10, and six more heads the
+interventions found; all twelve are confirmed, and a test checks each
+level and basis against the runs. Its edges (4.11 feeding the
+induction heads) are observed.
 
 ## induction.toml
 

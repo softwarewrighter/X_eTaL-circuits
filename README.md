@@ -202,13 +202,18 @@ edges, each edge with the evidence it has reached.
 just map fixtures/gpt2-induction-full experiments/circuits/gpt2-induction.toml images/gpt2-model-map.svg
 ```
 
-![The GPT-2 Small model map, with the induction circuit](images/gpt2-model-map.svg)
+![The GPT-2 Small model map: heads colored by their scores, confirmed heads outlined, the induction circuit's edges dashed](images/gpt2-model-map.svg)
 
-The circuit drawn is the previous-token head 4.11 feeding the
-induction heads 5.1, 5.5, 6.9, 7.2 and 7.10. Every edge is dashed:
-it is observed in attention patterns and known from the literature,
-but not yet tested here. As interventions test each edge, the same
-map draws it solid, and then thick once it holds on held-out prompts.
+Heads carry evidence too, drawn as their outline: dashed observed,
+solid tested (beats random controls on the seeds used to find it),
+thick confirmed (also on held-out seeds); hovering a head gives each
+method's verdict. The circuit drawn has twelve confirmed heads: the
+previous-token head 4.11, the induction heads 5.1, 5.5, 6.9, 7.2 and
+7.10, and six the interventions found whose roles are not yet known
+(7.6, 8.5, 9.9, 9.6, 10.1, 0.1). Its edges, 4.11 feeding the induction
+heads, are still dashed: switching a head off or patching it tests the
+head, not which head feeds which. Path patching will test the edges,
+and the same map will draw them solid, then thick.
 
 ## Testing heads by intervention
 
@@ -404,7 +409,8 @@ circuit over it (`xetal/Map`, see [`xetal/README.md`](xetal/README.md)).
 The [live demo](https://softwarewrighter.github.io/X_eTaL-circuits/)
 shows all of it. Interventions (ablation and patching) are measured
 and drawn, compared with random controls and confirmed on held-out
-seeds; showing that evidence on the model map comes next.
+seeds, and the model map draws each head's evidence. Testing which
+head feeds which (path patching) comes next.
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

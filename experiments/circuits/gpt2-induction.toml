@@ -1,13 +1,52 @@
 # A circuit to draw on the model map (just map). Every value is a list of
 # strings. Heads are named layer.head by the model's numbers, from 0.
-# Each edge "a b" (a feeds b) has an evidence level, one per edge:
+#
+# Each head has an evidence level (head_evidence) and its basis (head_basis);
+# each edge "a b" (a feeds b) has one (evidence). Levels:
 #   observed   an attention pattern or attribution score only (dashed)
-#   tested     an intervention moves the margin, against matched random controls (solid)
-#   confirmed  also on held-out prompts (thick)
+#   tested     an intervention moves the margin beyond matched random
+#              controls, on the finding seeds (solid)
+#   confirmed  also on the held-out seeds (thick)
+# A head's level is the highest it reached under any intervention; the basis
+# gives each method's verdict (just confirm fixtures/gpt2-induction
+# fixtures/gpt2-induction-heldout; docs/design.md, D17, D18). Edges stay
+# observed: ablating or patching a head tests the head, not which head feeds
+# which (that takes path patching).
 name = ["induction, GPT-2 Small"]
 model = ["gpt2"]
-source = ["attention-pattern scores (just scores fixtures/gpt2-induction-full) and the literature"]
-heads = ["4.11", "5.1", "5.5", "6.9", "7.2", "7.10"]
-roles = ["previous token", "induction", "induction", "induction", "induction", "induction"]
+source = ["attention scores and the literature; heads tested by ablation and patching"]
+heads = ["4.11", "5.1", "5.5", "6.9", "7.2", "7.10", "7.6", "8.5", "9.9", "9.6", "10.1", "0.1"]
+roles = [
+    "previous token",
+    "induction",
+    "induction",
+    "induction",
+    "induction",
+    "induction",
+    "needed, role not yet known",
+    "needed, role not yet known",
+    "restores, role not yet known",
+    "restores, role not yet known",
+    "restores, role not yet known",
+    "restores, role not yet known",
+]
+head_evidence = [
+    "confirmed", "confirmed", "confirmed", "confirmed", "confirmed", "confirmed",
+    "confirmed", "confirmed", "confirmed", "confirmed", "confirmed", "confirmed",
+]
+head_basis = [
+    "mean ablation confirmed (10%, held-out 13%); denoising under 5%",
+    "mean ablation confirmed (22%, held-out 22%); denoising confirmed (12%, held-out 13%)",
+    "mean ablation confirmed (6%, held-out 5%); denoising confirmed (11%, held-out 12%)",
+    "mean ablation tested only (5%, held-out 4%); denoising confirmed (15%, held-out 15%)",
+    "denoising confirmed (12%, held-out 12%); mean ablation under 5%",
+    "denoising confirmed (8%, held-out 8%); mean ablation under 5%",
+    "mean ablation confirmed (9%, held-out 8%); denoising under 5%",
+    "mean ablation confirmed (9%, held-out 7%); denoising under 5%",
+    "denoising confirmed (7%, held-out 7%); mean ablation under 5%",
+    "denoising confirmed (7%, held-out 6%); mean ablation under 5%",
+    "denoising confirmed (6%, held-out 6%); mean ablation under 5%",
+    "denoising confirmed (5%, held-out 6%); mean ablation under 5%",
+]
 edges = ["4.11 5.1", "4.11 5.5", "4.11 6.9", "4.11 7.2", "4.11 7.10"]
 evidence = ["observed", "observed", "observed", "observed", "observed"]
