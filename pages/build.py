@@ -65,6 +65,12 @@ def build(out: Path, heads: list[tuple[int, int]] | None = None) -> None:
         )
         for kind in ("patch", "ablation")
     }
+    fx = ROOT / "fixtures"
+    effects["verdict"] = script(
+        "verdict.sh",
+        *(str(fx / f"gpt2-induction-{k}") for k in ("ablation", "patch", "controls")),
+        str(out / "effects"),
+    )
     meta = tomllib.loads((CAPTURE / "capture.toml").read_text())
     circuit = tomllib.loads(CIRCUIT.read_text())
     html.write(out, meta, circuit, heads, report, effects)

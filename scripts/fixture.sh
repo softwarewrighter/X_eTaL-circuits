@@ -21,3 +21,7 @@ rm -rf "$out"
 out="$root/fixtures/gpt2-induction-patch"
 rm -rf "$out"
 "$root/scripts/patch.sh" --experiment "$root/experiments/induction.toml" --out "$out"
+# fixtures/gpt2-induction-controls  matched random controls, the finding seeds (seed-N)
+out="$root/fixtures/gpt2-induction-controls"
+rm -rf "$out"
+"$root/scripts/controls.sh" --experiment "$root/experiments/induction.toml" --out "$out"

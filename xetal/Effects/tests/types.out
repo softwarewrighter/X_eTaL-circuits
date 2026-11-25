@@ -7,3 +7,7 @@ l:s_pread : Float -> Float
 l:r_anked : Float -> Int
 l:r_eport : Char -> Char -> Char
 l:s_vg : Char -> Char -> Char
+l:c_ontrols : Char -> Char -> Float
+l:p_asses : (Char, Char) -> Char -> Int
+l:v_erdicts : (Char, Char) -> Char -> Char
+l:s_vgPassing : (Char, Char) -> Char -> Char

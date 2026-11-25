@@ -151,12 +151,26 @@ def effects_body(reports: dict) -> str:
             ("ablation", "Ablation: switching one head off", ("mean", "zero")),
         )
     )
-    return f"""<p>Interventions on every head. Each repeated prompt has a twin whose
+    verdict = (
+        "<h2>Which heads beat their random controls</h2>\n"
+        "<p>A head passes when its mean effect is at least 5% and larger than every one of "
+        "20 random changes of the same size: <b>tested</b> on these seeds, not yet confirmed "
+        "on held-out ones.</p>\n"
+        f"<pre>{escape(reports['verdict'])}</pre>\n"
+        '<div class="picture"><img src="effects/passing-denoise.svg" alt="passing heads, '
+        'denoising"></div>\n'
+        '<div class="picture"><img src="effects/passing-mean.svg" alt="passing heads, '
+        'mean ablation"></div>\n'
+    )
+    return (
+        verdict
+        + f"""<p>Interventions on every head. Each repeated prompt has a twin whose
 second copy is fresh tokens; the metric is the logit difference between the
 right next token and the twin's, at each position of the second copy. Effects
-are in percent, the mean over 10 seeds (blue below 0, red above). They are not
-yet compared with random controls, so the heads they name are candidates.</p>
+are in percent, the mean over 10 seeds (blue below 0, red above). The grids
+below show every head; the verdicts above say which beat their controls.</p>
 {grids}"""
+    )
 
 
 def eli5_body() -> str:

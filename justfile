@@ -66,3 +66,11 @@ patch *ARGS:
 # Effects of interventions on every head, from ablation or patching runs: just effects RUNS_DIR [OUT_DIR]
 effects *ARGS:
     scripts/effects.sh {{ARGS}}
+
+# Matched random controls of each head: just controls --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
+controls *ARGS:
+    scripts/controls.sh {{ARGS}}
+
+# Heads that beat their random controls: just verdict ABLATION_DIR PATCH_DIR CONTROLS_DIR [OUT_DIR]
+verdict *ARGS:
+    scripts/verdict.sh {{ARGS}}

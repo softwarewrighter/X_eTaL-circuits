@@ -292,8 +292,48 @@ Restoring one head's output into the twin brings back the most for
 6.9, 5.1, 7.2, 5.5 and 7.10: the five induction heads the attention
 scores named. Removing one head costs little except for 5.1: the heads
 back each other up. 7.6 and 8.5 matter when removed but restore little
-on their own. None of this is yet compared with random controls, so
-these heads are still candidates.
+on their own. The next section says which of these effects beat
+random controls.
+
+## Which heads beat their controls
+
+An effect counts only if chance cannot explain it. For each head,
+`just controls` makes 20 changes to its output of the same size as the
+real intervention's, in random directions. A head passes when its mean
+effect is at least 5% and larger than every one of its controls'.
+`just verdict`, in X_eTaL, lists the heads that pass:
+
+```bash
+just verdict fixtures/gpt2-induction-ablation fixtures/gpt2-induction-patch fixtures/gpt2-induction-controls images/gpt2-effects
+```
+
+```text
+mean ablation: percent of the clean logit difference lost: 6 of 144 heads have an effect of at least 5% and beat all 20 of their random controls.
+
+5.1 22% (controls up to 4%)
+4.11 10% (controls up to 4%)
+7.6 9% (controls up to 1%)
+8.5 9% (controls up to 0%)
+5.5 6% (controls up to 2%)
+6.9 5% (controls up to 3%)
+
+denoising: percent of the clean-twin gap restored: 9 of 144 heads have an effect of at least 5% and beat all 20 of their random controls.
+
+6.9 15% (controls up to 1%)
+5.1 12% (controls up to 1%)
+7.2 12% (controls up to 0%)
+5.5 11% (controls up to 1%)
+7.10 8% (controls up to 1%)
+9.9 7% (controls up to 0%)
+9.6 7% (controls up to 0%)
+10.1 6% (controls up to 0%)
+0.1 5% (controls up to 2%)
+```
+
+![Denoising: the heads that beat their controls](images/gpt2-effects/passing-denoise.svg)
+
+These heads are **tested** on the seeds used to find them. They are
+called confirmed only once they pass again on held-out seeds.
 
 ## The live demo
 
@@ -319,7 +359,8 @@ scores every head (`xetal/Scores`) and draws the model map with a
 circuit over it (`xetal/Map`, see [`xetal/README.md`](xetal/README.md)).
 The [live demo](https://softwarewrighter.github.io/X_eTaL-circuits/)
 shows all of it. Interventions (ablation and patching) are measured
-and drawn too; comparing them with random controls comes next.
+and drawn, and compared with random controls; checking the passing
+heads on held-out seeds comes next.
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

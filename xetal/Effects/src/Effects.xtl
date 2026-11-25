@@ -17,6 +17,7 @@
 "hm:" u_se< "Heatmap"
 
 shown := 10
+floor := 5.0
 
 ### Runs
 
@@ -128,4 +129,64 @@ l:s_vg := { D m ->
   title := model c_at ": " c_at (h:w_ords m) c_at ", mean of " c_at (f_ormat t_ally S) c_at " seeds"
   note := "rows: layers, columns: heads. Effects of interventions on one prompt family; not yet compared with random controls."
   hm:g_ridOn (3, title, note, rows, cols, h:r_ound M)
+}
+
+### Controls
+
+## The seeds of a set of runs, in their order.
+h:s_eeds := { D -> f_loor r_avel m_ix '{ d -> n_umbers d_isclose f_irst (d_isclose d) l:k_ey "seed" } m_ap l:r_uns D }
+
+## One seed's controls of method m, in percent: control x layer x head.
+h:c_ontrolOf := { (d, m) ->
+  m m_atch "mean" ? (100.0 / h:b_aseline d) * d l:r_ead "mean_control"
+  m m_atch "denoise" ? 100.0 * d l:r_ead "denoise_control"
+  "effects" []S_IGNAL "controls are run for mean and denoise, not " c_at m
+}
+
+## `C c_ontrols "method"`: control x layer x head, in percent, each the
+## mean over the seeds of the control runs C.
+l:c_ontrols := { C m -> l:m_ean m_ix '{ d -> h:c_ontrolOf ((d_isclose d), m) } m_ap l:r_uns C }
+
+## `(D, C) p_asses "method"`: layer x head, 1 where the head's mean
+## effect over the runs D is at least 5% and above every one of its
+## controls' means over the runs C (the same seeds), else 0.
+l:p_asses := { (D, C) m ->
+  n_ot (h:s_eeds D) m_atch h:s_eeds C ? "effects" []S_IGNAL "the effect runs and the control runs are of different seeds"
+  M := l:m_ean D l:e_ffects m
+  top := 'm_ax r_/ C l:c_ontrols m
+  (M > top) * M >= floor
+}
+
+## `(D, C) v_erdicts "method"`: the heads that pass, best first, a line
+## each: the head, its mean effect and the largest of its controls.
+l:v_erdicts := { (D, C) m ->
+  M := l:m_ean D l:e_ffects m
+  top := 'm_ax r_/ C l:c_ontrols m
+  P := (D, C) l:p_asses m
+  R := l:r_anked M * f_loat P
+  n := '+ r_/ r_avel P
+  line := '{ i ->
+    row := i s_elect R
+    lay := f_irst row
+    hd := f_irst r_ev row
+    k := 1 + hd + lay * 2 s_elect s_hape M
+    (f_ormat lay) c_at "." c_at (f_ormat hd) c_at " " c_at (f_ormat h:r_ound k s_elect r_avel M) c_at "% (controls up to " c_at (f_ormat h:r_ound k s_elect r_avel top) c_at "%)\n"
+  } m_ap r_ange n
+  intro := (h:w_ords m) c_at ": " c_at (f_ormat n) c_at " of " c_at (f_ormat '* r_/ s_hape M) c_at " heads have an effect of at least " c_at (f_ormat f_loor floor) c_at "% and beat all " c_at (f_ormat t_ally C l:c_ontrols m) c_at " of their random controls.\n\n"
+  n = 0 ? intro
+  intro c_at d_isclose '{ a b -> e_nclose (d_isclose a) c_at d_isclose b } r_/ line
+}
+
+## `(D, C) s_vgPassing "method"`: the mean effects of the heads that
+## pass, as a layer x head grid in percent (0 where a head does not).
+l:s_vgPassing := { (D, C) m ->
+  M := l:m_ean D l:e_ffects m
+  P := (D, C) l:p_asses m
+  first := d_isclose f_irst l:r_uns D
+  model := d_isclose f_irst first l:k_ey "model"
+  rows := '{ n -> "L" c_at f_ormat n - 1 } m_ap r_ange t_ally M
+  cols := '{ n -> "H" c_at f_ormat n - 1 } m_ap r_ange 2 s_elect s_hape M
+  title := model c_at ": " c_at (h:w_ords m) c_at ", heads that beat their random controls"
+  note := "rows: layers, columns: heads; 0 where a head's effect is under 5% or does not beat every random control of the same size."
+  hm:g_ridOn (2, title, note, rows, cols, P * h:r_ound M)
 }

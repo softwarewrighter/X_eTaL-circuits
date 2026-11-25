@@ -66,6 +66,8 @@ def test_the_pages_and_pictures_are_there(site):
         "denoise.svg",
         "mean.svg",
         "noise.svg",
+        "passing-denoise.svg",
+        "passing-mean.svg",
         "zero.svg",
     ]
 
@@ -74,7 +76,7 @@ def test_the_effects_page_shows_both_reports_and_says_candidates(site):
     text = (site / "effects.html").read_text()
     assert "denoising: percent of the clean-twin gap restored" in text
     assert "mean ablation: percent of the clean logit difference lost" in text
-    assert "not yet compared with random controls" in text
+    assert "beat all 20 of their random controls" in text
 
 
 def test_every_local_link_resolves_and_external_ones_are_https(site):

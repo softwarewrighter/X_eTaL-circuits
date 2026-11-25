@@ -70,3 +70,15 @@ layer, at each position), `head_denoise` and `head_noise` (each head's
 output, layer x head), and `position_denoise` (the six most restoring
 heads, named in `run.toml`'s `leading_heads`, position by position).
 `fixtures/gpt2-induction-patch` holds the finding seeds' runs.
+
+```bash
+just controls --experiment experiments/induction.toml --out runs/controls
+just verdict runs/ablate runs/patch runs/controls
+```
+
+`just controls` makes, for each head and seed, 20 changes to the head's
+output of the same size as the real mean ablation's and denoising's, in
+random directions (`mean_control`, `denoise_control`: control x layer x
+head). `just verdict` lists the heads whose mean effect is at least 5%
+and beats every control (docs/design.md, D17).
+`fixtures/gpt2-induction-controls` holds the finding seeds' controls.

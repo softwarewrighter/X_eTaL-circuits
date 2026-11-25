@@ -1,6 +1,6 @@
 number = 5
 slug = "random-controls"
-status = "pending"
+status = "in-progress"
 description = """
 Matched random controls, test-first.
 
