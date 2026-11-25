@@ -1,6 +1,6 @@
 number = 1
 slug = "graph-model"
-status = "in-progress"
+status = "completed"
 description = """
 The graph model, test-first: which edges exist and how they are named.
 
@@ -8,5 +8,6 @@ The graph model, test-first: which edges exist and how they are named.
 role = "production"
 context_files = []
 created_at = "2026-11-24T19:40:39"
+completed_at = "2026-11-24T19:58:08"
 task_type = "xetal"
-commits = []
+commits = ["251a58d1ad6b540105eca3fc628bcd2174c08659"]

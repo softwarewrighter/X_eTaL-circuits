@@ -1,0 +1,1 @@
+Graph model (D19): sender/receiver/edge naming parsed and refused alike in Python (graph.py, edges.py) and X_eTaL (xetal/Edges); 29,089 edges in GPT-2 Small; experiments/induction-edges.toml (top 200 by attribution plus the circuit's 4.11->induction k edges). Pushed.
