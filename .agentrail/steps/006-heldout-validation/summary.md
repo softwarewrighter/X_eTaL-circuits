@@ -1,0 +1,1 @@
+Held-out validation on seeds 100-109 with the fixed rule (D18). Mean ablation confirms 5.1 (22/22%), 4.11 (10/13), 7.6, 8.5, 5.5; 6.9 tested only (5->4%). Denoising confirms 6.9, 5.1, 7.2, 5.5, 7.10, 9.9, 9.6, 10.1, 0.1. Effects l_evels/c_onfirmations/s_vgConfirmed; just confirm; README, pages. Pushed.

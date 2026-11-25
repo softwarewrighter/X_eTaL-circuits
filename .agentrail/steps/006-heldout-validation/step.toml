@@ -1,6 +1,6 @@
 number = 6
 slug = "heldout-validation"
-status = "in-progress"
+status = "completed"
 description = """
 Held-out validation, test-first.
 
@@ -8,5 +8,6 @@ Held-out validation, test-first.
 role = "production"
 context_files = []
 created_at = "2026-11-24T08:14:44"
+completed_at = "2026-11-24T19:17:54"
 task_type = "xetal"
-commits = []
+commits = ["e1515a36052a23a8a46068627fa260be038072dd"]
