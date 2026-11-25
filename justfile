@@ -74,3 +74,7 @@ controls *ARGS:
 # Heads that beat their random controls: just verdict ABLATION_DIR PATCH_DIR CONTROLS_DIR [OUT_DIR]
 verdict *ARGS:
     scripts/verdict.sh {{ARGS}}
+
+# Tested heads checked on held-out seeds: just confirm RUNS_PREFIX HELDOUT_PREFIX [OUT_DIR]
+confirm *ARGS:
+    scripts/confirm.sh {{ARGS}}

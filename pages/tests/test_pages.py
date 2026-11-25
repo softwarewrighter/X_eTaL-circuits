@@ -63,6 +63,8 @@ def test_the_pages_and_pictures_are_there(site):
     assert (site / "scores" / "previous.svg").is_file()
     assert (site / "map.svg").is_file()
     assert sorted(p.name for p in (site / "effects").iterdir()) == [
+        "confirmed-denoise.svg",
+        "confirmed-mean.svg",
         "denoise.svg",
         "mean.svg",
         "noise.svg",
@@ -77,6 +79,7 @@ def test_the_effects_page_shows_both_reports_and_says_candidates(site):
     assert "denoising: percent of the clean-twin gap restored" in text
     assert "mean ablation: percent of the clean logit difference lost" in text
     assert "beat all 20 of their random controls" in text
+    assert "pass again on the 10 held-out seeds" in text
 
 
 def test_every_local_link_resolves_and_external_ones_are_https(site):

@@ -71,6 +71,10 @@ def build(out: Path, heads: list[tuple[int, int]] | None = None) -> None:
         *(str(fx / f"gpt2-induction-{k}") for k in ("ablation", "patch", "controls")),
         str(out / "effects"),
     )
+    effects["confirm"] = script(
+        "confirm.sh", str(fx / "gpt2-induction"), str(fx / "gpt2-induction-heldout"),
+        str(out / "effects"),
+    )  # fmt: skip
     meta = tomllib.loads((CAPTURE / "capture.toml").read_text())
     circuit = tomllib.loads(CIRCUIT.read_text())
     html.write(out, meta, circuit, heads, report, effects)

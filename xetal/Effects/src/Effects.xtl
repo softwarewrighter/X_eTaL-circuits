@@ -190,3 +190,60 @@ l:s_vgPassing := { (D, C) m ->
   note := "rows: layers, columns: heads; 0 where a head's effect is under 5% or does not beat every random control of the same size."
   hm:g_ridOn (2, title, note, rows, cols, P * h:r_ound M)
 }
+
+### Held-out seeds
+
+## `(D, C, H, K) l_evels "method"`: layer x head evidence levels (D13):
+## 2 confirmed (passes on the finding runs D with controls C and again on
+## the held-out runs H with controls K), 1 tested (passes on the finding
+## runs only), 0 neither. Held-out runs sharing a seed with the finding
+## runs are refused.
+l:l_evels := { (D, C, H, K) m ->
+  0 < '+ r_/ (h:s_eeds H) m_ember? h:s_eeds D ? "effects" []S_IGNAL "the held-out runs share a seed with the finding runs"
+  f := (D, C) l:p_asses m
+  g := (H, K) l:p_asses m
+  f + f * g
+}
+
+## The verdict of a level, in words.
+h:v_erdict := { v ->
+  v = 2 ? "confirmed"
+  v = 1 ? "tested only (fails on held-out seeds)"
+  "neither"
+}
+
+## `(D, C, H, K) c_onfirmations "method"`: the heads that pass on the
+## finding seeds, best first, a line each: the head, its mean effect on
+## the finding and the held-out seeds, and its verdict.
+l:c_onfirmations := { (D, C, H, K) m ->
+  V := (D, C, H, K) l:l_evels m
+  F := l:m_ean D l:e_ffects m
+  G := l:m_ean H l:e_ffects m
+  R := l:r_anked F * f_loat V > 0
+  n := '+ r_/ r_avel V > 0
+  line := '{ i ->
+    row := i s_elect R
+    lay := f_irst row
+    hd := f_irst r_ev row
+    k := 1 + hd + lay * 2 s_elect s_hape F
+    (f_ormat lay) c_at "." c_at (f_ormat hd) c_at " finding " c_at (f_ormat h:r_ound k s_elect r_avel F) c_at "%, held-out " c_at (f_ormat h:r_ound k s_elect r_avel G) c_at "%: " c_at (h:v_erdict k s_elect r_avel V) c_at "\n"
+  } m_ap r_ange n
+  c := '+ r_/ r_avel V = 2
+  intro := (h:w_ords m) c_at ": " c_at (f_ormat c) c_at " of the " c_at (f_ormat n) c_at " heads that pass on the " c_at (f_ormat t_ally l:r_uns D) c_at " finding seeds pass again on the " c_at (f_ormat t_ally l:r_uns H) c_at " held-out seeds.\n\n"
+  n = 0 ? intro
+  intro c_at d_isclose '{ a b -> e_nclose (d_isclose a) c_at d_isclose b } r_/ line
+}
+
+## `(D, C, H, K) s_vgConfirmed "method"`: the held-out mean effects of
+## the confirmed heads, as a layer x head grid in percent (0 elsewhere).
+l:s_vgConfirmed := { (D, C, H, K) m ->
+  V := (D, C, H, K) l:l_evels m
+  G := l:m_ean H l:e_ffects m
+  first := d_isclose f_irst l:r_uns D
+  model := d_isclose f_irst first l:k_ey "model"
+  rows := '{ n -> "L" c_at f_ormat n - 1 } m_ap r_ange t_ally G
+  cols := '{ n -> "H" c_at f_ormat n - 1 } m_ap r_ange 2 s_elect s_hape G
+  title := model c_at ": " c_at (h:w_ords m) c_at ", confirmed heads on held-out seeds"
+  note := "rows: layers, columns: heads; each confirmed head's effect on the held-out seeds, 0 elsewhere."
+  hm:g_ridOn (2, title, note, rows, cols, (V = 2) * h:r_ound G)
+}

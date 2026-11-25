@@ -332,8 +332,52 @@ denoising: percent of the clean-twin gap restored: 9 of 144 heads have an effect
 
 ![Denoising: the heads that beat their controls](images/gpt2-effects/passing-denoise.svg)
 
-These heads are **tested** on the seeds used to find them. They are
-called confirmed only once they pass again on held-out seeds.
+These heads are **tested** on the seeds used to find them; the next
+section checks them on held-out seeds.
+
+## Confirmed on held-out seeds
+
+Heads that pass on the seeds used to find them are only **tested**. The
+same experiment, controls and rule then run on ten held-out seeds that
+played no part in choosing heads or the threshold; a head that passes
+again is **confirmed**. `just confirm` takes the two sets of runs by
+their common prefix:
+
+```bash
+just confirm fixtures/gpt2-induction fixtures/gpt2-induction-heldout images/gpt2-effects
+```
+
+```text
+mean ablation: percent of the clean logit difference lost: 5 of the 6 heads that pass on the 10 finding seeds pass again on the 10 held-out seeds.
+
+5.1 finding 22%, held-out 22%: confirmed
+4.11 finding 10%, held-out 13%: confirmed
+7.6 finding 9%, held-out 8%: confirmed
+8.5 finding 9%, held-out 7%: confirmed
+5.5 finding 6%, held-out 5%: confirmed
+6.9 finding 5%, held-out 4%: tested only (fails on held-out seeds)
+
+denoising: percent of the clean-twin gap restored: 9 of the 9 heads that pass on the 10 finding seeds pass again on the 10 held-out seeds.
+
+6.9 finding 15%, held-out 15%: confirmed
+5.1 finding 12%, held-out 13%: confirmed
+7.2 finding 12%, held-out 12%: confirmed
+5.5 finding 11%, held-out 12%: confirmed
+7.10 finding 8%, held-out 8%: confirmed
+9.9 finding 7%, held-out 7%: confirmed
+9.6 finding 7%, held-out 6%: confirmed
+10.1 finding 6%, held-out 6%: confirmed
+0.1 finding 5%, held-out 6%: confirmed
+```
+
+![Denoising: the confirmed heads' effects on the held-out seeds](images/gpt2-effects/confirmed-denoise.svg)
+
+So GPT-2 Small's output on repeated text needs 5.1, 4.11, 7.6, 8.5 and
+5.5 (switching any of them off costs 5-22% of the logit difference,
+far more than a random change of the same size), and restoring any of
+the five induction heads, or 9.9, 9.6, 10.1 or 0.1, brings back 5-15%
+of what the twin lost. Which head feeds which is not yet tested: that
+takes path patching.
 
 ## The live demo
 
@@ -359,8 +403,8 @@ scores every head (`xetal/Scores`) and draws the model map with a
 circuit over it (`xetal/Map`, see [`xetal/README.md`](xetal/README.md)).
 The [live demo](https://softwarewrighter.github.io/X_eTaL-circuits/)
 shows all of it. Interventions (ablation and patching) are measured
-and drawn, and compared with random controls; checking the passing
-heads on held-out seeds comes next.
+and drawn, compared with random controls and confirmed on held-out
+seeds; showing that evidence on the model map comes next.
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

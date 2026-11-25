@@ -82,3 +82,14 @@ random directions (`mean_control`, `denoise_control`: control x layer x
 head). `just verdict` lists the heads whose mean effect is at least 5%
 and beats every control (docs/design.md, D17).
 `fixtures/gpt2-induction-controls` holds the finding seeds' controls.
+
+```bash
+just confirm fixtures/gpt2-induction fixtures/gpt2-induction-heldout
+```
+
+reruns nothing: it reads the finding seeds' runs (`PREFIX-ablation`,
+`PREFIX-patch`, `PREFIX-controls`) and the held-out seeds' runs of the
+same three, and gives each head that passes on the finding seeds its
+verdict: confirmed when it passes again on the held-out seeds, tested
+only when it does not (docs/design.md, D18). The held-out runs are made
+with `--seeds heldout`; `fixtures/gpt2-induction-heldout-*` hold them.

@@ -412,6 +412,7 @@ just map DIR CIRCUIT.toml [OUT.svg]   # the model map with a circuit (experiment
 just baseline|ablate|patch|controls --experiment experiments/induction.toml ...   # runs (model extra)
 just effects RUNS_DIR [OUT_DIR]   # interventions' effects per head, in X_eTaL
 just verdict ABLATION PATCH CONTROLS [OUT_DIR]   # heads that beat their random controls
+just confirm PREFIX HELDOUT_PREFIX [OUT_DIR]   # tested heads checked on held-out seeds
 just pages [OUT_DIR]    # the static site (work/site); CI deploys it (.github/workflows/pages.yml)
 just screenshot         # retake images/demo.png (headless Chrome)
 ADAPTER_MODEL_TESTS=1 just adapter-test   # include tests that load a model

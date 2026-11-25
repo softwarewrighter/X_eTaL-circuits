@@ -1,6 +1,6 @@
 number = 6
 slug = "heldout-validation"
-status = "pending"
+status = "in-progress"
 description = """
 Held-out validation, test-first.
 

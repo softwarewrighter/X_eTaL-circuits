@@ -25,3 +25,10 @@ rm -rf "$out"
 out="$root/fixtures/gpt2-induction-controls"
 rm -rf "$out"
 "$root/scripts/controls.sh" --experiment "$root/experiments/induction.toml" --out "$out"
+# fixtures/gpt2-induction-heldout-*  the same three on the held-out seeds
+for kind in ablate patch controls; do
+    name="$kind"; [ "$kind" = ablate ] && name=ablation
+    out="$root/fixtures/gpt2-induction-heldout-$name"
+    rm -rf "$out"
+    "$root/scripts/$kind.sh" --experiment "$root/experiments/induction.toml" --seeds heldout --out "$out"
+done

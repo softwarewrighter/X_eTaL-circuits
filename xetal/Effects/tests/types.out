@@ -11,3 +11,6 @@ l:c_ontrols : Char -> Char -> Float
 l:p_asses : (Char, Char) -> Char -> Int
 l:v_erdicts : (Char, Char) -> Char -> Char
 l:s_vgPassing : (Char, Char) -> Char -> Char
+l:l_evels : (Char, Char, Char, Char) -> Char -> Int
+l:c_onfirmations : (Char, Char, Char, Char) -> Char -> Char
+l:s_vgConfirmed : (Char, Char, Char, Char) -> Char -> Char

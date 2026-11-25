@@ -151,11 +151,20 @@ def effects_body(reports: dict) -> str:
             ("ablation", "Ablation: switching one head off", ("mean", "zero")),
         )
     )
+    confirm = (
+        "<h2>Confirmed on held-out seeds</h2>\n"
+        "<p>The heads that pass on the finding seeds, run again on ten held-out seeds with "
+        "the same rule: <b>confirmed</b> when they pass again.</p>\n"
+        f"<pre>{escape(reports['confirm'])}</pre>\n"
+        '<div class="picture"><img src="effects/confirmed-denoise.svg" alt="confirmed heads, '
+        'denoising"></div>\n'
+        '<div class="picture"><img src="effects/confirmed-mean.svg" alt="confirmed heads, '
+        'mean ablation"></div>\n'
+    )
     verdict = (
         "<h2>Which heads beat their random controls</h2>\n"
         "<p>A head passes when its mean effect is at least 5% and larger than every one of "
-        "20 random changes of the same size: <b>tested</b> on these seeds, not yet confirmed "
-        "on held-out ones.</p>\n"
+        "20 random changes of the same size: <b>tested</b> on the finding seeds.</p>\n"
         f"<pre>{escape(reports['verdict'])}</pre>\n"
         '<div class="picture"><img src="effects/passing-denoise.svg" alt="passing heads, '
         'denoising"></div>\n'
@@ -163,7 +172,8 @@ def effects_body(reports: dict) -> str:
         'mean ablation"></div>\n'
     )
     return (
-        verdict
+        confirm
+        + verdict
         + f"""<p>Interventions on every head. Each repeated prompt has a twin whose
 second copy is fresh tokens; the metric is the logit difference between the
 right next token and the twin's, at each position of the second copy. Effects
