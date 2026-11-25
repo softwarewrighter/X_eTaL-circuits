@@ -1,0 +1,1 @@
+Live demo intro for first-time readers (user's ask): front page intro (model/heads/circuit, copying task, how tested, evidence levels, findings table from circuit file, page guide), map moved to map.html, glossary page, how-to-read notes linked to glossary on every page; tests. Pushed; Pages redeploys.
