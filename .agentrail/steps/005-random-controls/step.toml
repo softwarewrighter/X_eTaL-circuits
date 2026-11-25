@@ -1,6 +1,6 @@
 number = 5
 slug = "random-controls"
-status = "in-progress"
+status = "completed"
 description = """
 Matched random controls, test-first.
 
@@ -8,5 +8,6 @@ Matched random controls, test-first.
 role = "production"
 context_files = []
 created_at = "2026-11-24T08:14:44"
+completed_at = "2026-11-24T18:05:15"
 task_type = "xetal"
-commits = []
+commits = ["f2a6ee24a95dab0e6f8c6d6e1055ec78efb0edd3"]

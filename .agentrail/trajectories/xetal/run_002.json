@@ -1,0 +1,11 @@
+{
+  "task_type": "xetal",
+  "state": {
+    "number": 5,
+    "step": "random-controls"
+  },
+  "action": "batched controls; X_eTaL verdict functions tested against numpy; flagged post-hoc threshold",
+  "result": "success",
+  "reward": 1,
+  "timestamp": "2026-11-24T18:05:15"
+}
