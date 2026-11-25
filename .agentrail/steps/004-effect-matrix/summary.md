@@ -1,0 +1,1 @@
+Effects library (xetal/Effects): ablation/patching runs to percent effects per head, mean/spread over seeds, ranking, report, diverging grids (hm:g_ridOn); just effects; README section and live Effects page. Denoising top-5 = the five induction heads; 10.7 and 11.10 negative (restoring them hurts). Pushed; Pages redeploys.
