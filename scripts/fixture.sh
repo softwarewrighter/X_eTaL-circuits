@@ -40,3 +40,8 @@ rm -rf "$out"
 out="$root/fixtures/gpt2-induction-attribution"
 rm -rf "$out"
 "$root/scripts/attribute.sh" --experiment "$root/experiments/induction.toml" --out "$out"
+# fixtures/gpt2-induction-edges  the chosen edges path-patched with controls, the finding seeds
+out="$root/fixtures/gpt2-induction-edges"
+rm -rf "$out"
+"$root/scripts/edgepatch.sh" --edges "$root/experiments/induction-edges.toml" \
+    --attribution fixtures/gpt2-induction-attribution --out "$out"

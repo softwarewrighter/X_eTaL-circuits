@@ -75,9 +75,10 @@ def build(out: Path, heads: list[tuple[int, int]] | None = None) -> None:
         "confirm.sh", str(fx / "gpt2-induction"), str(fx / "gpt2-induction-heldout"),
         str(out / "effects"),
     )  # fmt: skip
+    edges = script("edge-verdict.sh", str(fx / "gpt2-induction-edges"), str(out / "edges"))
     meta = tomllib.loads((CAPTURE / "capture.toml").read_text())
     circuit = tomllib.loads(CIRCUIT.read_text())
-    html.write(out, meta, circuit, heads, report, effects)
+    html.write(out, meta, circuit, heads, report, effects, edges)
 
 
 if __name__ == "__main__":

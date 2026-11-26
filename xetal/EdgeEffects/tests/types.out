@@ -1,0 +1,11 @@
+l:n_ames : Char -> Box Char
+l:e_ffects : Char -> Float
+l:c_ontrols : Char -> Float
+l:c_hanges : Char -> Float
+l:f_amilyOf : Truthy a => Box Char -> a
+l:f_amilies : Truthy a => Char -> a
+l:j_udged : Truthy a => Char -> a
+l:p_asses : Char -> Int
+l:v_erdicts : Char -> Char
+l:c_ountInto : Char -> Char -> Int
+l:s_vgPassing : Char -> Char -> Char

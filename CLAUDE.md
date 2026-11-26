@@ -412,6 +412,8 @@ just map DIR CIRCUIT.toml [OUT.svg]   # the model map with a circuit (experiment
 just baseline|ablate|patch|controls --experiment experiments/induction.toml ...   # runs (model extra)
 just attribute --experiment F --out runs/NAME   # edge attribution of every edge (model extra)
 just choose --edges F --runs DIR   # the edges to path-patch, from attribution runs
+just edgepatch --edges F --attribution DIR --out runs/NAME   # chosen edges with controls (model extra)
+just edge-verdict RUNS_DIR [OUT_DIR]   # which edges beat their random controls (X_eTaL)
 just effects RUNS_DIR [OUT_DIR]   # interventions' effects per head, in X_eTaL
 just verdict ABLATION PATCH CONTROLS [OUT_DIR]   # heads that beat their random controls
 just confirm PREFIX HELDOUT_PREFIX [OUT_DIR]   # tested heads checked on held-out seeds

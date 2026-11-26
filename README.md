@@ -381,8 +381,77 @@ So GPT-2 Small's output on repeated text needs 5.1, 4.11, 7.6, 8.5 and
 5.5 (switching any of them off costs 5-22% of the logit difference,
 far more than a random change of the same size), and restoring any of
 the five induction heads, or 9.9, 9.6, 10.1 or 0.1, brings back 5-15%
-of what the twin lost. Which head feeds which is not yet tested: that
-takes path patching.
+of what the twin lost. Which head feeds which is the next section.
+
+## Which edges beat their controls
+
+An edge is one head's output reaching one later head's query, key or
+value, or the final output (the logits). Path patching measures an
+edge: on the twin, only that receiver gets the sender's clean output.
+GPT-2 Small has 29,089 edges, so `just attribute` first estimates them
+all at once (a gradient approximation, seconds per seed) and
+`just choose` picks the 400 with the largest estimated changes, 200
+into queries and keys (measured by the receiving head's attention
+score at the induction target) and 200 into values and the logits
+(measured by the logit difference). `just edgepatch` path-patches
+those, each with 20 random changes of the same size, and
+`just edge-verdict`, in X_eTaL, says which pass: an effect of at least
+5% of the receiver's gap, larger in size than every control's (either
+sign: a head can push another away). An edge whose receiver's gap is
+not positive on every seed is not judged: a percent of a missing gap
+means nothing.
+
+```bash
+just edge-verdict fixtures/gpt2-induction-edges images/gpt2-edges
+```
+
+```text
+path patching of 400 edges over 10 seeds: 186 have an effect of at least 5% of their receiver's gap and beat all 20 of their random controls; 23 are not judged (their receiver's gap is not positive on every seed).
+
+into queries and keys: 176 pass, the 15 largest shown
+4.11 5.1.k +36% (controls up to 1%), attention score +5.34
+4.11 6.9.k +40% (controls up to 1%), attention score +4.56
+4.11 5.5.k +35% (controls up to 1%), attention score +3.78
+4.7 5.1.k -18% (controls up to 1%), attention score -2.66
+4.11 7.10.k +25% (controls up to 1%), attention score +2.64
+5.6 6.9.k +23% (controls up to 1%), attention score +2.62
+4.11 7.2.k +24% (controls up to 0%), attention score +2.19
+6.6 7.1.q -41% (controls up to 1%), attention score -2.15
+4.11 5.0.k +38% (controls up to 2%), attention score +2.06
+4.7 6.9.k -17% (controls up to 0%), attention score -1.97
+3.7 5.1.k +13% (controls up to 0%), attention score +1.94
+5.5 7.1.q +37% (controls up to 1%), attention score +1.94
+4.11 5.8.k +38% (controls up to 1%), attention score +1.87
+4.7 5.5.k -16% (controls up to 1%), attention score -1.69
+3.7 6.9.k +15% (controls up to 1%), attention score +1.67
+
+into values and the logits: 10 pass
+10.7 logits -10% (controls up to 1%), logit difference -1.37
+7.2 logits +8% (controls up to 0%), logit difference +1.18
+9.6 logits +8% (controls up to 0%), logit difference +1.09
+9.9 logits +7% (controls up to 0%), logit difference +1.01
+6.9 logits +7% (controls up to 0%), logit difference +0.97
+7.10 logits +7% (controls up to 0%), logit difference +0.96
+10.1 logits +6% (controls up to 0%), logit difference +0.87
+10.0 logits +5% (controls up to 0%), logit difference +0.75
+11.10 logits -5% (controls up to 0%), logit difference -0.73
+10.6 logits +5% (controls up to 0%), logit difference +0.72
+```
+
+![Edges into keys that beat their controls](images/gpt2-edges/edges-k.svg)
+
+So 4.11, the previous-token head, feeds the key of every induction
+head (5.1, 5.5, 6.9, 7.2, 7.10, and 5.0, 5.8, 7.11, 8.1), restoring
+17-45% of each one's attention score at the induction target, against
+controls of 2% at most; 3.7, 5.6 and 2.2 add to it and 4.7 pushes
+against it. The induction heads in turn feed the queries of later
+heads (7.6, 9.9, 9.6 and 10.1 among them), and ten heads write directly
+into the logits, 10.7 and 11.10 against the answer. These edges are
+**tested** on the seeds used to choose them; held-out seeds come next.
+What feeds 4.11 is not judged here: its score at the induction target
+is not its job, and its gap changes sign between seeds. Heads in layer
+3 have small gaps, so 1.8's edges into them show percents capped at
+100; read those by their change in score.
 
 ## The live demo
 
@@ -411,8 +480,9 @@ circuit over it (`xetal/Map`, see [`xetal/README.md`](xetal/README.md)).
 The [live demo](https://softwarewrighter.github.io/X_eTaL-circuits/)
 shows all of it. Interventions (ablation and patching) are measured
 and drawn, compared with random controls and confirmed on held-out
-seeds, and the model map draws each head's evidence. Testing which
-head feeds which (path patching) comes next.
+seeds, and the model map draws each head's evidence. Edges between
+heads are path-patched against random controls; held-out seeds for
+edges come next.
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

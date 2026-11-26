@@ -1,0 +1,224 @@
+## EdgeEffects: path patching of chosen edges with matched random
+## controls, read from the adapter's edgepatch runs (one per seed;
+## docs/design.md, D20-D22). An edge "sender receiver" (xetal/Edges) has
+## an effect per seed, the percent of its receiver's gap restored when
+## the sender's clean output reaches that receiver only, and 20 controls:
+## the same change in a random direction. Receivers' gaps are in their
+## metric's units: the attention score at the induction target for
+## queries and keys, the logit difference for values and the logits.
+##
+## An edge passes when its mean effect is at least 5% of its receiver's
+## gap in size, and larger in size than every control's mean (both
+## signs: a sender can push its receiver away). Only edges whose
+## receiver's gap is positive on every seed are judged. Edges are ranked by the
+## change they make in their receiver's metric, separately for the two
+## metrics, since percents of different receivers do not compare.
+##
+## A set of runs is named by one text: the seed directories' absolute
+## paths, separated by spaces (scripts/edges.sh makes it).
+##
+## Import it with an alias of your choice: "ee:" u_se< "EdgeEffects".
+
+"ef:" u_se< "Effects"
+"hm:" u_se< "Heatmap"
+
+shown := 15
+floor := 5.0
+
+### Runs
+
+## `D c_hecked`: D when its runs hold the same edges, else an error.
+h:c_hecked := { D ->
+  R := ef:r_uns D
+  E := (d_isclose f_irst R) ef:k_ey "edges"
+  0 < '+ r_/ m_ix '{ d -> n_ot E m_atch (d_isclose d) ef:k_ey "edges" } m_ap R ? "edges" []S_IGNAL "the runs are of different edges"
+  D
+}
+
+## `n_ames D`: the edges of the runs D, a "sender receiver" text each
+## (boxed), in the runs' order.
+l:n_ames := { D -> (d_isclose f_irst ef:r_uns h:c_hecked D) ef:k_ey "edges" }
+
+## Each run's array n (boxed), stacked: seed x ...
+h:s_tack := { (D, n) -> m_ix '{ d -> (d_isclose d) ef:r_ead n } m_ap ef:r_uns h:c_hecked D }
+
+## `e_ffects D`: seed x edge, percent of each receiver's gap restored.
+l:e_ffects := { D -> 100.0 * h:s_tack (D, "edge_effect") }
+
+## `c_ontrols D`: control x edge, in percent, each the mean over the
+## seeds.
+l:c_ontrols := { D -> ef:m_ean 100.0 * h:s_tack (D, "edge_control") }
+
+## `c_hanges D`: each edge's change in its receiver's metric, in the
+## metric's units, the mean over the seeds.
+l:c_hanges := { D -> ef:m_ean (0.01 * l:e_ffects D) * h:s_tack (D, "edge_gap") }
+
+## `f_amilyOf E`: for each edge text, 1 when it goes into a query or
+## key (attention-score metric), 0 into a value or the logits
+## (logit-difference metric).
+## >> "ee:" u_se< "EdgeEffects"
+## >> ee:f_amilyOf "4.11 5.1.k" "7.2 logits" "6.9 9.6.q"
+## 1 0 1
+l:f_amilyOf := { E -> m_ix '{ e -> (f_irst r_ev d_isclose e) m_ember? "qk" } m_ap E }
+
+## `f_amilies D`: f_amilyOf the edges of the runs D.
+l:f_amilies := { D -> l:f_amilyOf l:n_ames D }
+
+## `j_udged D`: per edge, 1 when its receiver's gap is positive on
+## every seed, else 0: a percent of a gap that is missing or reversed on
+## some seed means nothing, and such an edge is not judged.
+l:j_udged := { D -> 0.0 < 'm_in r_/ h:s_tack (D, "edge_gap") }
+
+## `p_asses D`: per edge, 1 when it is judged and its mean effect is at
+## least 5% in size and larger in size than every one of its controls'
+## means, else 0.
+l:p_asses := { D ->
+  A := a_bs ef:m_ean l:e_ffects D
+  top := 'm_ax r_/ a_bs l:c_ontrols D
+  (l:j_udged D) * (A > top) * A >= floor
+}
+
+### Words
+
+## x with its sign, rounded half up to an Int.
+h:s_igned := { x ->
+  r := f_loor 0.5 + x
+  r < 0 ? f_ormat r
+  "+" c_at f_ormat r
+}
+
+## x with its sign, to two decimals.
+h:t_wo := { x ->
+  r := (f_loat f_loor 0.5 + 100.0 * a_bs x) / 100.0
+  x < 0.0 ? "-" c_at f_ormat r
+  "+" c_at f_ormat r
+}
+
+## How many of n are shown, in words.
+h:m_ore := { n ->
+  n > shown ? ", the " c_at (f_ormat shown) c_at " largest shown"
+  ""
+}
+
+## One family's passing edges, largest change first (at most `shown`).
+h:s_ection := { (E, M, top, X, S, title, units) ->
+  n := '+ r_/ S
+  o := g_rade 0.0 - (a_bs X) * f_loat S
+  line := '{ i ->
+    j := i s_elect o
+    (d_isclose j s_elect E) c_at " " c_at (h:s_igned j s_elect M) c_at "% (controls up to " c_at (f_ormat f_loor 0.5 + j s_elect top) c_at "%), " c_at units c_at " " c_at (h:t_wo j s_elect X) c_at "\n"
+  } m_ap r_ange shown m_in n
+  head := title c_at ": " c_at (f_ormat n) c_at " pass" c_at (h:m_ore n) c_at "\n"
+  n = 0 ? head
+  head c_at d_isclose '{ a b -> e_nclose (d_isclose a) c_at d_isclose b } r_/ line
+}
+
+## `v_erdicts D`: how many edges pass, then each metric's passing edges
+## with the largest changes, a line each: the edge, its mean effect, the
+## largest of its controls, and its change in the metric's units.
+l:v_erdicts := { D ->
+  E := l:n_ames D
+  M := ef:m_ean l:e_ffects D
+  C := l:c_ontrols D
+  top := 'm_ax r_/ a_bs C
+  P := l:p_asses D
+  X := l:c_hanges D
+  F := l:f_amilies D
+  u := (t_ally E) - '+ r_/ l:j_udged D
+  intro := "path patching of " c_at (f_ormat t_ally E) c_at " edges over " c_at (f_ormat t_ally ef:r_uns D) c_at " seeds: " c_at (f_ormat '+ r_/ P) c_at " have an effect of at least " c_at (f_ormat f_loor floor) c_at "% of their receiver's gap and beat all " c_at (f_ormat t_ally C) c_at " of their random controls; " c_at (f_ormat u) c_at " are not judged (their receiver's gap is not positive on every seed).\n\n"
+  qk := h:s_ection (E, M, top, X, P * F, "into queries and keys", "attention score")
+  vl := h:s_ection (E, M, top, X, P * 1 - F, "into values and the logits", "logit difference")
+  intro c_at qk c_at "\n" c_at vl
+}
+
+### Pictures
+
+## The receiver head "layer.head" of an edge text (the logits: "logits").
+h:r_head := { e ->
+  r := d_isclose f_irst r_ev (e != f_irst " ") p_artition e
+  r m_atch "logits" ? r
+  (0 - 2) d_rop r
+}
+
+## The sender of an edge text.
+h:s_ender := { e -> d_isclose f_irst (e != f_irst " ") p_artition e }
+
+## A "layer.head" text as one number to sort by: layer * 100 + head.
+h:k_ey := { t ->
+  v := f_loor n_umbers '{ x ->
+    x = f_irst "." ? f_irst " "
+    x
+  } e_ach t
+  (100 * f_irst v) + f_irst r_ev v
+}
+
+## Whether edge text e goes into input kind ("q", "k", "v" or "logits").
+h:i_nto := { (e, kind) ->
+  kind m_atch "logits" ? (h:r_head e) m_atch "logits"
+  (h:r_head e) m_atch "logits" ? 0
+  (f_irst kind) = f_irst r_ev e
+}
+
+## Per edge, 1 when it passes and goes into input kind.
+h:p_assingInto := { D kind -> (l:p_asses D) * m_ix '{ e -> h:i_nto ((d_isclose e), kind) } m_ap l:n_ames D }
+
+## `D c_ountInto "kind"`: how many passing edges go into input kind
+## ("q", "k", "v" or "logits").
+l:c_ountInto := { D kind -> '+ r_/ D h:p_assingInto kind }
+
+## `D s_vgPassing "kind"`: the passing edges into one input kind ("q",
+## "k" or "v") as a sender x receiver grid, in percent of the receiver's
+## gap, capped at 100 in size; for "logits", each passing sender's
+## effect on the logits as a layer x head grid.
+l:s_vgPassing := { D kind ->
+  E := l:n_ames D
+  M := ef:m_ean l:e_ffects D
+  idx := w_here D h:p_assingInto kind
+  v := 100 m_in (0 - 100) m_ax f_loor 0.5 + idx s_elect M
+  first := d_isclose f_irst ef:r_uns D
+  model := d_isclose f_irst first ef:k_ey "model"
+  LH := f_loor r_avel m_ix '{ n_umbers d_isclose _r } m_ap first ef:k_ey "shape"
+  kind m_atch "logits" ? h:l_ogitGrid (E, idx, v, model, LH)
+  h:e_dgeGrid (E, idx, v, model, kind)
+}
+
+## The words for an input kind.
+h:k_ind := { kind ->
+  kind m_atch "q" ? "queries"
+  kind m_atch "k" ? "keys"
+  "values"
+}
+
+h:e_dgeGrid := { (E, idx, v, model, kind) ->
+  0 = t_ally idx ? "edges" []S_IGNAL "no edge into " c_at (h:k_ind kind) c_at " passes"
+  S := '{ i -> h:s_ender d_isclose i s_elect E } m_ap idx
+  T := '{ i -> h:r_head d_isclose i s_elect E } m_ap idx
+  rows := u_nique S
+  cs := u_nique T
+  cols := (g_rade m_ix '{ t -> h:k_ey d_isclose t } m_ap cs) s_elect cs
+  C := t_ally cols
+  f := m_ix '{ k -> (C * (rows i_ndexOf k s_elect S) - 1) + cols i_ndexOf k s_elect T } m_ap r_ange t_ally idx
+  P := ((t_ally rows) c_at C) r_eshape m_ix '{ j -> '+ r_/ v * f = j } m_ap r_ange C * t_ally rows
+  title := model c_at ": edges into " c_at (h:k_ind kind) c_at " that beat their random controls"
+  note := "rows: sending heads, columns: receiving heads; percent of the receiver's gap restored, capped at 100 in size; 0 where an edge was not tested or does not pass."
+  hm:g_ridOn (3, title, note, rows, cols, P)
+}
+
+h:l_ogitGrid := { (E, idx, v, model, LH) ->
+  L := f_irst LH
+  H := f_irst r_ev LH
+  f := m_ix '{ i ->
+    s := h:s_ender d_isclose i s_elect E
+    s m_atch "embed" ? 0
+    1 + h:k_ey s
+  } m_ap idx
+  g := (f > 0) r_eplicate f
+  w := (f > 0) r_eplicate v
+  pos := m_ix '{ k -> (H * k d_iv 100) + 1 + k m_od 100 } m_ap g - 1
+  P := (L c_at H) r_eshape m_ix '{ j -> '+ r_/ w * pos = j } m_ap r_ange L * H
+  rows := '{ n -> "L" c_at f_ormat n - 1 } m_ap r_ange L
+  cols := '{ n -> "H" c_at f_ormat n - 1 } m_ap r_ange H
+  title := model c_at ": heads writing into the logits that beat their random controls"
+  note := "rows: layers, columns: heads; percent of the clean-twin logit-difference gap the head's direct path restores; 0 where it does not pass."
+  hm:g_ridOn (3, title, note, rows, cols, P)
+}

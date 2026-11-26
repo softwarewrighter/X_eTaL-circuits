@@ -89,6 +89,17 @@ def _choose_parser(sub) -> None:
     p.add_argument("--runs", required=True, help="attribution runs (seed-N directories)")
 
 
+def _edgepatch_parser(sub) -> None:
+    p = sub.add_parser("edgepatch", help="path patching of the chosen edges, with controls")
+    p.add_argument("--edges", required=True, help="an experiments/*-edges.toml file")
+    p.add_argument("--attribution", required=True, help="its attribution runs (just attribute)")
+    p.add_argument(
+        "--seeds", default="finding", help="finding, heldout, or a comma list (default finding)"
+    )
+    p.add_argument("--out", required=True, help="new directory: one run per seed, seed-N")
+    p.add_argument("--device", default="cpu")
+
+
 def seeds_of(exp, text: str) -> tuple[int, ...]:
     """The seeds named on the command line: finding, heldout or a comma list."""
     named = {"finding": exp.finding_seeds, "heldout": exp.heldout_seeds}
@@ -110,6 +121,7 @@ def build_parser() -> argparse.ArgumentParser:
     _pathpatch_parser(sub)
     _attribute_parser(sub)
     _choose_parser(sub)
+    _edgepatch_parser(sub)
     return parser
 
 
@@ -207,6 +219,23 @@ def run_choose(args) -> int:
     return 0
 
 
+def run_edgepatch(args) -> int:
+    from pathlib import Path
+
+    from circuits_adapter import choose, edgepatch, edges, model
+
+    spec = edges.load(args.edges)
+    senders, receivers, attr, gap = choose.read(args.attribution)
+    chosen = choose.chosen(spec, senders, receivers, choose.change(attr, gap))
+    exp = spec.base
+    m = model.load(exp.model, exp.revision, args.device)
+    shape = edges.SHAPE[exp.model]
+    for seed in seeds_of(exp, args.seeds):
+        out = Path(args.out) / f"seed-{seed}"
+        print(edgepatch.write(out, m, exp, seed, chosen, shape, args.attribution))
+    return 0
+
+
 COMMANDS = {
     "capture": run_capture,
     "baseline": run_baseline,
@@ -216,6 +245,7 @@ COMMANDS = {
     "pathpatch": run_pathpatch,
     "attribute": run_attribute,
     "choose": run_choose,
+    "edgepatch": run_edgepatch,
 }
 
 

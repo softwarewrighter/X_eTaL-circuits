@@ -169,15 +169,20 @@ class Seed:
 
     def effects(self, r: graph.Receiver, senders: list) -> np.ndarray:
         """The effect of each sender on receiver r (a fraction of r's gap)."""
+        p = self.paths[TWIN_OF[r.input]]
+        return self.effects_of(r, torch.stack([p.difference(s) for s in senders]))
+
+    def effects_of(self, r: graph.Receiver, d: torch.Tensor) -> np.ndarray:
+        """The effect on receiver r of each difference in d (batch x position x d_model),
+        added on r's twin, as a fraction of r's gap."""
         twin = TWIN_OF[r.input]
         p = self.paths[twin]
-        d = torch.stack([p.difference(s) for s in senders])
         if r.input in ("q", "k"):
-            got = self._scores(p.run_ids, p.hooks([(r, d)]), len(senders), r.layer)[r.layer]
+            got = self._scores(p.run_ids, p.hooks([(r, d)]), len(d), r.layer)[r.layer]
             base = self.base[twin][r.layer][0, r.head]
             return (got[:, r.head] - base) / (self.clean[r.layer][0, r.head] - base)
         target = "logits" if not r.input else r
-        return p.effect([(target, d)], len(senders))
+        return p.effect([(target, d)], len(d))
 
     def matrix(self, inputs=graph.INPUTS) -> tuple[list, list, np.ndarray]:
         """Senders, receivers and the sender x receiver effects (0 where no edge)."""

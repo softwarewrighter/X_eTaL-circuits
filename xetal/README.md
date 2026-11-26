@@ -144,3 +144,28 @@ model's number of layers and heads.
 | `(L, H) ed:e_dge "4.11 5.1.k"` | `4 11 5 1 2`; a receiver not in a later layer is refused (`error[graph]`) |
 | `(L, H) ed:s_ender "4.11"`, `(L, H) ed:r_eceiver "5.1.k"` | one end of an edge |
 | `ed:c_ount (L, H, k)` | how many edges there are with k inputs per head (GPT-2 Small, 3: 29089) |
+
+## EdgeEffects
+
+Path patching of chosen edges with matched random controls, from the
+adapter's edgepatch runs (one per seed; docs/design.md, D22). `D` is
+one text: the seed directories' absolute paths, separated by spaces
+(`scripts/edge-verdict.sh` makes it). Percents are of each receiver's
+gap; changes are in its metric's units (attention score for queries
+and keys, logit difference for values and the logits).
+
+| Function | Gives |
+| -------- | ----- |
+| `ee:n_ames D` | the edges, `"sender receiver"` each; runs of different edges are refused |
+| `ee:e_ffects D` | seed x edge, percent of each receiver's gap restored |
+| `ee:c_ontrols D` | control x edge, percent, each the mean over the seeds |
+| `ee:c_hanges D` | per edge, the change in its receiver's metric, mean over the seeds |
+| `ee:j_udged D` | per edge, 1 when its receiver's gap is positive on every seed |
+| `ee:p_asses D` | per edge, 1 when judged, at least 5% in size and larger in size than every control |
+| `ee:v_erdicts D` | the report: counts, then each metric's passing edges by change |
+| `D ee:c_ountInto "k"` | passing edges into an input kind (`q`, `k`, `v`, `logits`) |
+| `D ee:s_vgPassing "k"` | the passing edges into a kind as a sender x receiver grid (`logits`: layer x head) |
+
+```bash
+just edge-verdict fixtures/gpt2-induction-edges images/gpt2-edges
+```

@@ -1,6 +1,6 @@
 number = 5
 slug = "edge-effects"
-status = "pending"
+status = "in-progress"
 description = """
 Edge effects in X_eTaL, test-first.
 

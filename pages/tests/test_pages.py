@@ -55,6 +55,7 @@ def test_the_pages_and_pictures_are_there(site):
         "scores.html",
         "effects.html",
         "eli5.html",
+        "edges.html",
         "style.css",
     ):
         assert (site / name).is_file(), name
@@ -208,3 +209,12 @@ def test_every_page_but_the_front_has_a_reading_note(site):
     for page in site.glob("*.html"):
         has = 'class="how"' in page.read_text()
         assert has == (page.name != "index.html"), page.name
+
+
+def test_the_edges_page_shows_the_verdicts_and_a_grid_per_kind(site):
+    text = (site / "edges.html").read_text()
+    assert "beat all 20 of their random controls" in text and "are not judged" in text
+    for kind in ("k", "q", "logits"):
+        assert f'src="edges/edges-{kind}.svg"' in text
+    want = (ROOT / "images" / "gpt2-edges" / "edges-k.svg").read_text()
+    assert (site / "edges" / "edges-k.svg").read_text() == want

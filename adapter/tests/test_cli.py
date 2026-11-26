@@ -117,3 +117,11 @@ def test_choose_prints_the_chosen_edges(capsys):
     assert cli.main(["choose", "--edges", str(edges_file), "--runs", str(runs)]) == 0
     lines = capsys.readouterr().out.splitlines()
     assert len(lines) == 400 and "4.11 5.1.k" in lines
+
+
+def test_edgepatch_arguments():
+    args = cli.build_parser().parse_args(
+        ["edgepatch", "--edges", "x.toml", "--attribution", "a", "--out", "r"]
+    )
+    assert (args.command, args.seeds, args.attribution) == ("edgepatch", "finding", "a")
+    assert cli.COMMANDS["edgepatch"] is cli.run_edgepatch

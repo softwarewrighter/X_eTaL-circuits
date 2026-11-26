@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = "https://github.com/softwarewrighter/X_eTaL-circuits"
 OBSERVATION = (
     "Attention pictures and scores show where heads look: observations, not causal "
-    "evidence. What the model needs is tested by interventions, on the Effects page."
+    "evidence. What the model needs is tested by interventions, on the Effects and Edges pages."
 )
 
 CSS = """body { font-family: system-ui, sans-serif; max-width: 980px; margin: 0 auto;
@@ -28,7 +28,8 @@ nav a { color: #1d4ed8; text-decoration: none; font-weight: 600; }
   font-size: 14px; }
 table { border-collapse: collapse; font-size: 14px; }
 td, th { border: 1px solid #e5e7eb; padding: 4px 8px; text-align: left; vertical-align: top; }
-pre { background: #f3f4f6; padding: 12px; overflow-x: auto; font-size: 13px; }
+pre { background: #f3f4f6; padding: 12px; overflow-x: auto; font-size: 13px;
+  white-space: pre-wrap; }
 select, button { font-size: 15px; margin-right: 8px; }
 button { cursor: pointer; }
 code { background: #f3f4f6; padding: 0 3px; }
@@ -59,7 +60,8 @@ def page(title: str, meta: dict, body: str) -> str:
 <body>
 <nav><a href="index.html">Introduction</a><a href="map.html">Model map</a>
 <a href="heads.html">Heads</a><a href="scores.html">Scores</a>
-<a href="effects.html">Effects</a><a href="glossary.html">Glossary</a>
+<a href="effects.html">Effects</a><a href="edges.html">Edges</a>
+<a href="glossary.html">Glossary</a>
 <a href="eli5.html">Explain it simply</a>
 <a href="{REPO}">Source</a></nav>
 <h1>{escape(title)}</h1>
@@ -191,13 +193,34 @@ below show every head; the verdicts above say which beat their controls.</p>
     )
 
 
+def edges_body(report: str) -> str:
+    grids = "".join(
+        f'<h2>{title}</h2>\n<div class="picture"><img src="edges/edges-{kind}.svg" '
+        f'alt="{title}"></div>\n'
+        for kind, title in (
+            ("k", "Into keys: where to look"),
+            ("q", "Into queries: what to look for"),
+            ("logits", "Into the output"),
+        )
+    )
+    return f"""<p>An edge is one head's output reaching one later head's query, key or
+value, or the output. Of GPT-2 Small's 29,089 edges, the 400 with the largest
+estimated effects were path-patched on 10 seeds, each against 20 random changes of the
+same size. An edge passes when its effect is at least 5% of its receiver's gap and
+larger than every control's, in either direction.</p>
+<pre>{escape(report)}</pre>
+{grids}"""
+
+
 def eli5_body() -> str:
     text = (ROOT / "docs" / "eli5.md").read_text()
     body = markdown.markdown(text, extensions=["tables", "fenced_code"])
     return re.sub(r'href="([\w./-]+\.md)"', rf'href="{REPO}/blob/main/docs/\1"', body)
 
 
-def write(out: Path, meta: dict, circuit: dict, heads: list, report: str, effects: dict) -> None:
+def write(
+    out: Path, meta: dict, circuit: dict, heads: list, report: str, effects: dict, edges: str
+) -> None:
     (out / "style.css").write_text(CSS)
     pages = {
         "index.html": ("Finding circuits inside GPT-2 Small", intro.index_body(circuit)),
@@ -205,6 +228,7 @@ def write(out: Path, meta: dict, circuit: dict, heads: list, report: str, effect
         "heads.html": ("GPT-2 Small: one head's attention", heads_body(circuit, heads)),
         "scores.html": ("GPT-2 Small: every head's scores", scores_body(report)),
         "effects.html": ("GPT-2 Small: interventions on every head", effects_body(effects)),
+        "edges.html": ("GPT-2 Small: which head feeds which", edges_body(edges)),
         "eli5.html": ("Explain it simply", eli5_body()),
         "glossary.html": ("Glossary", intro.render("glossary.md")),
     }

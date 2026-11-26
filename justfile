@@ -87,6 +87,14 @@ pathpatch *ARGS:
 attribute *ARGS:
     scripts/attribute.sh {{ARGS}}
 
+# The chosen edges path-patched with controls: just edgepatch --edges F --attribution DIR [--seeds ...] --out runs/NAME
+edgepatch *ARGS:
+    scripts/edgepatch.sh {{ARGS}}
+
+# Which edges beat their random controls (X_eTaL): just edge-verdict RUNS_DIR [OUT_DIR]
+edge-verdict *ARGS:
+    scripts/edge-verdict.sh {{ARGS}}
+
 # The edges to path-patch from attribution runs: just choose --edges F --runs DIR
 choose *ARGS:
     scripts/choose.sh {{ARGS}}

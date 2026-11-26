@@ -144,3 +144,18 @@ and keys, logit difference for values and the logits), plus the
 `always` edges. Fractions are not used to rank, because a head whose
 score barely differs between the twins turns any change into a huge
 fraction. `fixtures/gpt2-induction-attribution` holds the finding seeds.
+
+```bash
+just edgepatch --edges experiments/induction-edges.toml --attribution fixtures/gpt2-induction-attribution --out runs/edges
+just edge-verdict runs/edges images/gpt2-edges
+```
+
+`edgepatch` path-patches the chosen edges on each seed, each with 20
+matched random controls (docs/design.md, D22): the sender's difference
+replaced by one of the same length at each position, in a random
+direction, added to the same receiver on the same twin. Each run holds
+`edge_effect` (edge), `edge_control` (control x edge) and `edge_gap`
+(each edge's receiver's gap in its metric's units), with the edges
+named in `run.toml`; about two minutes a seed on a CPU.
+`edge-verdict` (X_eTaL, `xetal/EdgeEffects`) says which pass.
+`fixtures/gpt2-induction-edges` holds the finding seeds.
