@@ -1,0 +1,11 @@
+{
+  "task_type": "adapter",
+  "state": {
+    "number": 4,
+    "step": "edge-attribution"
+  },
+  "action": "probed attribution against the model's scores and the path-patching fixture before writing tests; found fraction ranking broken by near-zero gaps and ranked in metric units instead; TDD on chooser",
+  "result": "success",
+  "reward": 1,
+  "timestamp": "2026-11-25T16:44:52"
+}

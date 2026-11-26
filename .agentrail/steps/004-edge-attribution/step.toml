@@ -1,6 +1,6 @@
 number = 4
 slug = "edge-attribution"
-status = "in-progress"
+status = "completed"
 description = """
 Edge attribution patching in the adapter, test-first: a cheap ranking.
 
@@ -8,5 +8,6 @@ Edge attribution patching in the adapter, test-first: a cheap ranking.
 role = "production"
 context_files = []
 created_at = "2026-11-24T19:40:39"
+completed_at = "2026-11-25T16:44:52"
 task_type = "adapter"
-commits = []
+commits = ["f96cd1c7120da58ccaed2c5797aea024bc808c75"]
