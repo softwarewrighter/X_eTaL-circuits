@@ -105,7 +105,7 @@ value input `layer.head.q|k|v` or `logits`; an edge `"4.11 5.1.k"` goes
 to a later layer. GPT-2 Small has 29,089 such edges. The file names its
 base experiment (`induction.toml`, for the prompts, metric, seeds and
 controls), the senders and receivers in scope, the inputs, how many
-edges to path-patch (the top 200 by edge attribution), and edges
+edges to path-patch (the top 200 of each metric by edge attribution), and edges
 always path-patched: here the circuit's, 4.11 into each induction
 head's key.
 
@@ -123,3 +123,24 @@ as the fraction of its gap restored. Each run (`seed-N`) holds
 `edge_effect`, a sender x receiver matrix (`senders` and `receivers`
 named in `run.toml`), about 10 minutes per seed on a CPU.
 `fixtures/gpt2-induction-paths` holds seed 0.
+
+```bash
+just attribute --experiment experiments/induction.toml --out runs/attribution
+just choose --edges experiments/induction-edges.toml --runs runs/attribution
+```
+
+`attribute` estimates every edge's path-patching effect at once, by edge
+attribution (docs/design.md, D21): the sender's difference dotted with
+the gradient of the receiver's metric, on the same twin. It takes
+seconds per seed, against minutes, and is close to path patching: on
+seed 0, correlations of 0.98 (score edges) and 0.999 (logit edges), and
+the same sign on each metric's 200 largest edges. It is an estimate,
+not evidence: an edge counts only once path patching and its controls
+say so. Each run holds `edge_attribution` (fractions, like
+`edge_effect`) and `receiver_gap` (each receiver's gap in its metric's
+units). `choose` prints the edges to path-patch, one per line: the
+largest changes in each metric's units (attention score for queries
+and keys, logit difference for values and the logits), plus the
+`always` edges. Fractions are not used to rank, because a head whose
+score barely differs between the twins turns any change into a huge
+fraction. `fixtures/gpt2-induction-attribution` holds the finding seeds.

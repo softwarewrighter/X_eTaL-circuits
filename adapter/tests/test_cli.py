@@ -97,3 +97,23 @@ def test_pathpatch_arguments():
     args = cli.build_parser().parse_args(["pathpatch", "--experiment", "e.toml", "--out", "r"])
     assert (args.command, args.seeds) == ("pathpatch", "finding")
     assert cli.COMMANDS["pathpatch"] is cli.run_pathpatch
+
+
+def test_attribute_and_choose_arguments():
+    args = cli.build_parser().parse_args(["attribute", "--experiment", "e.toml", "--out", "r"])
+    assert (args.command, args.seeds) == ("attribute", "finding")
+    assert cli.COMMANDS["attribute"] is cli.run_attribute
+    args = cli.build_parser().parse_args(["choose", "--edges", "x.toml", "--runs", "d"])
+    assert (args.edges, args.runs) == ("x.toml", "d")
+    assert cli.COMMANDS["choose"] is cli.run_choose
+
+
+def test_choose_prints_the_chosen_edges(capsys):
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
+    edges_file = root / "experiments" / "induction-edges.toml"
+    runs = root / "fixtures" / "gpt2-induction-attribution"
+    assert cli.main(["choose", "--edges", str(edges_file), "--runs", str(runs)]) == 0
+    lines = capsys.readouterr().out.splitlines()
+    assert len(lines) == 400 and "4.11 5.1.k" in lines

@@ -1,6 +1,6 @@
 number = 4
 slug = "edge-attribution"
-status = "pending"
+status = "in-progress"
 description = """
 Edge attribution patching in the adapter, test-first: a cheap ranking.
 

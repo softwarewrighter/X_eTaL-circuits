@@ -73,6 +73,22 @@ def _pathpatch_parser(sub) -> None:
     p.add_argument("--device", default="cpu")
 
 
+def _attribute_parser(sub) -> None:
+    p = sub.add_parser("attribute", help="edge attribution of every edge, per seed")
+    p.add_argument("--experiment", required=True, help="an experiments/*.toml file")
+    p.add_argument(
+        "--seeds", default="finding", help="finding, heldout, or a comma list (default finding)"
+    )
+    p.add_argument("--out", required=True, help="new directory: one run per seed, seed-N")
+    p.add_argument("--device", default="cpu")
+
+
+def _choose_parser(sub) -> None:
+    p = sub.add_parser("choose", help="the edges to path-patch, from attribution runs")
+    p.add_argument("--edges", required=True, help="an experiments/*-edges.toml file")
+    p.add_argument("--runs", required=True, help="attribution runs (seed-N directories)")
+
+
 def seeds_of(exp, text: str) -> tuple[int, ...]:
     """The seeds named on the command line: finding, heldout or a comma list."""
     named = {"finding": exp.finding_seeds, "heldout": exp.heldout_seeds}
@@ -92,6 +108,8 @@ def build_parser() -> argparse.ArgumentParser:
     _patch_parser(sub)
     _controls_parser(sub)
     _pathpatch_parser(sub)
+    _attribute_parser(sub)
+    _choose_parser(sub)
     return parser
 
 
@@ -167,6 +185,28 @@ def run_pathpatch(args) -> int:
     return 0
 
 
+def run_attribute(args) -> int:
+    from pathlib import Path
+
+    from circuits_adapter import attribution, experiment, model
+
+    exp = experiment.load(args.experiment)
+    m = model.load(exp.model, exp.revision, args.device)
+    for seed in seeds_of(exp, args.seeds):
+        print(attribution.write(Path(args.out) / f"seed-{seed}", m, exp, seed))
+    return 0
+
+
+def run_choose(args) -> int:
+    from circuits_adapter import choose, edges, graph
+
+    spec = edges.load(args.edges)
+    senders, receivers, attr, gap = choose.read(args.runs)
+    for s, r in choose.chosen(spec, senders, receivers, choose.change(attr, gap)):
+        print(graph.name(s, r))
+    return 0
+
+
 COMMANDS = {
     "capture": run_capture,
     "baseline": run_baseline,
@@ -174,6 +214,8 @@ COMMANDS = {
     "patch": run_patch,
     "controls": run_controls,
     "pathpatch": run_pathpatch,
+    "attribute": run_attribute,
+    "choose": run_choose,
 }
 
 

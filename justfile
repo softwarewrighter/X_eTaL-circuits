@@ -82,3 +82,11 @@ confirm *ARGS:
 # Path patching of every edge: just pathpatch --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
 pathpatch *ARGS:
     scripts/pathpatch.sh {{ARGS}}
+
+# Edge attribution of every edge: just attribute --experiment F [--seeds finding|heldout|N,M] --out runs/NAME
+attribute *ARGS:
+    scripts/attribute.sh {{ARGS}}
+
+# The edges to path-patch from attribution runs: just choose --edges F --runs DIR
+choose *ARGS:
+    scripts/choose.sh {{ARGS}}

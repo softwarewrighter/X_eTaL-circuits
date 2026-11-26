@@ -208,6 +208,13 @@ heads), heldout-edges, faithfulness (keep only the circuit, mean-ablate
 the rest), circuit-graph-view (the map draws edge evidence, and a graph
 view per input; README, pages and screenshot).
 
+Progress: graph-model (D19); path-patching (D20: the key twin and the
+attention-score metric; 4.11 restores 26-46% of each induction head's
+key gap on seeds 0 and 1); pages-intro (the live demo's introduction
+and glossary, inserted at the user's ask); edge-attribution (D21: all
+edges in seconds, Pearson 0.98/0.999 with path patching in the metric's
+units; edges chosen per metric, 400 for the induction experiment).
+
 ## Saga 4 -- icl-behavior
 
 Goal: behavioral replication of the paper's few-shot classification

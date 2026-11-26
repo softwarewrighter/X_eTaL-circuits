@@ -6,7 +6,9 @@
 # senders      heads "layer.head" and "embed", or "all"
 # receivers    head inputs "layer.head.q|k|v" and "logits", or "all"
 # inputs       which head inputs count as receivers when receivers is "all"
-# path_patch   which edges to path-patch: "all", or "top" N by edge attribution
+# path_patch   which edges to path-patch: "all", or "top" N: the N largest by edge
+#              attribution for each metric (attention score: q, k; logit difference:
+#              v, logits), in the metric's units (just choose; D21)
 # always       edges path-patched whatever the attribution says (the circuit's)
 # (docs/design.md, D19)
 name = ["induction edges, GPT-2 Small"]

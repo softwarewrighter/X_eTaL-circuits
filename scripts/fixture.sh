@@ -36,3 +36,7 @@ done
 out="$root/fixtures/gpt2-induction-paths"
 rm -rf "$out"
 "$root/scripts/pathpatch.sh" --experiment "$root/experiments/induction.toml" --seeds 0 --out "$out"
+# fixtures/gpt2-induction-attribution  edge attribution of every edge, the finding seeds
+out="$root/fixtures/gpt2-induction-attribution"
+rm -rf "$out"
+"$root/scripts/attribute.sh" --experiment "$root/experiments/induction.toml" --out "$out"
