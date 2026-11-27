@@ -1,6 +1,6 @@
 number = 6
 slug = "heldout-edges"
-status = "in-progress"
+status = "completed"
 description = """
 Held-out edges, test-first.
 
@@ -8,5 +8,6 @@ Held-out edges, test-first.
 role = "production"
 context_files = []
 created_at = "2026-11-24T19:40:39"
+completed_at = "2026-11-27T08:35:24"
 task_type = "xetal"
-commits = []
+commits = ["7e4801ecd40f72b82d2897d74ef6489a53d1b473"]
