@@ -95,6 +95,10 @@ edgepatch *ARGS:
 edge-verdict *ARGS:
     scripts/edge-verdict.sh {{ARGS}}
 
+# Tested edges checked on held-out seeds (X_eTaL): just edge-confirm FINDING_DIR HELDOUT_DIR [OUT_DIR]
+edge-confirm *ARGS:
+    scripts/edge-confirm.sh {{ARGS}}
+
 # The edges to path-patch from attribution runs: just choose --edges F --runs DIR
 choose *ARGS:
     scripts/choose.sh {{ARGS}}

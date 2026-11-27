@@ -45,3 +45,8 @@ out="$root/fixtures/gpt2-induction-edges"
 rm -rf "$out"
 "$root/scripts/edgepatch.sh" --edges "$root/experiments/induction-edges.toml" \
     --attribution fixtures/gpt2-induction-attribution --out "$out"
+# fixtures/gpt2-induction-heldout-edges  the same edges with controls, the held-out seeds
+out="$root/fixtures/gpt2-induction-heldout-edges"
+rm -rf "$out"
+"$root/scripts/edgepatch.sh" --edges "$root/experiments/induction-edges.toml" \
+    --attribution fixtures/gpt2-induction-attribution --seeds heldout --out "$out"

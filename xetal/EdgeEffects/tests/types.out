@@ -9,3 +9,7 @@ l:p_asses : Char -> Int
 l:v_erdicts : Char -> Char
 l:c_ountInto : Char -> Char -> Int
 l:s_vgPassing : Char -> Char -> Char
+l:l_evels : (Char, Char) -> Int
+l:c_onfirmations : (Char, Char) -> Char
+l:c_onfirmedInto : (Char, Char) -> Char -> Int
+l:s_vgConfirmed : (Char, Char) -> Char -> Char

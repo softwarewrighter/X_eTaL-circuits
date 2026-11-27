@@ -159,38 +159,48 @@ h:i_nto := { (e, kind) ->
   (f_irst kind) = f_irst r_ev e
 }
 
+## Per edge of E, 1 when it goes into input kind.
+h:i_ntoAll := { (E, kind) -> m_ix '{ e -> h:i_nto ((d_isclose e), kind) } m_ap E }
+
 ## Per edge, 1 when it passes and goes into input kind.
-h:p_assingInto := { D kind -> (l:p_asses D) * m_ix '{ e -> h:i_nto ((d_isclose e), kind) } m_ap l:n_ames D }
+h:p_assingInto := { D kind -> (l:p_asses D) * h:i_ntoAll ((l:n_ames D), kind) }
 
 ## `D c_ountInto "kind"`: how many passing edges go into input kind
 ## ("q", "k", "v" or "logits").
 l:c_ountInto := { D kind -> '+ r_/ D h:p_assingInto kind }
+
+## The words for an input kind.
+h:k_ind := { kind ->
+  kind m_atch "q" ? "queries"
+  kind m_atch "k" ? "keys"
+  kind m_atch "logits" ? "the logits"
+  "values"
+}
 
 ## `D s_vgPassing "kind"`: the passing edges into one input kind ("q",
 ## "k" or "v") as a sender x receiver grid, in percent of the receiver's
 ## gap, capped at 100 in size; for "logits", each passing sender's
 ## effect on the logits as a layer x head grid.
 l:s_vgPassing := { D kind ->
+  what := "edges into " c_at (h:k_ind kind) c_at " that beat their random controls"
+  h:g_ridOf (D, (l:p_asses D), (ef:m_ean l:e_ffects D), kind, what, "does not pass")
+}
+
+## The edges selected by sel into input kind, drawn from the effects M
+## (percent per edge) of the runs D.
+h:g_ridOf := { (D, sel, M, kind, what, absent) ->
   E := l:n_ames D
-  M := ef:m_ean l:e_ffects D
-  idx := w_here D h:p_assingInto kind
+  idx := w_here sel * h:i_ntoAll (E, kind)
+  0 = t_ally idx ? "edges" []S_IGNAL "no edge into " c_at (h:k_ind kind) c_at " to draw"
   v := 100 m_in (0 - 100) m_ax f_loor 0.5 + idx s_elect M
   first := d_isclose f_irst ef:r_uns D
-  model := d_isclose f_irst first ef:k_ey "model"
+  title := (d_isclose f_irst first ef:k_ey "model") c_at ": " c_at what
   LH := f_loor r_avel m_ix '{ n_umbers d_isclose _r } m_ap first ef:k_ey "shape"
-  kind m_atch "logits" ? h:l_ogitGrid (E, idx, v, model, LH)
-  h:e_dgeGrid (E, idx, v, model, kind)
+  kind m_atch "logits" ? h:l_ogitGrid (E, idx, v, LH, title, absent)
+  h:e_dgeGrid (E, idx, v, title, absent)
 }
 
-## The words for an input kind.
-h:k_ind := { kind ->
-  kind m_atch "q" ? "queries"
-  kind m_atch "k" ? "keys"
-  "values"
-}
-
-h:e_dgeGrid := { (E, idx, v, model, kind) ->
-  0 = t_ally idx ? "edges" []S_IGNAL "no edge into " c_at (h:k_ind kind) c_at " passes"
+h:e_dgeGrid := { (E, idx, v, title, absent) ->
   S := '{ i -> h:s_ender d_isclose i s_elect E } m_ap idx
   T := '{ i -> h:r_head d_isclose i s_elect E } m_ap idx
   rows := u_nique S
@@ -199,12 +209,11 @@ h:e_dgeGrid := { (E, idx, v, model, kind) ->
   C := t_ally cols
   f := m_ix '{ k -> (C * (rows i_ndexOf k s_elect S) - 1) + cols i_ndexOf k s_elect T } m_ap r_ange t_ally idx
   P := ((t_ally rows) c_at C) r_eshape m_ix '{ j -> '+ r_/ v * f = j } m_ap r_ange C * t_ally rows
-  title := model c_at ": edges into " c_at (h:k_ind kind) c_at " that beat their random controls"
-  note := "rows: sending heads, columns: receiving heads; percent of the receiver's gap restored, capped at 100 in size; 0 where an edge was not tested or does not pass."
+  note := "rows: sending heads, columns: receiving heads; percent of the receiver's gap restored, capped at 100 in size; 0 where an edge was not tested or " c_at absent c_at "."
   hm:g_ridOn (3, title, note, rows, cols, P)
 }
 
-h:l_ogitGrid := { (E, idx, v, model, LH) ->
+h:l_ogitGrid := { (E, idx, v, LH, title, absent) ->
   L := f_irst LH
   H := f_irst r_ev LH
   f := m_ix '{ i ->
@@ -218,7 +227,71 @@ h:l_ogitGrid := { (E, idx, v, model, LH) ->
   P := (L c_at H) r_eshape m_ix '{ j -> '+ r_/ w * pos = j } m_ap r_ange L * H
   rows := '{ n -> "L" c_at f_ormat n - 1 } m_ap r_ange L
   cols := '{ n -> "H" c_at f_ormat n - 1 } m_ap r_ange H
-  title := model c_at ": heads writing into the logits that beat their random controls"
-  note := "rows: layers, columns: heads; percent of the clean-twin logit-difference gap the head's direct path restores; 0 where it does not pass."
+  note := "rows: layers, columns: heads; percent of the clean-twin logit-difference gap the head's direct path restores; 0 where it " c_at absent c_at "."
   hm:g_ridOn (3, title, note, rows, cols, P)
+}
+
+### Held-out seeds
+
+## The seeds of a set of runs, in their order.
+h:s_eeds := { D -> f_loor r_avel m_ix '{ d -> n_umbers d_isclose f_irst (d_isclose d) ef:k_ey "seed" } m_ap ef:r_uns D }
+
+## `l_evels (D, H)`: per edge, the evidence level (D13): 2 confirmed
+## (passes on the finding runs D and again on the held-out runs H), 1
+## tested (passes on the finding runs only), 0 neither. Held-out runs
+## sharing a seed with the finding runs, or of other edges, are refused.
+l:l_evels := { (D, H) ->
+  0 < '+ r_/ (h:s_eeds H) m_ember? h:s_eeds D ? "edges" []S_IGNAL "the held-out runs share a seed with the finding runs"
+  n_ot (l:n_ames D) m_atch l:n_ames H ? "edges" []S_IGNAL "the held-out runs are of other edges than the finding runs"
+  f := l:p_asses D
+  f + f * l:p_asses H
+}
+
+## The verdict of a level, in words.
+h:v_erdict := { v ->
+  v = 2 ? "confirmed"
+  "tested only"
+}
+
+## One family's edges that pass on the finding seeds, largest change
+## first (at most `shown`): finding and held-out effects, verdict.
+h:c_onfirmSection := { (E, F, G, X, V, title) ->
+  n := '+ r_/ V > 0
+  c := '+ r_/ V = 2
+  o := g_rade 0.0 - (a_bs X) * f_loat V > 0
+  line := '{ i ->
+    j := i s_elect o
+    (d_isclose j s_elect E) c_at " finding " c_at (h:s_igned j s_elect F) c_at "%, held-out " c_at (h:s_igned j s_elect G) c_at "%: " c_at (h:v_erdict j s_elect V) c_at "\n"
+  } m_ap r_ange shown m_in n
+  head := title c_at ": " c_at (f_ormat c) c_at " of " c_at (f_ormat n) c_at " confirmed" c_at (h:m_ore n) c_at "\n"
+  n = 0 ? head
+  head c_at d_isclose '{ a b -> e_nclose (d_isclose a) c_at d_isclose b } r_/ line
+}
+
+## `c_onfirmations (D, H)`: how many of the edges that pass on the
+## finding runs D pass again on the held-out runs H, then each metric's
+## edges with the largest changes, a line each: the edge, its mean
+## effect on both sets of seeds, and its verdict.
+l:c_onfirmations := { (D, H) ->
+  E := l:n_ames D
+  V := l:l_evels (D, H)
+  F := ef:m_ean l:e_ffects D
+  G := ef:m_ean l:e_ffects H
+  X := l:c_hanges D
+  A := l:f_amilies D
+  intro := (f_ormat '+ r_/ V = 2) c_at " of the " c_at (f_ormat '+ r_/ V > 0) c_at " edges that pass on the " c_at (f_ormat t_ally ef:r_uns D) c_at " finding seeds pass again on the " c_at (f_ormat t_ally ef:r_uns H) c_at " held-out seeds.\n\n"
+  qk := h:c_onfirmSection (E, F, G, X, V * A, "into queries and keys")
+  vl := h:c_onfirmSection (E, F, G, X, V * 1 - A, "into values and the logits")
+  intro c_at qk c_at "\n" c_at vl
+}
+
+## `(D, H) c_onfirmedInto "kind"`: how many confirmed edges go into
+## input kind.
+l:c_onfirmedInto := { (D, H) kind -> '+ r_/ (2 = l:l_evels (D, H)) * h:i_ntoAll ((l:n_ames D), kind) }
+
+## `(D, H) s_vgConfirmed "kind"`: the confirmed edges into one input
+## kind, drawn as s_vgPassing draws, with their held-out effects.
+l:s_vgConfirmed := { (D, H) kind ->
+  what := "edges into " c_at (h:k_ind kind) c_at " confirmed on held-out seeds (held-out effects)"
+  h:g_ridOf (H, (2 = l:l_evels (D, H)), (ef:m_ean l:e_ffects H), kind, what, "is not confirmed")
 }

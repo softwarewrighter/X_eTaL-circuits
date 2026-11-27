@@ -414,6 +414,7 @@ just attribute --experiment F --out runs/NAME   # edge attribution of every edge
 just choose --edges F --runs DIR   # the edges to path-patch, from attribution runs
 just edgepatch --edges F --attribution DIR --out runs/NAME   # chosen edges with controls (model extra)
 just edge-verdict RUNS_DIR [OUT_DIR]   # which edges beat their random controls (X_eTaL)
+just edge-confirm FINDING_DIR HELDOUT_DIR [OUT_DIR]   # tested edges checked on held-out seeds
 just effects RUNS_DIR [OUT_DIR]   # interventions' effects per head, in X_eTaL
 just verdict ABLATION PATCH CONTROLS [OUT_DIR]   # heads that beat their random controls
 just confirm PREFIX HELDOUT_PREFIX [OUT_DIR]   # tested heads checked on held-out seeds

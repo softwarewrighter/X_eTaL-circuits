@@ -2,19 +2,23 @@
 # strings. Heads are named layer.head by the model's numbers, from 0.
 #
 # Each head has an evidence level (head_evidence) and its basis (head_basis);
-# each edge "a b" (a feeds b) has one (evidence). Levels:
+# each edge "a b" (a feeds b) has one (evidence), the input of b it enters
+# (edge_inputs: q, k or v) and its basis (edge_basis). Levels:
 #   observed   an attention pattern or attribution score only (dashed)
 #   tested     an intervention moves the margin beyond matched random
 #              controls, on the finding seeds (solid)
 #   confirmed  also on the held-out seeds (thick)
 # A head's level is the highest it reached under any intervention; the basis
 # gives each method's verdict (just confirm fixtures/gpt2-induction
-# fixtures/gpt2-induction-heldout; docs/design.md, D17, D18). Edges stay
-# observed: ablating or patching a head tests the head, not which head feeds
-# which (that takes path patching).
+# fixtures/gpt2-induction-heldout; docs/design.md, D17, D18). The edges are
+# every edge between the circuit's heads that path patching passes against
+# its controls on the finding seeds, each with its level from the held-out
+# seeds (just edge-confirm fixtures/gpt2-induction-edges
+# fixtures/gpt2-induction-heldout-edges; D20-D23). An edge can be negative:
+# the sender pushes the receiver's score away (5.1 and 5.5 into 6.9).
 name = ["induction, GPT-2 Small"]
 model = ["gpt2"]
-source = ["attention scores and the literature; heads tested by ablation and patching"]
+source = ["attention scores and the literature; heads tested by ablation and patching, edges by path patching"]
 heads = ["4.11", "5.1", "5.5", "6.9", "7.2", "7.10", "7.6", "8.5", "9.9", "9.6", "10.1", "0.1"]
 roles = [
     "previous token",
@@ -23,12 +27,12 @@ roles = [
     "induction",
     "induction",
     "induction",
+    "needed; reads the induction heads through its query",
     "needed, role not yet known",
-    "needed, role not yet known",
-    "restores, role not yet known",
-    "restores, role not yet known",
-    "restores, role not yet known",
-    "restores, role not yet known",
+    "restores; reads the induction heads through its query",
+    "restores; reads the induction heads through its query",
+    "restores; reads the induction heads through its query",
+    "restores; feeds 6.9's query",
 ]
 head_evidence = [
     "confirmed", "confirmed", "confirmed", "confirmed", "confirmed", "confirmed",
@@ -48,5 +52,45 @@ head_basis = [
     "denoising confirmed (6%, held-out 6%); mean ablation under 5%",
     "denoising confirmed (5%, held-out 6%); mean ablation under 5%",
 ]
-edges = ["4.11 5.1", "4.11 5.5", "4.11 6.9", "4.11 7.2", "4.11 7.10"]
-evidence = ["observed", "observed", "observed", "observed", "observed"]
+edges = [
+    "0.1 6.9", "4.11 5.1", "4.11 5.1", "4.11 5.5", "4.11 6.9", "4.11 7.2", "4.11 7.10",
+    "5.1 6.9", "5.1 7.6", "5.1 7.10", "5.1 9.6", "5.1 9.9", "5.1 10.1",
+    "5.5 6.9", "5.5 7.6", "5.5 9.6", "5.5 9.9", "5.5 10.1",
+    "6.9 7.6", "6.9 9.6", "6.9 9.9", "6.9 10.1",
+]
+edge_inputs = [
+    "q", "q", "k", "k", "k", "k", "k",
+    "q", "q", "q", "q", "q", "q",
+    "q", "q", "q", "q", "q",
+    "q", "q", "q", "q",
+]
+evidence = [
+    "confirmed", "confirmed", "confirmed", "confirmed", "confirmed", "confirmed", "confirmed",
+    "confirmed", "confirmed", "confirmed", "confirmed", "confirmed", "confirmed",
+    "confirmed", "confirmed", "confirmed", "confirmed", "confirmed",
+    "confirmed", "confirmed", "confirmed", "confirmed",
+]
+edge_basis = [
+    "path patching into the query: confirmed (+7%, held-out +7%)",
+    "path patching into the query: confirmed (+8%, held-out +7%)",
+    "path patching into the key: confirmed (+36%, held-out +37%)",
+    "path patching into the key: confirmed (+35%, held-out +36%)",
+    "path patching into the key: confirmed (+40%, held-out +41%)",
+    "path patching into the key: confirmed (+24%, held-out +25%)",
+    "path patching into the key: confirmed (+25%, held-out +25%)",
+    "path patching into the query: confirmed (-7%, held-out -8%)",
+    "path patching into the query: confirmed (+36%, held-out +36%)",
+    "path patching into the query: confirmed (+7%, held-out +7%)",
+    "path patching into the query: confirmed (+19%, held-out +18%)",
+    "path patching into the query: confirmed (+18%, held-out +18%)",
+    "path patching into the query: confirmed (+19%, held-out +18%)",
+    "path patching into the query: confirmed (-9%, held-out -11%)",
+    "path patching into the query: confirmed (+36%, held-out +39%)",
+    "path patching into the query: confirmed (+18%, held-out +20%)",
+    "path patching into the query: confirmed (+22%, held-out +24%)",
+    "path patching into the query: confirmed (+20%, held-out +20%)",
+    "path patching into the query: confirmed (+44%, held-out +45%)",
+    "path patching into the query: confirmed (+24%, held-out +25%)",
+    "path patching into the query: confirmed (+25%, held-out +25%)",
+    "path patching into the query: confirmed (+27%, held-out +26%)",
+]

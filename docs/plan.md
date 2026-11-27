@@ -216,7 +216,9 @@ edges in seconds, Pearson 0.98/0.999 with path patching in the metric's
 units; edges chosen per metric, 400 for the induction experiment);
 edge-effects (D22: edgepatch with controls on the finding seeds,
 xetal/EdgeEffects verdicts, two-sided, edges into a gap not positive on
-every seed not judged; 186 of 400 pass; the Edges page).
+every seed not judged; 186 of 400 pass; the Edges page);
+heldout-edges (D23: 181 of 186 confirmed; the circuit file's 22 edges
+between its heads, all confirmed, checked against the runs; map thick).
 
 ## Saga 4 -- icl-behavior
 

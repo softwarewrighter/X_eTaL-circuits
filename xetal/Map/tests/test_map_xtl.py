@@ -18,7 +18,8 @@ ROOT = Path(__file__).resolve().parents[3]
 XT = ROOT / "scripts" / "xt"
 MAP = ROOT / "scripts" / "map.sh"
 FULL = ROOT / "fixtures" / "gpt2-induction-full"
-CIRCUIT = ROOT / "experiments" / "circuits" / "gpt2-induction.toml"
+LIVE = ROOT / "experiments" / "circuits" / "gpt2-induction.toml"
+CIRCUIT = Path(__file__).parent / "circuit.toml"  # fixed: the tests edit its text
 SRC = ROOT / "xetal" / "Map" / "src" / "Map.xtl"
 SVG = "{http://www.w3.org/2000/svg}"
 BLUE = np.array([59, 130, 246])
@@ -217,6 +218,16 @@ def test_command_line_writes_the_map_and_the_readme_image_is_current(tmp_path):
         "just map fixtures/gpt2-induction-full experiments/circuits/gpt2-induction.toml "
         "images/gpt2-model-map.svg"
     ) in readme
+
+
+def test_the_live_circuits_edges_are_drawn_with_their_evidence():
+    import tomllib
+
+    c = tomllib.loads(LIVE.read_text())
+    edges = by_class(draw(LIVE), "edge")
+    assert [f"{e.get('data-from')} {e.get('data-to')}" for e in edges] == c["edges"]
+    assert [e.get("data-evidence") for e in edges] == c["evidence"]
+    assert {e.get("stroke-width") for e in edges} == {"4"}
 
 
 def test_same_inputs_same_bytes():

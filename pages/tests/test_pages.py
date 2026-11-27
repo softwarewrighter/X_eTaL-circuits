@@ -214,7 +214,10 @@ def test_every_page_but_the_front_has_a_reading_note(site):
 def test_the_edges_page_shows_the_verdicts_and_a_grid_per_kind(site):
     text = (site / "edges.html").read_text()
     assert "beat all 20 of their random controls" in text and "are not judged" in text
+    assert "edges that pass on the 10 finding seeds pass again" in text
     for kind in ("k", "q", "logits"):
         assert f'src="edges/edges-{kind}.svg"' in text
+    for kind in ("k", "q"):
+        assert f'src="edges/confirmed-{kind}.svg"' in text
     want = (ROOT / "images" / "gpt2-edges" / "edges-k.svg").read_text()
     assert (site / "edges" / "edges-k.svg").read_text() == want

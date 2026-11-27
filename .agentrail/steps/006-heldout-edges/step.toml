@@ -1,6 +1,6 @@
 number = 6
 slug = "heldout-edges"
-status = "pending"
+status = "in-progress"
 description = """
 Held-out edges, test-first.
 

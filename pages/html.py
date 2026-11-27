@@ -193,7 +193,16 @@ below show every head; the verdicts above say which beat their controls.</p>
     )
 
 
-def edges_body(report: str) -> str:
+def edges_body(report: str, confirm: str) -> str:
+    held = (
+        "<h2>Confirmed on held-out seeds</h2>\n<p>The same edges, with their controls, on ten "
+        "held-out seeds: an edge that passes again is <b>confirmed</b>.</p>\n"
+        f"<pre>{escape(confirm)}</pre>\n"
+        '<div class="picture"><img src="edges/confirmed-k.svg" alt="edges into keys '
+        'confirmed on held-out seeds"></div>\n'
+        '<div class="picture"><img src="edges/confirmed-q.svg" alt="edges into queries '
+        'confirmed on held-out seeds"></div>\n'
+    )
     grids = "".join(
         f'<h2>{title}</h2>\n<div class="picture"><img src="edges/edges-{kind}.svg" '
         f'alt="{title}"></div>\n'
@@ -208,6 +217,7 @@ value, or the output. Of GPT-2 Small's 29,089 edges, the 400 with the largest
 estimated effects were path-patched on 10 seeds, each against 20 random changes of the
 same size. An edge passes when its effect is at least 5% of its receiver's gap and
 larger than every control's, in either direction.</p>
+{held}<h2>Which edges beat their random controls</h2>
 <pre>{escape(report)}</pre>
 {grids}"""
 
@@ -219,7 +229,7 @@ def eli5_body() -> str:
 
 
 def write(
-    out: Path, meta: dict, circuit: dict, heads: list, report: str, effects: dict, edges: str
+    out: Path, meta: dict, circuit: dict, heads: list, report: str, effects: dict, edges: dict
 ) -> None:
     (out / "style.css").write_text(CSS)
     pages = {
@@ -228,7 +238,10 @@ def write(
         "heads.html": ("GPT-2 Small: one head's attention", heads_body(circuit, heads)),
         "scores.html": ("GPT-2 Small: every head's scores", scores_body(report)),
         "effects.html": ("GPT-2 Small: interventions on every head", effects_body(effects)),
-        "edges.html": ("GPT-2 Small: which head feeds which", edges_body(edges)),
+        "edges.html": (
+            "GPT-2 Small: which head feeds which",
+            edges_body(edges["verdict"], edges["confirm"]),
+        ),
         "eli5.html": ("Explain it simply", eli5_body()),
         "glossary.html": ("Glossary", intro.render("glossary.md")),
     }

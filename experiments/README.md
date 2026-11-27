@@ -11,7 +11,8 @@ every value a list of strings: `name`, `model`, `source` (where the
 circuit comes from), `heads` (layer.head by the model's numbers, from
 0) with their `roles`, each head's `head_evidence` level and its
 `head_basis` (each method's verdict), and `edges` ("a b": a feeds b) with one
-`evidence` level each:
+`evidence` level each, the input of b it enters (`edge_inputs`: q, k or
+v) and its basis (`edge_basis`):
 
 | Level | Drawn | Means |
 | ----- | ----- | ----- |
@@ -22,8 +23,10 @@ circuit comes from), `heads` (layer.head by the model's numbers, from
 `circuits/gpt2-induction.toml` has the previous-token head 4.11, the
 induction heads 5.1, 5.5, 6.9, 7.2 and 7.10, and six more heads the
 interventions found; all twelve are confirmed, and a test checks each
-level and basis against the runs. Its edges (4.11 feeding the
-induction heads) are observed.
+level and basis against the runs. Its edges are every edge between
+those heads that path patching passes on the finding seeds (22, all
+confirmed on the held-out seeds), checked against the edge runs the
+same way.
 
 ## induction.toml
 

@@ -202,18 +202,20 @@ edges, each edge with the evidence it has reached.
 just map fixtures/gpt2-induction-full experiments/circuits/gpt2-induction.toml images/gpt2-model-map.svg
 ```
 
-![The GPT-2 Small model map: heads colored by their scores, confirmed heads outlined, the induction circuit's edges dashed](images/gpt2-model-map.svg)
+![The GPT-2 Small model map: heads colored by their scores, confirmed heads outlined, the induction circuit's confirmed edges thick](images/gpt2-model-map.svg)
 
 Heads carry evidence too, drawn as their outline: dashed observed,
 solid tested (beats random controls on the seeds used to find it),
 thick confirmed (also on held-out seeds); hovering a head gives each
 method's verdict. The circuit drawn has twelve confirmed heads: the
 previous-token head 4.11, the induction heads 5.1, 5.5, 6.9, 7.2 and
-7.10, and six the interventions found whose roles are not yet known
-(7.6, 8.5, 9.9, 9.6, 10.1, 0.1). Its edges, 4.11 feeding the induction
-heads, are still dashed: switching a head off or patching it tests the
-head, not which head feeds which. Path patching will test the edges,
-and the same map will draw them solid, then thick.
+7.10, and six the interventions found (7.6, 8.5, 9.9, 9.6, 10.1,
+0.1). Its 22 edges are every edge between those heads that path
+patching confirms (see the edge sections below): 4.11 into the
+induction heads' keys, the induction heads into the queries of 7.6,
+9.6, 9.9 and 10.1, and 0.1 into 6.9's query, all thick. The map does
+not yet show which input an edge enters, or that 5.1 and 5.5 push
+6.9's query away rather than toward its target.
 
 ## Testing heads by intervention
 
@@ -447,11 +449,65 @@ controls of 2% at most; 3.7, 5.6 and 2.2 add to it and 4.7 pushes
 against it. The induction heads in turn feed the queries of later
 heads (7.6, 9.9, 9.6 and 10.1 among them), and ten heads write directly
 into the logits, 10.7 and 11.10 against the answer. These edges are
-**tested** on the seeds used to choose them; held-out seeds come next.
+**tested** on the seeds used to choose them; the next section checks
+them on held-out seeds.
 What feeds 4.11 is not judged here: its score at the induction target
 is not its job, and its gap changes sign between seeds. Heads in layer
 3 have small gaps, so 1.8's edges into them show percents capped at
 100; read those by their change in score.
+
+## Edges confirmed on held-out seeds
+
+The same 400 edges, chosen on the finding seeds, are path-patched with
+their controls on the ten held-out seeds (`just edgepatch ... --seeds
+heldout`), and an edge that passes again is **confirmed**:
+
+```bash
+just edge-confirm fixtures/gpt2-induction-edges fixtures/gpt2-induction-heldout-edges images/gpt2-edges
+```
+
+```text
+181 of the 186 edges that pass on the 10 finding seeds pass again on the 10 held-out seeds.
+
+into queries and keys: 174 of 176 confirmed, the 15 largest shown
+4.11 5.1.k finding +36%, held-out +37%: confirmed
+4.11 6.9.k finding +40%, held-out +41%: confirmed
+4.11 5.5.k finding +35%, held-out +36%: confirmed
+4.7 5.1.k finding -18%, held-out -20%: confirmed
+4.11 7.10.k finding +25%, held-out +25%: confirmed
+5.6 6.9.k finding +23%, held-out +26%: confirmed
+4.11 7.2.k finding +24%, held-out +25%: confirmed
+6.6 7.1.q finding -41%, held-out -41%: confirmed
+4.11 5.0.k finding +38%, held-out +40%: confirmed
+4.7 6.9.k finding -17%, held-out -19%: confirmed
+3.7 5.1.k finding +13%, held-out +13%: confirmed
+5.5 7.1.q finding +37%, held-out +41%: confirmed
+4.11 5.8.k finding +38%, held-out +39%: confirmed
+4.7 5.5.k finding -16%, held-out -16%: confirmed
+3.7 6.9.k finding +15%, held-out +15%: confirmed
+
+into values and the logits: 7 of 10 confirmed
+10.7 logits finding -10%, held-out -9%: confirmed
+7.2 logits finding +8%, held-out +8%: confirmed
+9.6 logits finding +8%, held-out +7%: confirmed
+9.9 logits finding +7%, held-out +7%: confirmed
+6.9 logits finding +7%, held-out +6%: confirmed
+7.10 logits finding +7%, held-out +7%: confirmed
+10.1 logits finding +6%, held-out +6%: confirmed
+10.0 logits finding +5%, held-out +5%: tested only
+11.10 logits finding -5%, held-out -5%: tested only
+10.6 logits finding +5%, held-out +5%: tested only
+```
+
+![Edges into keys confirmed on held-out seeds](images/gpt2-edges/confirmed-k.svg)
+
+Nearly every edge holds, with held-out effects within a few points of
+the finding ones. The five that do not: 1.8 into the queries of 3.3
+and 3.7, whose gaps are tiny, and three heads' direct paths to the
+logits that sit at the 5% floor (10.0, 10.6, 11.10). The circuit file
+(`experiments/circuits/gpt2-induction.toml`) now carries every
+confirmed edge between its heads, with the input it enters and its
+basis, and the model map draws them thick.
 
 ## The live demo
 
@@ -481,8 +537,8 @@ The [live demo](https://softwarewrighter.github.io/X_eTaL-circuits/)
 shows all of it. Interventions (ablation and patching) are measured
 and drawn, compared with random controls and confirmed on held-out
 seeds, and the model map draws each head's evidence. Edges between
-heads are path-patched against random controls; held-out seeds for
-edges come next.
+heads are path-patched against random controls and confirmed on
+held-out seeds; the circuit's edges carry that evidence on the map.
 [`docs/plan.md`](docs/plan.md).
 
 ## Documentation

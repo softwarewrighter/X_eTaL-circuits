@@ -165,7 +165,11 @@ and keys, logit difference for values and the logits).
 | `ee:v_erdicts D` | the report: counts, then each metric's passing edges by change |
 | `D ee:c_ountInto "k"` | passing edges into an input kind (`q`, `k`, `v`, `logits`) |
 | `D ee:s_vgPassing "k"` | the passing edges into a kind as a sender x receiver grid (`logits`: layer x head) |
+| `ee:l_evels (D, H)` | per edge, 2 confirmed (passes on the finding runs D and the held-out runs H), 1 tested, 0 |
+| `ee:c_onfirmations (D, H)` | the report: how many hold, then each metric's edges with both effects and verdicts |
+| `(D, H) ee:c_onfirmedInto "k"`, `(D, H) ee:s_vgConfirmed "k"` | confirmed edges into a kind: their number, their grid of held-out effects |
 
 ```bash
 just edge-verdict fixtures/gpt2-induction-edges images/gpt2-edges
+just edge-confirm fixtures/gpt2-induction-edges fixtures/gpt2-induction-heldout-edges images/gpt2-edges
 ```

@@ -47,11 +47,11 @@ in percent: red helps, blue hurts. Verdicts compare each head with 20 random
 <a href="{G}control">controls</a>, then check it on <a href="{G}held-out-seeds">held-out
 seeds</a>.""",
     "edges.html": f"""Each grid shows <a href="{G}edge">edges</a> that beat their
-random <a href="{G}control">controls</a>: a row per sending head, a column per receiving
+random <a href="{G}control">controls</a>, first those confirmed on
+<a href="{G}held-out-seeds">held-out seeds</a>: a row per sending head, a column per receiving
 head, each cell the percent of the receiver's gap that the sender's output restores when
 it reaches that receiver alone (<a href="{G}patching">path patching</a>). Red helps,
-blue pushes away; 0 means the edge was not tested or did not pass. These are tested on
-the seeds used to choose them, not yet on held-out seeds.""",
+blue pushes away; 0 means the edge was not tested or did not pass.""",
     "glossary.html": "Terms in alphabetical order; every page links here.",
     "eli5.html": "The long introduction: the paper, the project, and why looking is not proving.",
     "index.html": "",
@@ -83,10 +83,10 @@ def findings(circuit: dict) -> str:
 <p>GPT-2 Small's copying needs or uses {confirmed} heads that pass every check
 (<b>confirmed</b>): the previous-token head, the five induction heads, and six more
 that the interventions found and whose roles are not yet known. Which head feeds which
-is being tested edge by edge on the <a href="edges.html">Edges</a> page (4.11 feeds
-every induction head's key, against random controls, on the prompts used to choose the
-edges); until held-out prompts check them, the circuit's arrows are
-<b>{", ".join(edges)}</b>.</p>
+is tested edge by edge on the <a href="edges.html">Edges</a> page: 4.11 feeds every
+induction head's key, and the induction heads feed the queries of 7.6, 9.6, 9.9 and
+10.1, against random controls and again on held-out prompts. The circuit's
+{len(circuit["edges"])} arrows are <b>{", ".join(edges)}</b>.</p>
 <table>
 <tr><th>Head</th><th>Role</th><th>Evidence</th><th>Basis (percent effects)</th></tr>
 {rows}</table>

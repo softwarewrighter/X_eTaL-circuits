@@ -160,7 +160,7 @@ def test_counts_into_each_kind(np_):
 
 def test_a_kind_without_passing_edges_is_refused():
     r = run(f'{runs()} ee:s_vgPassing "v"')
-    assert r.returncode != 0 and "no edge into values passes" in r.stderr
+    assert r.returncode != 0 and "no edge into values to draw" in r.stderr
 
 
 def test_runs_of_different_edges_are_refused(tmp_path):
@@ -224,5 +224,5 @@ def test_readme_example_runs_and_matches(tmp_path):
     for svg in tmp_path.glob("*.svg"):
         assert svg.read_text() == (ROOT / out_dir / svg.name).read_text(), svg.name
     assert sorted(p.name for p in tmp_path.glob("*.svg")) == sorted(
-        p.name for p in (ROOT / out_dir).glob("*.svg")
+        p.name for p in (ROOT / out_dir).glob("edges-*.svg")
     )
